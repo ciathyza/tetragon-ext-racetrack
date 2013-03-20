@@ -76,8 +76,12 @@ package tetragon.systems.racetrack
 		private var _playerY:int;				// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerZ:Number;			// player relative z distance from camera (computed)
 		
+		private var _playerOffsetY:Number;
+		private var _playerJumpHeight:Number;
+		
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _speed:Number;				// current speed
+		private var _speedPercent:Number;
 		
 		private var _currentLapTime:Number;		// current lap time
 		private var _lastLapTime:Number;		// last lap time
@@ -87,6 +91,8 @@ package tetragon.systems.racetrack
 		private var _isBraking:Boolean;
 		private var _isSteeringLeft:Boolean;
 		private var _isSteeringRight:Boolean;
+		private var _isJump:Boolean;
+		private var _isFall:Boolean;
 		
 		/* Racetrack properties */
 		private var _roadWidth:int;
@@ -157,6 +163,8 @@ package tetragon.systems.racetrack
 			_racetrack.reset();
 			
 			_playerZ = _racetrack.playerZ;
+			_playerOffsetY = -1.0;
+			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
@@ -175,6 +183,8 @@ package tetragon.systems.racetrack
 		 */
 		public function tick():void
 		{
+			_speedPercent = _speed / _maxSpeed;
+			
 			var i:int,
 				opponent:RTOpponent,
 				opponentWidth:Number,
@@ -182,24 +192,50 @@ package tetragon.systems.racetrack
 				entityWidth:Number,
 				playerSegment:RTSegment = findSegment(_position + _playerZ),
 				playerWidth:Number = _racetrack.player.image.width * _objectScale,
-				speedPercent:Number = _speed / _maxSpeed,
-				dx:Number = _dt * 2 * speedPercent,
+				dx:Number = _dt * 2 * _speedPercent,
 				startPosition:Number = _position,
 				bgLayer:ParallaxLayer;
 			
 			updateOpponents(_dt, playerSegment, playerWidth);
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
-			/* Update left/right steering. */
-			if (_isSteeringLeft) _playerX = _playerX - dx;
-			else if (_isSteeringRight) _playerX = _playerX + dx;
-			
-			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
-			
-			/* Update acceleration & decceleration. */
-			if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
-			else if (_isBraking) _speed = accel(_speed, _braking, _dt);
-			else _speed = accel(_speed, _deceleration, _dt);
+			if (_isJump)
+			{
+				if (_playerOffsetY <= _playerJumpHeight)
+				{
+					_isJump = false;
+					_isFall = true;
+				}
+				else
+				{
+					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
+				}
+			}
+			else if (_isFall)
+			{
+				if (_playerOffsetY < -1.0)
+				{
+					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
+				}
+				else
+				{
+					_playerOffsetY = -1.0;
+					_isFall = false;
+				}
+			}
+			else
+			{
+				/* Update left/right steering. */
+				if (_isSteeringLeft) _playerX = _playerX - dx;
+				else if (_isSteeringRight) _playerX = _playerX + dx;
+				
+				_playerX = _playerX - (dx * _speedPercent * playerSegment.curve * _centrifugal);
+				
+				/* Update acceleration & decceleration. */
+				if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
+				else if (_isBraking) _speed = accel(_speed, _braking, _dt);
+				else _speed = accel(_speed, _deceleration, _dt);
+			}
 			
 			/* Check if player drives onto off-road area. */
 			if ((_playerX < -1) || (_playerX > 1))
@@ -379,11 +415,25 @@ package tetragon.systems.racetrack
 						ent = (updown > 0) ? _racetrack.player : _racetrack.player; // TODO
 					}
 
-					renderEntity(ent, _cameraDepth / _playerZ, _widthHalf, (_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + bounce, -0.5, -1);
+					renderEntity(ent,
+						_cameraDepth / _playerZ,
+						_widthHalf,
+						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + bounce,
+						-0.5,
+						_playerOffsetY);
 				}
 			}
 			
 			_renderCanvas.complete();
+		}
+		
+		
+		public function jump():void
+		{
+			if (_isJump || _speed == 0) return;
+			_playerJumpHeight = -(_speedPercent * 1.8);
+			_isFall = false;
+			_isJump = true;
 		}
 		
 		
@@ -624,7 +674,7 @@ package tetragon.systems.racetrack
 		protected function setup():void
 		{
 			/* Set defaults. */
-			_drawDistance = 300;
+			_drawDistance = 300; /* 100 - 500 */
 			_bgSpeedMult = 0.001;
 			_playerX = _playerY = _playerZ = 0;
 		}

@@ -86,6 +86,7 @@ package view.racing
 			main.keyInputManager.assign("CURSORDOWN", KeyMode.DOWN, onKeyDown, "d");
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.DOWN, onKeyDown, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.DOWN, onKeyDown, "r");
+			main.keyInputManager.assign("SPACE", KeyMode.DOWN, onKeyDown, "space");
 			main.keyInputManager.assign("CURSORUP", KeyMode.UP, onKeyUp, "u");
 			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
@@ -197,6 +198,9 @@ package view.racing
 					break;
 				case "r":
 					_racetrackSystem.isSteeringRight = true;
+					break;
+				case "space":
+					_racetrackSystem.jump();
 					break;
 			}
 		}

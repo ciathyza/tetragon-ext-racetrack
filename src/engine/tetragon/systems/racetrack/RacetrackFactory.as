@@ -172,15 +172,15 @@ package tetragon.systems.racetrack
 			
 			_rt.hazeDensity = _level.hazeDensity;
 			_rt.lanes = _level.lanes;
-			_rt.roadWidth = 2000;
+			_rt.roadWidth = 2000; /* 500 - 3000 */
 			_rt.segmentLength = 200;
 			_rt.rumbleLength = 3;
 			_rt.trackLength = 200;
 			_rt.opponentsNum = 200;
 			
 			_rt.dt = 1 / Main.instance.gameLoop.frameRate;
-			_rt.fieldOfView = 100;
-			_rt.cameraHeight = 1000;
+			_rt.fieldOfView = 100; /* 80 - 140 */
+			_rt.cameraHeight = 1000; /* 500 - 5000 */
 			_rt.cameraDepth = 1 / Math.tan((_rt.fieldOfView / 2) * Math.PI / 180);
 			_rt.playerZ = (_rt.cameraHeight * _rt.cameraDepth);
 			
