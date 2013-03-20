@@ -359,7 +359,7 @@ package tetragon.systems.racetrack
 						addBumps();
 						break;
 					case RTRoadSectionType.DOWNHILL_TO_END:
-						addDownhillToEnd(section.length);
+						addDownhillToEnd(section.length, section.curve);
 						break;
 					default:
 						error("createRoad:: Unknown road section type: " + section.type);
@@ -701,9 +701,9 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function addDownhillToEnd(length:int):void
+		private function addDownhillToEnd(length:int, curve:int):void
 		{
-			addRoad(length, length, length, -RTRoad.CURVE.EASY, -lastY / _rt.segmentLength);
+			addRoad(length, length, length, curve, -lastY / _rt.segmentLength);
 		}
 		
 		
