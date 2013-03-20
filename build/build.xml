@@ -821,6 +821,7 @@
 				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
 				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/locale/${app.localestring}"/>
 				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/@{libpath}"/>
+				<arg line="-library-path+=${path.swc.tetragon}"/>
 				<arg line="-library-path+=${path.libs.swc}"/>
 			</exec>
 		</sequential>
@@ -877,6 +878,7 @@
 				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
 				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air/servicemonitor.swc"/>
 				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/textLayout.swc"/>
+				<arg line="-library-path+=${path.swc.tetragon}"/>
 				<arg line="-library-path+=${path.libs.swc}"/>
 			</exec>
 		</sequential>
