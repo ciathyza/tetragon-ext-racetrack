@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	RACETRACK OBJECTS FILE
+	Defines sprite collections and objects for the racetrack engine.
+	=====================================================================================
+-->
+<data>
+	
+	<racetrackObjectsCatalog id="racetrackObjects" textureAtlasID="textureAtlas">
+		<collections>
+			<collection id="billboards" type="obstacle" scale="2.5"/>
+			<collection id="vegetation" type="obstacle" scale="2.5"/>
+			<collection id="buildings" type="obstacle" scale="1.0"/>
+			<collection id="items" type="collectible" scale="1.0"/>
+			<collection id="cars" type="opponent" scale="1.25"/>
+			<collection id="traffic" type="traffic" scale="1.25"/>
+			<collection id="player" type="player" scale="1.0"/>
+		</collections>
+		<objects>
+			<object id="billboard1" imageID="spr_billboard_1" collectionID="billboards" scale="1.0"/>
+			<object id="billboard2" imageID="spr_billboard_2" collectionID="billboards" scale="1.0"/>
+			<object id="billboard3" imageID="spr_billboard_3" collectionID="billboards" scale="1.0"/>
+			<object id="billboard4" imageID="spr_billboard_4" collectionID="billboards" scale="1.0"/>
+			<object id="billboard5" imageID="spr_billboard_5" collectionID="billboards" scale="1.0"/>
+			<object id="billboard6" imageID="spr_billboard_6" collectionID="billboards" scale="1.0"/>
+			<object id="billboard7" imageID="spr_billboard_7" collectionID="billboards" scale="1.0"/>
+			<object id="billboard8" imageID="spr_billboard_8" collectionID="billboards" scale="1.0"/>
+			<object id="billboard9" imageID="spr_billboard_9" collectionID="billboards" scale="1.0"/>
+			
+			<object id="boulder1" imageID="spr_veg_boulder_1" collectionID="vegetation" scale="1.0"/>
+			<object id="boulder2" imageID="spr_veg_boulder_2" collectionID="vegetation" scale="1.0"/>
+			<object id="boulder3" imageID="spr_veg_boulder_3" collectionID="vegetation" scale="1.0"/>
+			<object id="bush1" imageID="spr_veg_bush_1" collectionID="vegetation" scale="1.0"/>
+			<object id="bush2" imageID="spr_veg_bush_2" collectionID="vegetation" scale="1.0"/>
+			<object id="cactus" imageID="spr_veg_cactus" collectionID="vegetation" scale="1.0"/>
+			<object id="deadtree1" imageID="spr_veg_deadtree_1" collectionID="vegetation" scale="1.0"/>
+			<object id="deadtree2" imageID="spr_veg_deadtree_2" collectionID="vegetation" scale="1.0"/>
+			<object id="palmtree" imageID="spr_veg_palmtree" collectionID="vegetation" scale="1.0"/>
+			<object id="stump" imageID="spr_veg_stump" collectionID="vegetation" scale="1.0"/>
+			<object id="tree1" imageID="spr_veg_tree_1" collectionID="vegetation" scale="1.0"/>
+			<object id="tree2" imageID="spr_veg_tree_2" collectionID="vegetation" scale="1.0"/>
+			
+			<object id="boathouse" imageID="spr_bldg_boathouse" collectionID="buildings" scale="3.0"/>
+			<object id="column" imageID="spr_bldg_column" collectionID="buildings" scale="3.0"/>
+			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
+			<object id="windmill" imageID="spr_bldg_windmill" collectionID="buildings" scale="5.0"/>
+			
+			<object id="car1" imageID="spr_car_1" collectionID="cars" scale="1.0"/>
+			<object id="car2" imageID="spr_car_2" collectionID="cars" scale="1.0"/>
+			<object id="car3" imageID="spr_car_3" collectionID="cars" scale="1.0"/>
+			<object id="car4" imageID="spr_car_4" collectionID="cars" scale="1.0"/>
+			<object id="car5" imageID="spr_car_5" collectionID="cars" scale="1.7"/>
+			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
+			
+			<object id="player" collectionID="player" scale="1.0">
+				<sequence id="straight">
+					<frame imageID="spr_player"/>
+				</sequence>
+				<sequence id="straightUphill">
+					<frame imageID="spr_player_uphill"/>
+				</sequence>
+				<sequence id="left">
+					<frame imageID="spr_player_left"/>
+				</sequence>
+				<sequence id="leftUphill">
+					<frame imageID="spr_player_uphill_left"/>
+				</sequence>
+				<sequence id="right">
+					<frame imageID="spr_player_right"/>
+				</sequence>
+				<sequence id="rightUphill">
+					<frame imageID="spr_player_uphill_right"/>
+				</sequence>
+			</object>
+	 	</objects>
+ 	</racetrackObjectsCatalog>
+	
+</data>

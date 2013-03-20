@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	
+	<header>
+		<signature>tetragon1</signature>
+		<version>1.1</version>
+		<entriesCount></entriesCount>
+		<author></author>
+		<description></description>
+	</header>
+	
+	<packageFiles>
+		<file id="resourcePackage" path="resources.pak"/>
+	</packageFiles>
+	
+	<!-- ======================================================================================
+	DATA FILE DEFINITIONS
+	======================================================================================= -->
+	<dataFiles>
+		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
+		<file id="spriteAtlasFile" path="data/sprites.xml" packageID="resourcePackage"/>
+		<file id="textureAtlasFile" path="data/textures.xml" packageID="resourcePackage"/>
+		<file id="racetrackObjectsFile" path="data/objects.xml" packageID="resourcePackage"/>
+		<file id="racetrackLevelsFile" path="data/levels.xml" packageID="resourcePackage"/>
+	</dataFiles>
+	
+	<!-- ======================================================================================
+	MEDIA DEFINITIONS
+	======================================================================================= -->
+	<media>
+		<image/>
+		<image32>
+			<resource id="spritePNG" path="images/sprites.png" packageID="resourcePackage"/>
+		</image32>
+		<atf>
+			<resource id="spritesATF" path="images/sprites.atf" packageID="resourcePackage"/>
+			<resource id="backgroundsATF" path="images/backgrounds.atf" packageID="resourcePackage"/>
+		</atf>
+		<swf/>
+		<shader/>
+		<mp3>
+			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
+		</mp3>
+		<soundModule/>
+		<binary/>
+	</media>
+	
+	<!-- ======================================================================================
+	DATA DEFINITIONS
+	======================================================================================= -->
+	<data>
+		<group type="Settings">
+			<resource id="settings" fileID="settingsFile"/>
+		</group>
+		<group type="TextureAtlas" id="textures" fileID="textureAtlasFile">
+			<resource id="textureAtlas"/>
+			<resource id="backgroundsAtlas"/>
+		</group>
+		<group type="SpriteAtlas" fileID="spriteAtlasFile">
+			<resource id="spriteAtlas"/>
+		</group>
+		<group type="RTObjectsCatalog">
+			<resource id="racetrackObjects" fileID="racetrackObjectsFile"/>
+		</group>
+		<group type="RTLevelsCatalog">
+			<resource id="racetrackLevels" fileID="racetrackLevelsFile"/>
+		</group>
+	</data>
+	
+	<!-- ======================================================================================
+	DATALIST DEFINITIONS
+	======================================================================================= -->
+	<lists/>
+	
+	<!-- ======================================================================================
+	ENTITY DEFINITIONS
+	======================================================================================= -->
+	<entities/>
+	
+	<!-- ======================================================================================
+	XML FILE DEFINITIONS
+	======================================================================================= -->
+	<xml/>
+	
+	<!-- ======================================================================================
+	TEXT RESOURCE DEFINITIONS
+	======================================================================================= -->
+	<text>
+		<resource id="textUI">
+			<locale lang="en" path="text/en/ui_text.xml" packageID="resourcePackage"/>
+			<locale lang="de"/>
+			<locale lang="jp"/>
+		</resource>
+	</text>
+	
+	<!-- ======================================================================================
+	PRELOAD LIST
+	======================================================================================= -->
+	<preload>
+		<resource id="textUI"/>
+	</preload>
+	
+</resources>

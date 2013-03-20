@@ -14,5 +14,5 @@ Thumbs.db
 .~$lock
 *.tmp
 RECOVER_*.fla
-hexagonlib
-tetragon
+linked_hexagonlib
+linked_tetragon
