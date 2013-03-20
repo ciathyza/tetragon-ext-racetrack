@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+***************************************************************************************************
+      _________  __      __
+    _/        / / /____ / /________ ____ ____  ___
+   _/        / / __/ -_) __/ __/ _ `/ _ `/ _ \/ _ \
+  _/________/  \__/\__/\__/_/  \_,_/\_, /\___/_//_/
+                                   /___/
+ 
+ Tetragon : Game Engine for multi-platform ActionScript projects.
+ http://www.tetragonengine.com/
+***************************************************************************************************
+-->
+<project default="000 Full Build" basedir=".." name="tetragon.ext.racetrack.swc">
+	
+	<property name="engine.name"		value="Tetragon Racetrack Extension"/>
+	<property name="engine.version"		value="1.0.0"/>
+	<property name="engine.milestone"	value=""/>
+	<property name="swc.filename"		value="tetragon_ext_racetrack"/>
+	
+	<property name="swfversion"		value="14"/>
+	<property name="fplversion"		value="11.1"/>
+	
+	<property file="build/build.properties"/>
+	<property file="${env.properties}"/>
+	<taskdef resource="flexTasks.tasks" classpath="${flextasks.jar}"/>
+	
+	
+	<!-- == DEFAULT TARGETS =================================================================== -->
+	
+	<target name="000 Full Build" description="Builds a distribution package incl. all fat SWCs and API docs.">
+		<clean/>
+		<prepare/>
+		<compile extra="base"/>
+		<createDocs extra="base" docsName="Base"/>
+		<packDocs/>
+		<cleanDocs extra="base"/>
+		<createFatDocs extra="base" docsName="Base"/>
+		<clean/>
+		<refresh/>
+	</target>
+	
+	<target name="010 Compile Engine" description="Compiles an SWC of the Tetragon base engine.">
+		<prepare/>
+		<compile extra="base"/>
+		<refresh/>
+	</target>
+	
+	
+	<target name="020 Create Docs" description="Creates the engine API docs.">
+		<createDocs extra="base" docsName="Base"/>
+		<refresh/>
+	</target>
+	
+	<target name="030 Pack Docs" description="Packs the API docs into a zip file.">
+		<packDocs/>
+		<cleanDocs extra="base"/>
+		<refresh/>
+	</target>
+	
+	
+	<!-- == MACRODEFS ========================================================================= -->
+	
+	<macrodef name="prepare">
+		<sequential>
+			<buildnumber file="${path.build}/build.number"/>
+			<tstamp>
+				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
+			</tstamp>
+			<echo message="*** ${engine.name} version: ${engine.version} build #${build.number} ${engine.milestone}, ${build.date} ***" level="info"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="clean">
+		<sequential>
+			<echo message="Cleaning bin folder ..." level="info"/>
+			<delete includeemptydirs="true">
+				<fileset dir="${path.bin}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compile">
+		<attribute name="extra"/>
+		<sequential>
+			<delete file="${path.libs.swc}/${swc.filename}.swc"/>
+			<echo message="Compiling ${swc.filename} SWC ..." level="info"/>
+			<compc
+				output="${path.libs.swc}/${swc.filename}.swc"
+				swf-version="${swfversion}"
+				target-player="${fplversion}"
+				debug="false"
+				optimize="false"
+				strict="true">
+				
+				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
+				<source-path path-element="${path.src}/engine"/>
+				<include-sources dir="${path.src}/engine" includes="*"/>
+				
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="false">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs" append="false">
+					<include name="framework.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/locale/en_US" append="false">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${path.swc.tetragon}" append="false">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				
+				<compiler.external-library-path dir="${path.libs.swc}" append="false">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+			</compc>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="createDocs">
+		<attribute name="extra"/>
+		<attribute name="docsName"/>
+		<sequential>
+			<echo message="Creating @{docsName} API docs ..." level="info"/>
+			<delete includeemptydirs="true" failonerror="false">
+				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+			<asdoc
+				output="${path.docs.api}"
+				lenient="true"
+				strict="true"
+				warnings="true"
+				main-title="Tetragon @{docsName} API Documentation"
+				window-title="Tetragon @{docsName} API Documentation"
+				footer="Copyright (c) 2012 Hexagon Star Softworks"
+				left-frameset-width="240"
+				failonerror="true">
+				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
+				<compiler.source-path path-element="${path.src}/engine"/>
+				<doc-sources path-element="${path.src}/engine"/>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
+					<include name="framework.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/locale/en_US" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${path.libs.swc}" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+			</asdoc>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="createFatDocs">
+		<attribute name="extra"/>
+		<attribute name="docsName"/>
+		<sequential>
+			<echo message="Creating fat @{docsName} API docs ..." level="info"/>
+			<asdoc
+				output="${path.bin}/tmp_@{extra}_docs"
+				lenient="true"
+				strict="true"
+				warnings="true"
+				keep-xml="true"
+				skip-xsl="true"
+				main-title="Tetragon @{docsName} API Documentation"
+				window-title="Tetragon @{docsName} API Documentation"
+				footer="Copyright (c) 2012 Hexagon Star Softworks"
+				left-frameset-width="240"
+				failonerror="true">
+				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
+				<compiler.source-path path-element="${path.src}/engine"/>
+				<doc-sources path-element="${path.src}/engine"/>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
+					<include name="framework.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/locale/en_US" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+				<compiler.external-library-path dir="${path.libs.swc}" append="true">
+					<include name="*.swc"/>
+				</compiler.external-library-path>
+			</asdoc>
+			<echo message="Including fat @{docsName} API docs into SWC ..." level="info"/>
+			<zip destfile="${path.libs.swc}/${swc.filename}_@{extra}.swc" update="true">
+				<zipfileset dir="${path.bin}/tmp_@{extra}_docs/tempdita" prefix="docs">
+					<include name="*.*"/>
+					<exclude name="ASDoc_Config.xml"/>
+					<exclude name="overviews.xml"/>
+				</zipfileset>
+			</zip>
+			<delete dir="${path.bin}/tmp_@{extra}_docs"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="packDocs">
+		<sequential>
+			<zip destfile="${path.dist}/${swc.filename}_docs.zip"
+				basedir="${path.docs.api}"
+				excludes="**/.svn"
+				update="false"
+				compress="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="cleanDocs">
+		<attribute name="extra"/>
+		<sequential>
+			<delete includeemptydirs="true">
+				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn,**/.gitkeep"/>
+			</delete>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="refresh">
+		<sequential>
+			<eclipse.refreshLocal resource="${basedir}" depth="infinite"/>
+		</sequential>
+	</macrodef>
+	
+</project>
