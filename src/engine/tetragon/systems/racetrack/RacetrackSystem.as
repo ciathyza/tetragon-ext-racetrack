@@ -37,6 +37,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render.canvas.IRenderCanvas;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
+	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
 	import flash.utils.Dictionary;
 	
@@ -508,7 +509,9 @@ package tetragon.systems.racetrack
 				}
 				for (var i:uint = 0; i < _racetrack.backgroundLayers.length; i++)
 				{
-					_bgScroller.addLayer(_racetrack.backgroundLayers[i]);
+					var layer:ScrollTile2D = _racetrack.backgroundLayers[i];
+					if (!layer) continue;
+					_bgScroller.addLayer(layer);
 				}
 			}
 		}

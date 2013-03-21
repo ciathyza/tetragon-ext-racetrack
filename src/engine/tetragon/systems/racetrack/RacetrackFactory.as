@@ -217,8 +217,9 @@ package tetragon.systems.racetrack
 			if (!_level.backgroundLayerIDs || _level.backgroundLayerIDs.length < 1) return;
 			_rt.backgroundScale = _level.backgroundScale;
 			_rt.backgroundLayers = new Vector.<ScrollTile2D>(_level.backgroundLayerIDs.length, true);
-			var bgAtlasID:TextureAtlas = resourceIndex.getResourceContent(_level.backgroundTextureAtlasID);
-			if (!bgAtlasID)
+			var bgAtlas:TextureAtlas = resourceManager.process(_level.backgroundTextureAtlasID);
+			
+			if (!bgAtlas)
 			{
 				error("No texture atlas with ID " + _level.backgroundTextureAtlasID
 					+ " for background layers!");
@@ -228,8 +229,12 @@ package tetragon.systems.racetrack
 			for (var i:uint = 0; i < _rt.backgroundLayers.length; i++)
 			{
 				var pair:KeyValuePair = _level.backgroundLayerIDs[i];
-				var texture:Texture2D = bgAtlasID.getImage(pair.key);
-				if (!texture) continue;
+				var texture:Texture2D = bgAtlas.getImage(pair.key);
+				if (!texture)
+				{
+					Log.warn("No texture with ID " + pair.key, this);
+					continue;
+				}
 				var layer:ScrollTile2D = new ScrollTile2D(texture);
 				layer.parallax = pair.value;
 				_rt.backgroundLayers[i] = layer;
