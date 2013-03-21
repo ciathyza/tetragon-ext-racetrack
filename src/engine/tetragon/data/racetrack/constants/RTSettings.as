@@ -33,11 +33,25 @@ package tetragon.data.racetrack.constants
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
+		public static const LANES:String						= "lanes";
+		public static const HAZE_DENSITY:String					= "hazeDensity";
+		public static const ROAD_WIDTH:String					= "roadWidth";
+		public static const SEGMENT_LENGTH:String				= "segmentLength";
+		public static const RUMBLE_LENGTH:String				= "rumbleLength";
+		public static const CENTRIFUGAL:String					= "centrifugal";
+		public static const MAX_SPEED_MULT:String				= "maxSpeedMult";
+		public static const ACCELERATION_DIV:String				= "accelerationDiv";
+		public static const OFFROAD_LIMIT_DIV:String			= "offRoadLimitDiv";
+		public static const OFFROAD_DECELERATION:String			= "offRoadDeceleration";
+		
 		public static const DEFAULT_ROAD_WIDTH:String			= "defaultRoadWidth";
 		public static const DEFAULT_SEGMENT_LENGTH:String		= "defaultSegmentLength";
 		public static const DEFAULT_RUMBLE_LENGTH:String		= "defaultRumbleLength";
-		public static const DEFAULT_OFFROAD_DECELERATION:String	= "defaultOffRoadDeceleration";
 		public static const DEFAULT_CENTRIFUGAL:String			= "defaultCentrifugal";
+		public static const DEFAULT_MAX_SPEED_MULT:String		= "defaultMaxSpeedMult";
+		public static const DEFAULT_ACCELERATION_DIV:String		= "defaultAccelerationDiv";
+		public static const DEFAULT_OFFROAD_LIMIT_DIV:String	= "defaultOffRoadLimitDiv";
+		public static const DEFAULT_OFFROAD_DECELERATION:String	= "defaultOffRoadDeceleration";
 		
 		public static const FOV:String							= "fov";
 		public static const CAMERA_ALTITUDE:String				= "cameraAltitude";

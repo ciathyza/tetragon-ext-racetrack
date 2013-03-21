@@ -82,8 +82,6 @@ package tetragon.file.parsers
 					var level:RTLevel = new RTLevel(extractString(x, "@id"));
 					level.objectsCatalogID = extractString(x, "@objectsCatalogID");
 					level.nameID = extractString(x, "@nameID");
-					level.lanes = extractNumber(x, "@lanes", 2);
-					level.hazeDensity = extractNumber(x, "@hazeDensity", 10);
 					
 					/* Parse level colors. */
 					level.colorSetLight = new RTColorSet();
@@ -108,6 +106,16 @@ package tetragon.file.parsers
 					level.colorSetFinish.lane = extractColorValue(x.colors.finish, "@lane");
 					level.colorBackground = extractColorValue(x.colors.background, "@value");
 					level.colorHaze = extractColorValue(x.colors.haze, "@value");
+					
+					/* Parse level settings. */
+					subList = x.child("settings").setting;
+					level.settings = new Dictionary();
+					for each (y in subList)
+					{
+						var name:String = extractString(y, "@name");
+						var value:Number = extractNumber(y, "@value");
+						level.settings[name] = value;
+					}
 					
 					/* Parse level background layers. */
 					level.backgroundTextureAtlasID = extractString(x.background, "@textureAtlasID");

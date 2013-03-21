@@ -32,6 +32,8 @@ package tetragon.data.racetrack.proto
 	import tetragon.data.racetrack.vo.RTColorSet;
 
 	import com.hexagonstar.types.KeyValuePair;
+
+	import flash.utils.Dictionary;
 	
 	
 	/**
@@ -47,8 +49,8 @@ package tetragon.data.racetrack.proto
 		
 		public var objectsCatalogID:String;
 		public var nameID:String;
-		public var lanes:int;
-		public var hazeDensity:int;
+		
+		public var settings:Dictionary;
 		
 		public var colorBackground:uint;
 		public var colorHaze:uint;

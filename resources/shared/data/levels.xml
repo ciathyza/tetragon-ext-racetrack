@@ -8,7 +8,21 @@
 <data>
 	
 	<racetrackLevelsCatalog id="racetrackLevels">
-		<level id="demoLevel" objectsCatalogID="racetrackObjects" nameID="demoLevelName" lanes="3" hazeDensity="10">
+		<level id="demoLevel" objectsCatalogID="racetrackObjects" nameID="demoLevelName">
+			
+			<settings>
+				<setting name="lanes"				value="3"/>
+				<setting name="hazeDensity"			value="10"/>
+				<setting name="roadWidth"			value=""/>
+				<setting name="segmentLength"		value=""/>
+				<setting name="rumbleLength"		value=""/>
+				<setting name="centrifugal"			value=""/>
+				<setting name="maxSpeedMult"		value=""/>
+				<setting name="accelerationDiv"		value=""/>
+				<setting name="offRoadLimitDiv"		value=""/>
+				<setting name="offRoadDeceleration"	value=""/>
+			</settings>
+			
 			<colors>
 				<background	value="#72D7EE"/>
 				<haze		value="#163D1A"/>

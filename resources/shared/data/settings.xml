@@ -22,6 +22,9 @@
 	<defaultRumbleLength>3</defaultRumbleLength>
 	<defaultOffRoadDeceleration>0.99</defaultOffRoadDeceleration>
 	<defaultCentrifugal>0.3</defaultCentrifugal>
+	<defaultMaxSpeedMult>1.0</defaultMaxSpeedMult>
+	<defaultAccelerationDiv>5.0</defaultAccelerationDiv>
+	<defaultOffRoadLimitDiv>4.0</defaultOffRoadLimitDiv>
 	
 	<fov>100</fov>							<!-- Valid range: 80 - 140 -->
 	<cameraAltitude>1000</cameraAltitude>	<!-- Valid range: 500 - 5000 -->
