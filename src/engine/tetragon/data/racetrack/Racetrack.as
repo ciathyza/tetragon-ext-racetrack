@@ -51,17 +51,14 @@ package tetragon.data.racetrack
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		public var roadWidth:int;
-		public var segmentLength:int;
-		public var rumbleLength:int;
-		public var trackLength:int;
 		public var lanes:int;
-		public var opponentsNum:int;
 		public var hazeDensity:int;
+		
+		public var trackLength:int;
+		public var maxCars:int;
 		
 		public var backgroundColor:uint;
 		public var hazeColor:uint;
-		
 		public var colorSetLight:RTColorSet;
 		public var colorSetDark:RTColorSet;
 		public var colorSetStart:RTColorSet;
@@ -69,6 +66,11 @@ package tetragon.data.racetrack
 		
 		public var backgroundScale:Number;
 		public var backgroundLayers:Vector.<ScrollTile2D>;
+		
+		public var roadWidth:int;
+		public var segmentLength:int;
+		public var rumbleLength:int;
+		public var drawDistance:int;
 		
 		public var acceleration:Number;		// acceleration rate - tuned until it 'felt' right
 		public var deceleration:Number;		// 'natural' deceleration rate when neither accelerating, nor braking
@@ -79,8 +81,8 @@ package tetragon.data.racetrack
 		public var maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
 		public var dt:Number;				// how long is each frame (in seconds)
-		public var fieldOfView:int;			// angle (degrees) for field of view (80 - 140)
-		public var cameraHeight:Number;		// z height of camera (500 - 5000)
+		public var fov:int;					// angle (degrees) for field of view (80 - 140)
+		public var cameraAltitude:Number;	// z height of camera (500 - 5000)
 		public var cameraDepth:Number;		// z distance camera is from screen (computed)
 		
 		public var playerZ:Number;

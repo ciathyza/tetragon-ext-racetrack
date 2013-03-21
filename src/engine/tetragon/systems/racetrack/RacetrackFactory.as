@@ -30,11 +30,13 @@ package tetragon.systems.racetrack
 {
 	import tetragon.BaseClass;
 	import tetragon.Main;
+	import tetragon.data.Settings;
 	import tetragon.data.atlas.Atlas;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.constants.RTRoad;
 	import tetragon.data.racetrack.constants.RTRoadSectionType;
+	import tetragon.data.racetrack.constants.RTSettings;
 	import tetragon.data.racetrack.proto.*;
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
@@ -73,7 +75,7 @@ package tetragon.systems.racetrack
 		private var _entityCount:uint;
 		private var _opponentCount:uint;
 		
-		private var _entityThinningMult:int = 1;
+		private var _entityThinningMult:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -171,22 +173,29 @@ package tetragon.systems.racetrack
 			_entityCount = 0;
 			_opponentCount = 0;
 			
+			_rt.dt = 1 / Main.instance.gameLoop.frameRate;
+			
+			/* Game Settings. */
+			var s:Settings = registry.settings;
+			_rt.roadWidth = s.getNumber(RTSettings.DEFAULT_ROAD_WIDTH) || 2000; /* 500 - 3000 */
+			_rt.segmentLength = s.getNumber(RTSettings.DEFAULT_SEGMENT_LENGTH) || 200;
+			_rt.rumbleLength = s.getNumber(RTSettings.DEFAULT_RUMBLE_LENGTH) || 3;
+			_rt.drawDistance = s.getNumber(RTSettings.DRAW_DISTANCE) || 300;	/* 100 - 500 */
+			_rt.fov = s.getNumber(RTSettings.FOV) || 100;						/* 80 - 140 */
+			_rt.cameraAltitude = s.getNumber(RTSettings.CAMERA_ALTITUDE) || 1000;/* 500 - 5000 */
+			_rt.offRoadDecel = s.getNumber(RTSettings.DEFAULT_OFFROAD_DECELERATION) || 0.99;
+			_rt.centrifugal = s.getNumber(RTSettings.DEFAULT_CENTRIFUGAL) || 0.3;
+			_rt.maxCars = s.getNumber(RTSettings.MAX_CARS) || 1000;
+			_entityThinningMult = s.getNumber(RTSettings.ENTITY_THINNING_MULT) || 1;
+			
+			/* Level-based parameters. */
 			_rt.hazeDensity = _level.hazeDensity;
 			_rt.lanes = _level.lanes;
-			_rt.roadWidth = 2000; /* 500 - 3000 */
-			_rt.segmentLength = 200;
-			_rt.rumbleLength = 3;
-			_rt.trackLength = 200;
-			_rt.opponentsNum = 200;
 			
-			_rt.dt = 1 / Main.instance.gameLoop.frameRate;
-			_rt.fieldOfView = 100; /* 80 - 140 */
-			_rt.cameraHeight = 1000; /* 500 - 5000 */
-			_rt.cameraDepth = 1 / Math.tan((_rt.fieldOfView / 2) * Math.PI / 180);
-			_rt.playerZ = (_rt.cameraHeight * _rt.cameraDepth);
+			/* Derived parameters. */
+			_rt.cameraDepth = 1 / Math.tan((_rt.fov / 2) * Math.PI / 180);
+			_rt.playerZ = (_rt.cameraAltitude * _rt.cameraDepth);
 			
-			_rt.offRoadDecel = 0.99;
-			_rt.centrifugal = 0.3;
 			_rt.maxSpeed = _rt.segmentLength / _rt.dt;
 			_rt.acceleration = _rt.maxSpeed / 5;
 			_rt.braking = -_rt.maxSpeed;
@@ -598,7 +607,7 @@ package tetragon.systems.racetrack
 			speedFactor:int = 4):void
 		{
 			if (count < 1) return;
-			else if (count >= _rt.opponentsNum) count = _rt.opponentsNum;
+			else if (count >= _rt.maxCars) count = _rt.maxCars;
 			var collection:RTObjectCollection = _rt.getCollection(collectionID);
 			if (!collection) return;
 			

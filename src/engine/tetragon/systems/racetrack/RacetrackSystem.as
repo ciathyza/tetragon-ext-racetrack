@@ -478,6 +478,7 @@ package tetragon.systems.racetrack
 		{
 			_racetrack = v;
 			
+			_drawDistance = _racetrack.drawDistance;
 			_roadWidth = _racetrack.roadWidth;
 			_segmentLength = _racetrack.segmentLength;
 			_trackLength = _racetrack.trackLength;
@@ -492,8 +493,8 @@ package tetragon.systems.racetrack
 			_centrifugal = _racetrack.centrifugal;
 			_maxSpeed = _racetrack.maxSpeed;
 			_dt = _racetrack.dt;
-			_fieldOfView = _racetrack.fieldOfView;
-			_cameraHeight = _racetrack.cameraHeight;
+			_fieldOfView = _racetrack.fov;
+			_cameraHeight = _racetrack.cameraAltitude;
 			_cameraDepth = _racetrack.cameraDepth;
 			_segments = _racetrack.segments;
 			_opponents = _racetrack.opponents;
@@ -631,7 +632,6 @@ package tetragon.systems.racetrack
 		protected function setup():void
 		{
 			/* Set defaults. */
-			_drawDistance = 300; /* 100 - 500 */
 			_bgSpeedMult = 0.001;
 			_playerX = _playerY = _playerZ = 0;
 		}
