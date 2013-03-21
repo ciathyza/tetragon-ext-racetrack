@@ -54,7 +54,8 @@ package tetragon.systems.racetrack
 		
 		private var _bgScroller:ScrollImage2D;
 		private var _bgScrollOffset:Number;
-		private var _bgScrollPrevX:int;
+		private var _bgScrollPrevX:Number;
+		private var _bgScrollPrevY:Number;
 		
 		private var _racetrack:Racetrack;
 		
@@ -273,7 +274,7 @@ package tetragon.systems.racetrack
 			if (_bgScroller)
 			{
 				_bgScrollOffset = increase(_bgScrollOffset, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1.0);
-				var bgScrollX:int = -(_bgScrollOffset * _bgScroller.layerWidth);
+				var bgScrollX:Number = -(_bgScrollOffset * _bgScroller.layerWidth);
 				if (bgScrollX != _bgScrollPrevX)
 				{
 					_bgScroller.tilesOffsetX = _bgScrollPrevX = bgScrollX;

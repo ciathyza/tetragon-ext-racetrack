@@ -131,9 +131,9 @@ package tetragon.file.parsers
 					{
 						var section:RTRoadSection = new RTRoadSection();
 						section.type = extractString(y, "@type");
-						section.length = extractNumber(y, "@length", 0);
-						section.height = extractNumber(y, "@height", 0);
-						section.curve = extractNumber(y, "@curve", 0);
+						section.length = extractNumber(y, "@length");
+						section.height = extractNumber(y, "@height");
+						section.curve = extractNumber(y, "@curve");
 						
 						if (isNaN(section.length))
 						{
