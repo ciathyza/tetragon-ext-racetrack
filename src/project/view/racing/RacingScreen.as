@@ -35,7 +35,6 @@ package view.racing
 	import tetragon.systems.racetrack.RacetrackSystem;
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
-	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	
 	
 	/**
@@ -56,7 +55,6 @@ package view.racing
 		
 		private var _render2D:Render2D;
 		private var _rootView:RacingView;
-		private var _bgScroller:ScrollImage2D;
 		
 		private var _racetrackSystem:RacetrackSystem;
 		private var _racetrackFactory:RacetrackFactory;
@@ -261,28 +259,19 @@ package view.racing
 			_width = main.stage.stageWidth;
 			_height = main.stage.stageHeight;
 			
-			var sprites:TextureAtlas = resourceManager.process("textureAtlas");
-			var backgrounds:TextureAtlas = resourceManager.process("backgroundsAtlas");
-			
 			_render2D = screenManager.render2D;
 			_render2D.antiAliasing = 0;
 			
-			_rootView = new RacingView();
-			//_rootView.background = new Rect2D(10, 10, 0xFF00FF);
-			_rootView.addBackgroundLayer(backgrounds.getImage("bg_sky"), 1);
-			_rootView.addBackgroundLayer(backgrounds.getImage("bg_hills"), 2);
-			_rootView.addBackgroundLayer(backgrounds.getImage("bg_trees"), 4);
+			var backgrounds:TextureAtlas = resourceManager.process("backgroundsAtlas");
 			
-			_bgScroller = _rootView.bgScroller;
+			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
 			
 			_racetrackFactory = new RacetrackFactory("racetrackLevels");
 			_racetrack = _racetrackFactory.createRacetrack("demoLevel");
-			//_racetrack = _racetrackFactory.createDemoRacetrack(sprites);
 			
-			_racetrackSystem = new RacetrackSystem(_width, _height, _racetrack, sprites);
+			_racetrackSystem = new RacetrackSystem(_width, _height, _racetrack);
 			_racetrackSystem.renderCanvas = _rootView.renderCanvas;
-			_racetrackSystem.bgScroller = _rootView.bgScroller;
 			
 			_rootView.racetrackSystem = _racetrackSystem;
 		}

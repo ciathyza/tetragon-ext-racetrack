@@ -107,7 +107,8 @@ package tetragon.systems.racetrack
 			if (!_level) return error("No level with ID " + levelID + "!");
 			_objectsCatalog = resourceIndex.getResourceContent(_level.objectsCatalogID);
 			if (!_objectsCatalog) return error("No objects catalog with ID " + _level.objectsCatalogID + "!");
-			_textureAtlas = resourceIndex.getResourceContent(_objectsCatalog.textureAtlasID);
+			
+			_textureAtlas = resourceManager.process(_objectsCatalog.textureAtlasID);
 			if (!_textureAtlas) return error("No texture atlas with ID " + _objectsCatalog.textureAtlasID + "!");
 			
 			_rt = new Racetrack(_level.id);
@@ -199,8 +200,8 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareColors():void
 		{
+			_rt.backgroundColor = _level.colorBackground;
 			_rt.hazeColor = _level.colorHaze;
-			_rt.skyColor = _level.colorSky;
 			_rt.colorSetLight  = _level.colorSetLight;
 			_rt.colorSetDark = _level.colorSetDark;
 			_rt.colorSetStart = _level.colorSetStart;

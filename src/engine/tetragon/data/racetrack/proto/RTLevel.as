@@ -50,12 +50,13 @@ package tetragon.data.racetrack.proto
 		public var lanes:int;
 		public var hazeDensity:int;
 		
+		public var colorBackground:uint;
+		public var colorHaze:uint;
+		
 		public var colorSetLight:RTColorSet;
 		public var colorSetDark:RTColorSet;
 		public var colorSetStart:RTColorSet;
 		public var colorSetFinish:RTColorSet;
-		public var colorHaze:uint;
-		public var colorSky:uint;
 		
 		public var backgroundTextureAtlasID:String;
 		public var backgroundLayerIDs:Vector.<KeyValuePair>;

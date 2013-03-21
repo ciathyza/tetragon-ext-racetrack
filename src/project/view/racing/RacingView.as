@@ -35,9 +35,6 @@ package view.racing
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
-	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
-	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
-	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.touch.Touch2D;
 	import tetragon.view.render2d.touch.TouchPhase2D;
 	
@@ -51,7 +48,6 @@ package view.racing
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _bgScroller:ScrollImage2D;
 		private var _renderCanvas:GPURenderCanvas;
 		private var _rectL:Rect2D;
 		private var _rectR:Rect2D;
@@ -76,14 +72,6 @@ package view.racing
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
 		
-		public function addBackgroundLayer(texture:Texture2D, parallax:int = 1, offsetY:Number = 0.0):void
-		{
-			var layer:ScrollTile2D = new ScrollTile2D(texture);
-			layer.parallax = parallax;
-			layer.offsetY = offsetY;
-			_bgScroller.addLayer(layer);
-		}
-		
 		
 		// -----------------------------------------------------------------------------------------
 		// Accessors
@@ -92,12 +80,6 @@ package view.racing
 		public function get renderCanvas():GPURenderCanvas
 		{
 			return _renderCanvas;
-		}
-		
-		
-		public function get bgScroller():ScrollImage2D
-		{
-			return _bgScroller;
 		}
 		
 		
@@ -164,11 +146,7 @@ package view.racing
 		 */
 		override protected function setup():void
 		{
-			_bgScroller = new ScrollImage2D(_frameWidth, 480);
-			_bgScroller.tilesScale = 2.0;
 			_renderCanvas = new GPURenderCanvas(_frameWidth, _frameHeight);
-			
-			addChild(_bgScroller);
 			addChild(_renderCanvas);
 			
 			if (_main.appInfo.buildType == BuildType.IOS

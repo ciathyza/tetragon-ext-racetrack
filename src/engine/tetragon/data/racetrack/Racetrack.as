@@ -59,8 +59,8 @@ package tetragon.data.racetrack
 		public var opponentsNum:int;
 		public var hazeDensity:int;
 		
+		public var backgroundColor:uint;
 		public var hazeColor:uint;
-		public var skyColor:uint;
 		
 		public var colorSetLight:RTColorSet;
 		public var colorSetDark:RTColorSet;
@@ -92,7 +92,6 @@ package tetragon.data.racetrack
 		
 		public var objects:Dictionary;
 		public var collections:Dictionary;
-		public var colors:Dictionary;
 		
 		public var player:RTEntity;
 		
@@ -110,7 +109,6 @@ package tetragon.data.racetrack
 			
 			objects = new Dictionary();
 			collections = new Dictionary();
-			colors = new Dictionary();
 		}
 		
 		
@@ -193,11 +191,6 @@ package tetragon.data.racetrack
 			for (n in collections)
 			{
 				s += "\n\t" + n + ": " + collections[n];
-			}
-			s += "\nColors:";
-			for (n in colors)
-			{
-				s += "\n\t" + n + ": " + colors[n];
 			}
 			return s;
 		}

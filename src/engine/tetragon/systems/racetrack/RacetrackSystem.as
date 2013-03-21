@@ -28,7 +28,6 @@
  */
 package tetragon.systems.racetrack
 {
-	import tetragon.data.atlas.Atlas;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
@@ -52,17 +51,13 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		private var _renderCanvas:IRenderCanvas;
-		private var _atlas:Atlas;
 		
 		private var _bgScroller:ScrollImage2D;
-		private var _bgLayers:Vector.<ParallaxLayer>;
-		private var _bgHeight:int;
 		private var _bgScrollOffset:Number;
 		private var _bgScrollPrevX:int;
 		
 		private var _racetrack:Racetrack;
 		
-		private var _bgColor:uint;
 		private var _width:int;
 		private var _height:int;
 		private var _widthHalf:int;
@@ -133,21 +128,17 @@ package tetragon.systems.racetrack
 		 * @param width
 		 * @param height
 		 * @param racetrack
-		 * @param atlas
-		 * @param backgroundColor
 		 */
-		public function RacetrackSystem(width:int, height:int, racetrack:Racetrack, atlas:Atlas,
-			renderCanvas:IRenderCanvas = null, backgroundColor:uint = 0x000055)
+		public function RacetrackSystem(width:int, height:int, racetrack:Racetrack,
+			renderCanvas:IRenderCanvas = null)
 		{
 			_width = width;
 			_height = height;
-			_atlas = atlas;
 			_renderCanvas = renderCanvas;
-			_bgColor = backgroundColor;
-			
-			this.racetrack = racetrack;
 			
 			setup();
+			
+			this.racetrack = racetrack;
 		}
 		
 		
@@ -334,7 +325,9 @@ package tetragon.systems.racetrack
 			
 			_playerY = interpolate(playerSegment.point1.world.y, playerSegment.point2.world.y, playerPercent);
 			
-			_renderCanvas.clear();
+			/* Render background. */
+			if (_bgScroller) _renderCanvas.blit(_bgScroller, 0, 0);
+			else _renderCanvas.clear();
 			
 			/* PHASE 1: render segments, front to back and clip far segments that have been
 			 * obscured by already rendered near segments if their projected coordinates are
@@ -498,41 +491,18 @@ package tetragon.systems.racetrack
 			_opponents = _racetrack.opponents;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
-		}
-		
-		
-		/**
-		 * An array of ParallaxLayer objects. Internally the layers are stored in
-		 * a vector.
-		 */
-		public function get backgroundLayers():Array
-		{
-			if (!_bgLayers) return null;
-			var a:Array = [];
-			for (var i:uint = 0; i < _bgLayers.length; i++)
+			
+			if (_racetrack.backgroundLayers)
 			{
-				a.push(_bgLayers[i]);
-			}
-			return a;
-		}
-		public function set backgroundLayers(v:Array):void
-		{
-			if (!v)
-			{
-				_bgLayers = null;
-				_bgHeight = 0;
-			}
-			else
-			{
-				_bgLayers = new Vector.<ParallaxLayer>(v.length, true);
-				for (var i:uint = 0; i < _bgLayers.length; i++)
+				if (!_bgScroller)
 				{
-					var layer:ParallaxLayer = v[i];
-					if (!layer || !layer.source) continue;
-					if (_bgHeight < layer.height) _bgHeight = layer.height;
-					_bgLayers[i] = layer;
+					_bgScroller = new ScrollImage2D(_width, _height);
+					_bgScroller.tilesScale = 2.0;
 				}
-				//if (_bgScroller) _bgScroller.layers = v; // TODO
+				for (var i:uint = 0; i < _racetrack.backgroundLayers.length; i++)
+				{
+					_bgScroller.addLayer(_racetrack.backgroundLayers[i]);
+				}
 			}
 		}
 		
@@ -583,20 +553,6 @@ package tetragon.systems.racetrack
 		
 		
 		/**
-		 * The color with that the render buffer is cleared before each frame render.
-		 */
-		public function get backgroundColor():uint
-		{
-			return _bgColor;
-		}
-		public function set backgroundColor(v:uint):void
-		{
-			_bgColor = v;
-			if (_renderCanvas) _renderCanvas.fillColor = _bgColor;
-		}
-		
-		
-		/**
 		 * The canvas onto which the racetrack is rendered.
 		 */
 		public function get renderCanvas():IRenderCanvas
@@ -606,16 +562,7 @@ package tetragon.systems.racetrack
 		public function set renderCanvas(v:IRenderCanvas):void
 		{
 			_renderCanvas = v;
-		}
-		
-		
-		public function get bgScroller():ScrollImage2D
-		{
-			return _bgScroller;
-		}
-		public function set bgScroller(v:ScrollImage2D):void
-		{
-			_bgScroller = v;
+			_renderCanvas.fillColor = _racetrack.backgroundColor;
 		}
 		
 		

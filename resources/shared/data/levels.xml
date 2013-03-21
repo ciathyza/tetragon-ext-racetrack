@@ -10,15 +10,15 @@
 	<racetrackLevelsCatalog id="racetrackLevels">
 		<level id="demoLevel" objectsCatalogID="racetrackObjects" nameID="demoLevelName" lanes="3" hazeDensity="10">
 			<colors>
-				<light	offroad="#10AA10" road="#6B6B6B" rumble="#555555" lane=""/>
-				<dark	offroad="#009A00" road="#696969" rumble="#BBBBBB" lane="#CCCCCC"/>
-				<start	offroad="#FFFFFF" road="#FFFFFF" rumble="#FFFFFF" lane=""/>
-				<finish	offroad="#333333" road="#333333" rumble="#333333" lane=""/>
-				<haze	value="#163D1A"/>
-				<sky	value="#72D7EE"/>
+				<background	value="#72D7EE"/>
+				<haze		value="#163D1A"/>
+				<light		offroad="#10AA10" road="#6B6B6B" rumble="#555555" lane=""/>
+				<dark		offroad="#009A00" road="#696969" rumble="#BBBBBB" lane="#CCCCCC"/>
+				<start		offroad="#FFFFFF" road="#FFFFFF" rumble="#FFFFFF" lane=""/>
+				<finish		offroad="#333333" road="#333333" rumble="#333333" lane=""/>
 			</colors>
 			
-			<background textureAtlasID="backgroundsAtlas">
+			<background textureAtlasID="backgroundsAtlas" scale="2.0">
 				<layer imageID="bg_sky" parallax="1"/>
 				<layer imageID="bg_hills" parallax="2"/>
 				<layer imageID="bg_trees" parallax="4"/>

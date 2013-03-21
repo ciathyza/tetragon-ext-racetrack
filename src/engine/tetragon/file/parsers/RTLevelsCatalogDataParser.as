@@ -106,8 +106,8 @@ package tetragon.file.parsers
 					level.colorSetFinish.road = extractColorValue(x.colors.finish, "@road");
 					level.colorSetFinish.rumble  = extractColorValue(x.colors.finish, "@rumble");
 					level.colorSetFinish.lane = extractColorValue(x.colors.finish, "@lane");
+					level.colorBackground = extractColorValue(x.colors.background, "@value");
 					level.colorHaze = extractColorValue(x.colors.haze, "@value");
-					level.colorSky = extractColorValue(x.colors.sky, "@value");
 					
 					/* Parse level background layers. */
 					level.backgroundTextureAtlasID = extractString(x.background, "@textureAtlasID");
