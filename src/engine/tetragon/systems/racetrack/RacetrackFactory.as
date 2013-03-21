@@ -345,6 +345,9 @@ package tetragon.systems.racetrack
 					case RTRoadSectionType.HILL:
 						addHill(section.length, section.height);
 						break;
+					case RTRoadSectionType.VALLEY:
+						addHill(section.length, -section.height);
+						break;
 					case RTRoadSectionType.LOW_ROLLING_HILLS:
 						addLowRollingHills(section.length, section.height);
 						break;

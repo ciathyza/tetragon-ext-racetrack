@@ -27,7 +27,7 @@
 			<!--
 				=====================================================================================
 				Road Construction
-				Types:		straight, hill, lowRollingHills, scurves, curve, bumps, downhillToEnd
+				Types:		straight, hill, valley, lowRollingHills, scurves, curve, bumps, downhillToEnd
 				Lengths:	none (0), short (25), medium (50), long (100), any number
 				Heights:	none (0), low (20), medium (40), high (60), extreme (100), any number
 				Curves:		none (0), easy (2), medium (4), hard (6), any number
@@ -42,12 +42,12 @@
 				<section type="bumps"		length=""		height=""			curve=""/>
 				<section type="lrh"			length="short"	height="low"		curve=""/>
 				<section type="curveR"		length="long"	height="medium"		curve="medium"/>
-				<section type="straight"	length="medium"	height=""			curve=""/>
+				<section type="valley"		length="medium"	height="extreme"	curve=""/>
 				<section type="curveL"		length="long"	height="medium"		curve="medium"/>
 				<section type="hill"		length="medium"	height="extreme"	curve=""/>
 				<section type="curveR"		length="long"	height="-low"		curve="medium"/>
 				<section type="hill"		length="long"	height="-medium"	curve=""/>
-				<section type="straight"	length="medium"	height=""			curve=""/>
+				<section type="hill"		length="medium"	height="extreme"	curve="easy"/>
 				<section type="dhte"		length="200"	height=""			curve=""/>
 			</road>
 			<!--

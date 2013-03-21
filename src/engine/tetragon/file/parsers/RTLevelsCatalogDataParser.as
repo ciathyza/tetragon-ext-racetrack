@@ -118,7 +118,7 @@ package tetragon.file.parsers
 					for each (y in subList)
 					{
 						var pair:KeyValuePair = new KeyValuePair(extractString(y, "@imageID"),
-							extractNumber(y, "@parallax", 0));
+							extractNumber(y, "@parallax", 1));
 						level.backgroundLayerIDs[c] = pair;
 						++c;
 					}

@@ -55,7 +55,7 @@ package tetragon.systems.racetrack
 		private var _bgScroller:ScrollImage2D;
 		private var _bgScrollOffset:Number;
 		private var _bgScrollPrevX:Number;
-		private var _bgScrollPrevY:Number;
+		//private var _bgScrollPrevY:Number;
 		
 		private var _racetrack:Racetrack;
 		
@@ -279,6 +279,12 @@ package tetragon.systems.racetrack
 				{
 					_bgScroller.tilesOffsetX = _bgScrollPrevX = bgScrollX;
 				}
+				// TODO Add vertical bg parallax scrolling.
+				//var bgScrollY:Number = (_bgSpeedMult * _playerY);// / _bgScroller.layerHeight;
+				//if (bgScrollY != _bgScrollPrevY)
+				//{
+				//	_bgScroller.tilesOffsetY = _bgScrollPrevY = bgScrollY;
+				//}
 			}
 			
 			/* Update track time stats. */
