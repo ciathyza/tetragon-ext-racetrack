@@ -28,12 +28,14 @@
  */
 package tetragon.systems.racetrack
 {
+	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
 	import tetragon.data.racetrack.vo.RTOpponent;
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
+	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
@@ -45,8 +47,15 @@ package tetragon.systems.racetrack
 	/**
 	 * @author Hexagon
 	 */
-	public class RacetrackSystem
+	public class RacetrackSystem implements ISystem
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
+		public static const SYSTEM_ID:String = "racetrackSystem";
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
@@ -106,8 +115,8 @@ package tetragon.systems.racetrack
 		private var _centrifugal:Number;
 		private var _maxSpeed:Number;
 		private var _dt:Number;
-		private var _fieldOfView:int;
-		private var _cameraHeight:Number;
+		private var _fov:int;
+		private var _cameraAltitude:Number;
 		private var _cameraDepth:Number;
 		private var _segments:Vector.<RTSegment>;
 		private var _opponents:Vector.<RTOpponent>;
@@ -134,6 +143,8 @@ package tetragon.systems.racetrack
 		public function RacetrackSystem(width:int, height:int, racetrack:Racetrack,
 			renderCanvas:IRenderCanvas = null)
 		{
+			Main.instance.classRegistry.registerSystem(SYSTEM_ID, this);
+			
 			_width = width;
 			_height = height;
 			_renderCanvas = renderCanvas;
@@ -155,7 +166,6 @@ package tetragon.systems.racetrack
 		{
 			_racetrack.reset();
 			
-			_playerZ = _racetrack.playerZ;
 			_playerOffsetY = -1.0;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
@@ -348,8 +358,8 @@ package tetragon.systems.racetrack
 				s.haze = 1 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
 				s.clip = maxY;
 
-				project(s.point1, (_playerX * _roadWidth) - x, _playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
-				project(s.point2, (_playerX * _roadWidth) - x - dx, _playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
+				project(s.point1, (_playerX * _roadWidth) - x, _playerY + _cameraAltitude, _position - (s.looped ? _trackLength : 0));
+				project(s.point2, (_playerX * _roadWidth) - x - dx, _playerY + _cameraAltitude, _position - (s.looped ? _trackLength : 0));
 
 				x = x + dx;
 				dx = dx + s.curve;
@@ -443,6 +453,7 @@ package tetragon.systems.racetrack
 		 */
 		public function dispose():void
 		{
+			Main.instance.classRegistry.unregisterSystem(SYSTEM_ID);
 		}
 		
 		
@@ -493,13 +504,14 @@ package tetragon.systems.racetrack
 			_centrifugal = _racetrack.centrifugal;
 			_maxSpeed = _racetrack.maxSpeed;
 			_dt = _racetrack.dt;
-			_fieldOfView = _racetrack.fov;
-			_cameraHeight = _racetrack.cameraAltitude;
-			_cameraDepth = _racetrack.cameraDepth;
+			
 			_segments = _racetrack.segments;
 			_opponents = _racetrack.opponents;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
+			
+			cameraAltitude = _racetrack.cameraAltitude;
+			fov = _racetrack.fov;
 			
 			if (_racetrack.backgroundLayers)
 			{
@@ -538,13 +550,15 @@ package tetragon.systems.racetrack
 		 * 
 		 * @default 1000
 		 */
-		public function get cameraHeight():Number
+		public function get cameraAltitude():Number
 		{
-			return _cameraHeight;
+			return _cameraAltitude;
 		}
-		public function set cameraHeight(v:Number):void
+		public function set cameraAltitude(v:Number):void
 		{
-			_cameraHeight = v;
+			if (v == _cameraAltitude) return;
+			_cameraAltitude = v;
+			calculateDerivedParameters();
 		}
 		
 		
@@ -553,13 +567,15 @@ package tetragon.systems.racetrack
 		 * 
 		 * @default 100
 		 */
-		public function get fieldOfView():int
+		public function get fov():int
 		{
-			return _fieldOfView;
+			return _fov;
 		}
-		public function set fieldOfView(v:int):void
+		public function set fov(v:int):void
 		{
-			_fieldOfView = v;
+			if (v == _fov) return;
+			_fov = v;
+			calculateDerivedParameters();
 		}
 		
 		
@@ -720,6 +736,19 @@ package tetragon.systems.racetrack
 			if (op.offset < -0.9) return 0.1;
 			else if (op.offset > 0.9) return -0.1;
 			else return 0;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function calculateDerivedParameters():void
+		{
+			if (_fov > 0 && !isNaN(_cameraAltitude))
+			{
+				_cameraDepth = 1 / Math.tan((_fov / 2) * Math.PI / 180);
+				_playerZ = (_cameraAltitude * _cameraDepth);
+			}
 		}
 		
 		

@@ -26,20 +26,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.setup
+package tetragon.command.racetrack
 {
-	import tetragon.command.racetrack.RTFOVCommand;
-	import tetragon.data.racetrack.proto.RTLevelsCatalog;
-	import tetragon.data.racetrack.proto.RTObjectsCatalog;
-	import tetragon.file.parsers.RTLevelsCatalogDataParser;
-	import tetragon.file.parsers.RTObjectsCatalogDataParser;
+	import tetragon.command.CLICommand;
+	import tetragon.systems.racetrack.RacetrackSystem;
+
 	
-	
-	/**
-	 * Setup phase class for the Tetragon Racetrack Extension.
-	 */
-	public class RacetrackExtensionSetup extends Setup
+	public class RTFOVCommand extends CLICommand
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		/** @private */
+		private var _value:Number;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function execute():void 
+		{
+			var system:RacetrackSystem = main.classRegistry.getSystem(RacetrackSystem.SYSTEM_ID);
+			if (system)
+			{
+				system.fov = _value;
+			}
+			complete();
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------
@@ -49,80 +69,26 @@ package tetragon.setup
 		 */
 		override public function get name():String
 		{
-			return "racetrackExtension";
+			return "rtfov";
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get signature():Array
+		{
+			return ["value:Number"];
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Private Methods
+		// CLI Command Signature Arguments
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerModules():void
+		public function set value(v:Number):void
 		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerCLICommands():void
-		{
-			registrar.registerCommand("racetrack", "rtfov", null, RTFOVCommand, "Changes the field of view of racetrack system.");
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerResourceFileTypes():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerComplexTypes():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerDataTypes():void
-		{
-			registrar.registerDataType(RTObjectsCatalog.RT_OBJECTS_CATALOG,
-				RTObjectsCatalogDataParser);
-			registrar.registerDataType(RTLevelsCatalog.RT_LEVELS_CATALOG,
-				RTLevelsCatalogDataParser);
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerResourceProcessors():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerEntitySystems():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerEntityComponents():void
-		{
+			_value = (v < 80) ? 80 : (v > 140) ? 140 : v;
 		}
 	}
 }

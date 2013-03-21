@@ -75,6 +75,8 @@ package tetragon.systems.racetrack
 		private var _entityCount:uint;
 		private var _carsCount:uint;
 		
+		private var _playerZ:Number;
+		
 		private var _entityThinningMult:int;
 		
 		
@@ -207,8 +209,8 @@ package tetragon.systems.racetrack
 			offRoadLimitDiv = _level.settings[RTSettings.OFFROAD_LIMIT_DIV] || offRoadLimitDiv;
 			
 			/* Derived parameters. */
-			_rt.cameraDepth = 1 / Math.tan((_rt.fov / 2) * Math.PI / 180);
-			_rt.playerZ = (_rt.cameraAltitude * _rt.cameraDepth);
+			var cameraDepth:Number = 1 / Math.tan((_rt.fov / 2) * Math.PI / 180);
+			_playerZ = (_rt.cameraAltitude * cameraDepth);
 			
 			_rt.maxSpeed = Math.ceil(_rt.segmentLength / _rt.dt) * maxSpeedMult;
 			_rt.acceleration = _rt.maxSpeed / accelerationDiv;
@@ -400,8 +402,8 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Paint Start line. */
-			_rt.segments[findSegment(_rt.playerZ).index + 2].colorSet = _rt.colorSetStart;
-			_rt.segments[findSegment(_rt.playerZ).index + 3].colorSet = _rt.colorSetStart;
+			_rt.segments[findSegment(_playerZ).index + 2].colorSet = _rt.colorSetStart;
+			_rt.segments[findSegment(_playerZ).index + 3].colorSet = _rt.colorSetStart;
 			
 			/* Paint Finish line. */
 			for (i = 0 ; i < _rt.rumbleLength; i++)

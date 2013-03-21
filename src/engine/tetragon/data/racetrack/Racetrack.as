@@ -83,9 +83,6 @@ package tetragon.data.racetrack
 		public var dt:Number;				// how long is each frame (in seconds)
 		public var fov:int;					// angle (degrees) for field of view (80 - 140)
 		public var cameraAltitude:Number;	// z height of camera (500 - 5000)
-		public var cameraDepth:Number;		// z distance camera is from screen (computed)
-		
-		public var playerZ:Number;
 		
 		public var segmentsNum:uint;
 		public var segments:Vector.<RTSegment>;
