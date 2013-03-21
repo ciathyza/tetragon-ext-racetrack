@@ -12,6 +12,7 @@
 			<collection id="billboards" type="obstacle" scale="2.5"/>
 			<collection id="vegetation" type="obstacle" scale="2.5"/>
 			<collection id="buildings" type="obstacle" scale="1.0"/>
+			<collection id="checkpoints" type="checkpoint" scale="1.0"/>
 			<collection id="items" type="collectible" scale="1.0"/>
 			<collection id="cars" type="opponent" scale="1.25"/>
 			<collection id="traffic" type="traffic" scale="1.25"/>
@@ -43,6 +44,7 @@
 			
 			<object id="boathouse" imageID="spr_bldg_boathouse" collectionID="buildings" scale="3.0"/>
 			<object id="column" imageID="spr_bldg_column" collectionID="buildings" scale="3.0"/>
+			<object id="checkpoint" imageID="spr_bldg_column" collectionID="checkpoints" scale="10.0"/>
 			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
 			<object id="windmill" imageID="spr_bldg_windmill" collectionID="buildings" scale="5.0"/>
 			

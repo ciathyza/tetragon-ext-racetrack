@@ -91,7 +91,7 @@
 				=====================================================================================
 			-->
 			<opponents>
-				<entities collectionID="cars" count="200" offsetRange="-0.8, 0.8" speedFactor="4"/>
+				<entities collectionID="cars" count="0" offsetRange="-0.8, 0.8" speedFactor="4"/>
 			</opponents>
 			
 		</level>

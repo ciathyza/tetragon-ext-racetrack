@@ -38,5 +38,6 @@ package tetragon.data.racetrack.constants
 		public static const COLLECTIBLE:String	= "collectible";
 		public static const TRAFFIC:String		= "traffic";
 		public static const PLAYER:String		= "player";
+		public static const CHECKPOINT:String	= "checkpoint";
 	}
 }
