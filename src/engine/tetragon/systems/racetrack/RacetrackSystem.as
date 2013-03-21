@@ -497,7 +497,7 @@ package tetragon.systems.racetrack
 				if (!_bgScroller)
 				{
 					_bgScroller = new ScrollImage2D(_width, _height);
-					_bgScroller.tilesScale = 2.0;
+					_bgScroller.tilesScale = _racetrack.backgroundScale;
 				}
 				for (var i:uint = 0; i < _racetrack.backgroundLayers.length; i++)
 				{

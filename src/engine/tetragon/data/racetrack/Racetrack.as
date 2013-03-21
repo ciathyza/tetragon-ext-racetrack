@@ -67,6 +67,7 @@ package tetragon.data.racetrack
 		public var colorSetStart:RTColorSet;
 		public var colorSetFinish:RTColorSet;
 		
+		public var backgroundScale:Number;
 		public var backgroundLayers:Vector.<ScrollTile2D>;
 		
 		public var acceleration:Number;		// acceleration rate - tuned until it 'felt' right

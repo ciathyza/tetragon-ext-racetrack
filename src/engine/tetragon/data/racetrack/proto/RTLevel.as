@@ -59,6 +59,7 @@ package tetragon.data.racetrack.proto
 		public var colorSetFinish:RTColorSet;
 		
 		public var backgroundTextureAtlasID:String;
+		public var backgroundScale:Number;
 		public var backgroundLayerIDs:Vector.<KeyValuePair>;
 		
 		public var roadSections:Vector.<RTRoadSection>;

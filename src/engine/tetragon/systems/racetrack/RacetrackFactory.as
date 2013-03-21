@@ -215,6 +215,7 @@ package tetragon.systems.racetrack
 		private function prepareBackgroundLayers():void
 		{
 			if (!_level.backgroundLayerIDs || _level.backgroundLayerIDs.length < 1) return;
+			_rt.backgroundScale = _level.backgroundScale;
 			_rt.backgroundLayers = new Vector.<ScrollTile2D>(_level.backgroundLayerIDs.length, true);
 			var bgAtlasID:TextureAtlas = resourceIndex.getResourceContent(_level.backgroundTextureAtlasID);
 			if (!bgAtlasID)

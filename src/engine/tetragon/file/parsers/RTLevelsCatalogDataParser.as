@@ -82,8 +82,8 @@ package tetragon.file.parsers
 					var level:RTLevel = new RTLevel(extractString(x, "@id"));
 					level.objectsCatalogID = extractString(x, "@objectsCatalogID");
 					level.nameID = extractString(x, "@nameID");
-					level.lanes = extractNumber(x, "@lanes");
-					level.hazeDensity = extractNumber(x, "@hazeDensity");
+					level.lanes = extractNumber(x, "@lanes", 2);
+					level.hazeDensity = extractNumber(x, "@hazeDensity", 10);
 					
 					/* Parse level colors. */
 					level.colorSetLight = new RTColorSet();
@@ -111,13 +111,14 @@ package tetragon.file.parsers
 					
 					/* Parse level background layers. */
 					level.backgroundTextureAtlasID = extractString(x.background, "@textureAtlasID");
+					level.backgroundScale = extractNumber(x.background, "@scale", 1.0);
 					subList = x.background.layer;
 					level.backgroundLayerIDs = new Vector.<KeyValuePair>(subList.length(), true);
 					c = 0;
 					for each (y in subList)
 					{
 						var pair:KeyValuePair = new KeyValuePair(extractString(y, "@imageID"),
-							extractNumber(y, "@parallax"));
+							extractNumber(y, "@parallax", 0));
 						level.backgroundLayerIDs[c] = pair;
 						++c;
 					}
@@ -130,9 +131,9 @@ package tetragon.file.parsers
 					{
 						var section:RTRoadSection = new RTRoadSection();
 						section.type = extractString(y, "@type");
-						section.length = extractNumber(y, "@length");
-						section.height = extractNumber(y, "@height");
-						section.curve = extractNumber(y, "@curve");
+						section.length = extractNumber(y, "@length", 0);
+						section.height = extractNumber(y, "@height", 0);
+						section.curve = extractNumber(y, "@curve", 0);
 						
 						if (isNaN(section.length))
 						{
@@ -175,7 +176,7 @@ package tetragon.file.parsers
 						def.multi = String(y.name()) == "entities";
 						def.objectID = extractString(y, "@id");
 						def.segment = extractString(y, "@segNum");
-						def.offset = extractNumber(y, "@offset");
+						def.offset = extractNumber(y, "@offset", 0);
 						def.collectionID = extractString(y, "@collectionID");
 						def.start = extractString(y, "@start");
 						def.end = extractString(y, "@end");
@@ -186,16 +187,13 @@ package tetragon.file.parsers
 						def.scaleRange = extractArray(y, "@scaleRange");
 						def.offsetRange = extractArray(y, "@offsetRange");
 						def.offsetMode = extractString(y, "@offsetMode");
-						def.preOffset = extractNumber(y, "@preOffset");
-						def.postOffset = extractNumber(y, "@postOffset");
+						def.preOffset = extractNumber(y, "@preOffset", 0);
+						def.postOffset = extractNumber(y, "@postOffset", 0);
 						
 						if (!def.objectID && !def.collectionID) continue;
 						
 						if (def.stepSize < 1) def.stepSize = 1;
 						if (def.subCount < 1) def.subCount = 1;
-						if (isNaN(def.offset)) def.offset = 0.0;
-						if (isNaN(def.preOffset)) def.preOffset = 0.0;
-						if (isNaN(def.postOffset)) def.postOffset = 0.0;
 						
 						level.entityDistributionDefs[c] = def;
 						++c;
@@ -211,8 +209,8 @@ package tetragon.file.parsers
 						def2.multi = String(y.name()) == "entities";
 						def2.collectionID = extractString(y, "@collectionID");
 						def2.offsetRange = extractArray(y, "@offsetRange");
-						def2.count = extractNumber(y, "@count");
-						def2.speedFactor = extractNumber(y, "@speedFactor");
+						def2.count = extractNumber(y, "@count", 0);
+						def2.speedFactor = extractNumber(y, "@speedFactor", 1);
 						level.opponentDistributionDefs[c] = def2;
 						++c;
 					}
