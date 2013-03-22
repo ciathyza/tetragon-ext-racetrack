@@ -31,7 +31,7 @@
 		<image32>
 		</image32>
 		<atf>
-			<resource id="textureATF" path="images/sprites.atf" packageID="resourcePackage"/>
+			<resource id="texturesImage" path="images/textures.atf" packageID="resourcePackage"/>
 		</atf>
 		<swf>
 		</swf>
@@ -51,8 +51,8 @@
 		<group type="Settings">
 			<resource id="settings" fileID="settingsFile"/>
 		</group>
-		<group type="TextureAtlas" id="textures" fileID="textureAtlasFile">
-			<resource id="textureAtlas"/>
+		<group type="TextureAtlas" fileID="textureAtlasFile">
+			<resource id="textures"/>
 		</group>
 		<group type="RTObjectsCatalog">
 			<resource id="racetrackObjects" fileID="racetrackObjectsFile"/>

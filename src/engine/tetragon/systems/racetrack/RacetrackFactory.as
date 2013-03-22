@@ -77,7 +77,7 @@ package tetragon.systems.racetrack
 		
 		private var _playerZ:Number;
 		
-		private var _entityThinningMult:int;
+		private static var _entityThinningMult:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -136,6 +136,16 @@ package tetragon.systems.racetrack
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
+		public static function get entityThinningMult():int
+		{
+			return _entityThinningMult;
+		}
+		public static function set entityThinningMult(v:int):void
+		{
+			_entityThinningMult = v;
+		}
+		
+		
 		/**
 		 * @private
 		 */
@@ -160,7 +170,7 @@ package tetragon.systems.racetrack
 			_objectsCatalog = null;
 			_textureAtlas = null;
 		}
-		
+	
 		
 		/**
 		 * @private

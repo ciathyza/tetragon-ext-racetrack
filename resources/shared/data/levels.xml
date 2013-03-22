@@ -32,7 +32,7 @@
 				<finish		offroad="#009A00" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
 			</colors>
 			
-			<background textureAtlasID="textureAtlas" scale="2.0">
+			<background textureAtlasID="textures" scale="2.0">
 				<layer imageID="bg_sky" parallax="1"/>
 				<layer imageID="bg_hills" parallax="2"/>
 				<layer imageID="bg_trees" parallax="4"/>
