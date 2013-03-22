@@ -32,7 +32,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
-	import tetragon.data.racetrack.vo.RTOpponent;
+	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
 	import tetragon.systems.ISystem;
@@ -119,7 +119,7 @@ package tetragon.systems.racetrack
 		private var _cameraAltitude:Number;
 		private var _cameraDepth:Number;
 		private var _segments:Vector.<RTSegment>;
-		private var _opponents:Vector.<RTOpponent>;
+		private var _opponents:Vector.<RTCar>;
 		private var _objects:Dictionary	;
 		private var _objectScale:Number;
 		
@@ -187,7 +187,7 @@ package tetragon.systems.racetrack
 			_speedPercent = _speed / _maxSpeed;
 			
 			var i:int,
-				opponent:RTOpponent,
+				opponent:RTCar,
 				opponentWidth:Number,
 				entity:RTEntity,
 				entityWidth:Number,
@@ -246,24 +246,27 @@ package tetragon.systems.racetrack
 					_speed = accel(_speed, _offRoadDecel, _dt);
 				}
 				/* Check player collision with obstacles. */
-				for (i = 0; i < playerSegment.entities.length; i++)
+				if (playerSegment.entities)
 				{
-					entity = playerSegment.entities[i];
-					entityWidth = entity.image.width * (_objectScale * entity.scale);
-					if (overlap(_playerX, playerWidth, entity.offset + entityWidth / 2 * (entity.offset > 0 ? 1 : -1), entityWidth))
+					for (i = 0; i < playerSegment.entities.length; i++)
 					{
-						_speed = _maxSpeed / 5;
-						/* Stop in front of sprite (at front of segment). */
-						_position = increase(playerSegment.point1.world.z, -_playerZ, _trackLength);
-						break;
+						entity = playerSegment.entities[i];
+						entityWidth = entity.image.width * (_objectScale * entity.scale);
+						if (overlap(_playerX, playerWidth, entity.offset + entityWidth / 2 * (entity.offset > 0 ? 1 : -1), entityWidth))
+						{
+							_speed = _maxSpeed / 5;
+							/* Stop in front of sprite (at front of segment). */
+							_position = increase(playerSegment.point1.world.z, -_playerZ, _trackLength);
+							break;
+						}
 					}
 				}
 			}
 			
 			/* Check player collision with opponents. */
-			for (i = 0; i < playerSegment.opponents.length; i++)
+			for (i = 0; i < playerSegment.cars.length; i++)
 			{
-				opponent = playerSegment.opponents[i];
+				opponent = playerSegment.cars[i];
 				opponentWidth = opponent.entity.image.width * (_objectScale * opponent.entity.scale);
 				if (_speed > opponent.speed)
 				{
@@ -327,8 +330,8 @@ package tetragon.systems.racetrack
 				basePercent:Number = percentRemaining(_position, _segmentLength),
 				playerSegment:RTSegment = findSegment(_position + _playerZ),
 				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
-				s:RTSegment,
-				op:RTOpponent,
+				seg:RTSegment,
+				op:RTCar,
 				entity:RTEntity,
 				maxY:int = _height,
 				x:Number = 0,
@@ -350,57 +353,60 @@ package tetragon.systems.racetrack
 			 * lower than maxY. */
 			for (i = 0; i < _drawDistance; i++)
 			{
-				s = _segments[(baseSegment.index + i) % _segments.length];
-				s.looped = s.index < baseSegment.index;
+				seg = _segments[(baseSegment.index + i) % _segments.length];
+				seg.looped = seg.index < baseSegment.index;
 				/* Apply exponential haze alpha value. */
-				s.haze = 1 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
-				s.clip = maxY;
+				seg.haze = 1 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
+				seg.clip = maxY;
 
-				project(s.point1, (_playerX * _roadWidth) - x, _playerY + _cameraAltitude, _position - (s.looped ? _trackLength : 0));
-				project(s.point2, (_playerX * _roadWidth) - x - dx, _playerY + _cameraAltitude, _position - (s.looped ? _trackLength : 0));
+				project(seg.point1, (_playerX * _roadWidth) - x, _playerY + _cameraAltitude, _position - (seg.looped ? _trackLength : 0));
+				project(seg.point2, (_playerX * _roadWidth) - x - dx, _playerY + _cameraAltitude, _position - (seg.looped ? _trackLength : 0));
 
 				x = x + dx;
-				dx = dx + s.curve;
+				dx = dx + seg.curve;
 
-				if ((s.point1.camera.z <= _cameraDepth)			// behind us
-				|| (s.point2.screen.y >= s.point1.screen.y)		// back face cull
-				|| (s.point2.screen.y >= maxY))					// clip by (already rendered) hill
+				if ((seg.point1.camera.z <= _cameraDepth)			// behind us
+				|| (seg.point2.screen.y >= seg.point1.screen.y)		// back face cull
+				|| (seg.point2.screen.y >= maxY))					// clip by (already rendered) hill
 				{
 					continue;
 				}
 				
-				renderSegment(i, s.point1.screen.x, s.point1.screen.y, s.point1.screen.w, s.point2.screen.x, s.point2.screen.y, s.point2.screen.w, s.colorSet, s.haze);
-				maxY = s.point1.screen.y;
+				renderSegment(i, seg.point1.screen.x, seg.point1.screen.y, seg.point1.screen.w, seg.point2.screen.x, seg.point2.screen.y, seg.point2.screen.w, seg.colorSet, seg.haze);
+				maxY = seg.point1.screen.y;
 			}
 
 			/* PHASE 2: Back to front render the sprites. */
 			for (i = (_drawDistance - 1); i > 0; i--)
 			{
-				s = _segments[(baseSegment.index + i) % _segments.length];
+				seg = _segments[(baseSegment.index + i) % _segments.length];
 
 				/* Render opponent cars. */
-				for (j = 0; j < s.opponents.length; j++)
+				for (j = 0; j < seg.cars.length; j++)
 				{
-					op = s.opponents[j];
+					op = seg.cars[j];
 					entity = op.entity;
-					spriteScale = interpolate(s.point1.screen.scale, s.point2.screen.scale, op.percent);
-					spriteX = interpolate(s.point1.screen.x, s.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
-					spriteY = interpolate(s.point1.screen.y, s.point2.screen.y, op.percent);
-					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
+					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, op.percent);
+					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
+					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, op.percent);
+					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
 				}
 
 				/* Render roadside objects. */
-				for (j = 0; j < s.entities.length; j++)
+				if (seg.entities)
 				{
-					entity = s.entities[j];
-					spriteScale = s.point1.screen.scale;
-					spriteX = s.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
-					spriteY = s.point1.screen.y;
-					renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, s.clip, s.haze);
+					for (j = 0; j < seg.entities.length; j++)
+					{
+						entity = seg.entities[j];
+						spriteScale = seg.point1.screen.scale;
+						spriteX = seg.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
+						spriteY = seg.point1.screen.y;
+						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
+					}
 				}
 				
 				/* Render the player sprite. */
-				if (s == playerSegment)
+				if (seg == playerSegment)
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
 					var bounce:Number = (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]);
@@ -657,7 +663,7 @@ package tetragon.systems.racetrack
 		private function updateOpponents(dt:Number, playerSegment:RTSegment, playerW:Number):void
 		{
 			var i:int,
-				op:RTOpponent,
+				op:RTCar,
 				oldSegment:RTSegment,
 				newSegment:RTSegment;
 			
@@ -673,9 +679,9 @@ package tetragon.systems.racetrack
 
 				if (oldSegment != newSegment)
 				{
-					var index:int = oldSegment.opponents.indexOf(op);
-					oldSegment.opponents.splice(index, 1);
-					newSegment.opponents.push(op);
+					var index:int = oldSegment.cars.indexOf(op);
+					oldSegment.cars.splice(index, 1);
+					newSegment.cars.push(op);
 				}
 			}
 		}
@@ -684,14 +690,14 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function updateOpponentOffset(op:RTOpponent, opponentSegment:RTSegment,
+		private function updateOpponentOffset(op:RTCar, opponentSegment:RTSegment,
 			playerSegment:RTSegment, playerW:Number):Number
 		{
 			var i:int,
 				j:int,
 				dir:Number,
 				segment:RTSegment,
-				otherOp:RTOpponent,
+				otherOp:RTCar,
 				otherOpW:Number,
 				lookahead:int = 20,
 				opW:Number = op.entity.image.width * _objectScale;
@@ -716,9 +722,9 @@ package tetragon.systems.racetrack
 				}
 
 				/* Car drive-around other car AI */
-				for (j = 0; j < segment.opponents.length; j++)
+				for (j = 0; j < segment.cars.length; j++)
 				{
-					otherOp = segment.opponents[j];
+					otherOp = segment.cars[j];
 					otherOpW = otherOp.entity.image.width * _objectScale;
 					if ((op.speed > otherOp.speed) && overlap(op.offset, opW, otherOp.offset, otherOpW, 1.2))
 					{

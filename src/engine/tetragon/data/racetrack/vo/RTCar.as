@@ -31,7 +31,7 @@ package tetragon.data.racetrack.vo
 	/**
 	 * @author Hexagon
 	 */
-	public class RTOpponent
+	public class RTCar
 	{
 		public var entity:RTEntity;
 		public var offset:Number;
@@ -40,7 +40,7 @@ package tetragon.data.racetrack.vo
 		public var percent:Number;
 		
 		
-		public function RTOpponent(offset:Number, z:Number, entity:RTEntity, speed:Number)
+		public function RTCar(offset:Number, z:Number, entity:RTEntity, speed:Number)
 		{
 			this.offset = offset;
 			this.z = z;

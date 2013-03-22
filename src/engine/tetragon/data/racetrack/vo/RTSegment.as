@@ -28,8 +28,6 @@
  */
 package tetragon.data.racetrack.vo
 {
-	
-	
 	/**
 	 * Defines a single segment of a racetrack.
 	 * 
@@ -37,19 +35,61 @@ package tetragon.data.racetrack.vo
 	 */
 	public class RTSegment
 	{
+		/**
+		 * The index of the segment in the segments list.
+		 */
 		public var index:int;
 		
+		/**
+		 * The start coordinate point of the segment.
+		 */
 		public var point1:RTPoint;
+		
+		/**
+		 * The end coordinate point of the segment.
+		 */
 		public var point2:RTPoint;
 		
+		/**
+		 * The list of entities that are placed on the segment. This property
+		 * is null if the segment has no entities placed on it.
+		 */
 		public var entities:Vector.<RTEntity>;
-		public var opponents:Vector.<RTOpponent>;
+		
+		/**
+		 * The list of cars that are on the segment.
+		 * TODO Replace with faster linked list because cars are often removed and added
+		 * from/to a segment!
+		 */
+		public var cars:Vector.<RTCar>;
+		
+		/**
+		 * The color set that makes up the appearance of the segment.
+		 */
 		public var colorSet:RTColorSet;
 		
+		/**
+		 * The curve value of the segment.
+		 */
 		public var curve:Number;
+		
+		/**
+		 * The exponential haze value of the segment.
+		 * Set by the racetrack system dynamically!
+		 */
 		public var haze:Number;
+		
+		/**
+		 * Clip value used to determine clipping of entities.
+		 * Set by the racetrack system dynamically!
+		 */
 		public var clip:Number;
 		
+		/**
+		 * Determines whether the segment is looped or not. A segment is looped if it's
+		 * index is smaller than the base segment index. This influences the projected
+		 * cameraZ value of the segment. Set by the racetrack system dynamically!
+		 */
 		public var looped:Boolean;
 	}
 }

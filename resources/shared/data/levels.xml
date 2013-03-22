@@ -28,8 +28,8 @@
 				<haze		value="#163D1A"/>
 				<light		offroad="#10AA10" road="#6B6B6B" rumble="#555555" lane=""/>
 				<dark		offroad="#009A00" road="#696969" rumble="#BBBBBB" lane="#CCCCCC"/>
-				<start		offroad="#FFFFFF" road="#FFFFFF" rumble="#FFFFFF" lane=""/>
-				<finish		offroad="#333333" road="#333333" rumble="#333333" lane=""/>
+				<start		offroad="#10AA10" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
+				<finish		offroad="#009A00" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
 			</colors>
 			
 			<background textureAtlasID="backgroundsAtlas" scale="2.0">

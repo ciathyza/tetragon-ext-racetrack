@@ -33,7 +33,7 @@ package tetragon.data.racetrack
 	import tetragon.data.racetrack.vo.RTEntity;
 	import tetragon.data.racetrack.vo.RTObject;
 	import tetragon.data.racetrack.vo.RTObjectCollection;
-	import tetragon.data.racetrack.vo.RTOpponent;
+	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTSegment;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
@@ -86,7 +86,7 @@ package tetragon.data.racetrack
 		
 		public var segmentsNum:uint;		// Number of total segments.
 		public var segments:Vector.<RTSegment>;
-		public var opponents:Vector.<RTOpponent>;
+		public var opponents:Vector.<RTCar>;
 		
 		public var objectScale:Number;
 		

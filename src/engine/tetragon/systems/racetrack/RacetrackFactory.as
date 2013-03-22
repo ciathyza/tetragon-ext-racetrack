@@ -125,11 +125,7 @@ package tetragon.systems.racetrack
 			createEntities();
 			createTraffic();
 			
-			Log.trace("Created racetrack with ID \"" + _rt.id + "\""
-				+ "\n\ttrackLength: " + _rt.trackLength
-				+ "\n\tsegments: " + _segmentCount
-				+ "\n\tentities: " + _entityCount
-				+ "\n\tcars: " + _carsCount, this);
+			logStats();
 			
 			return _rt;
 		}
@@ -457,7 +453,7 @@ package tetragon.systems.racetrack
 		{
 			var i:uint;
 			var carsNum:uint = _level.opponentDistributionDefs.length;
-			_rt.opponents = new Vector.<RTOpponent>();
+			_rt.opponents = new Vector.<RTCar>();
 			
 			for (i = 0; i < carsNum; i++)
 			{
@@ -466,7 +462,7 @@ package tetragon.systems.racetrack
 				
 				if (def.multi)
 				{
-					addOpponents(def.collectionID, def.count, def.offsetRange, def.speedFactor);
+					addCars(def.collectionID, def.count, def.offsetRange, def.speedFactor);
 				}
 				else
 				{
@@ -521,6 +517,30 @@ package tetragon.systems.racetrack
 			}
 			
 			return num;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function logStats():void
+		{
+			var emptySegs:uint = _segmentCount;
+			for each (var s:RTSegment in _rt.segments)
+			{
+				if (s.entities) --emptySegs;
+			}
+			
+			for (var i:uint = 0; i < _rt.segments.length; i++)
+			{
+				
+			}
+			
+			Log.trace("Created racetrack with ID \"" + _rt.id + "\""
+				+ "\n\ttrackLength: " + _rt.trackLength
+				+ "\n\tsegments: " + _segmentCount + " (empty: " + emptySegs + ")"
+				+ "\n\tentities: " + _entityCount
+				+ "\n\tcars: " + _carsCount, this);
 		}
 		
 		
@@ -610,7 +630,10 @@ package tetragon.systems.racetrack
 			scl = scale * scl;
 			
 			var s:RTEntity = new RTEntity(object.clone(), offset, scl);
-			_rt.segments[int(segNum)].entities.push(s);
+			var seg:RTSegment = _rt.segments[int(segNum)];
+			/* Create entities array on segment only if needed. */
+			if (!seg.entities) seg.entities = new <RTEntity>[];
+			seg.entities.push(s);
 			++_entityCount;
 		}
 		
@@ -618,7 +641,7 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function addOpponents(collectionID:String, count:int, offsetRange:Array,
+		private function addCars(collectionID:String, count:int, offsetRange:Array,
 			speedFactor:int = 4):void
 		{
 			if (count < 1) return;
@@ -633,28 +656,28 @@ package tetragon.systems.racetrack
 				var objectID:String = randomIDFromCollection(collection);
 				var speedDiv:Number = (objectID == "spr_car_6" ? speedFactor : 2); // Slow speed for Semi Truck
 				var speed:Number = _rt.maxSpeed / speedFactor + Math.random() * _rt.maxSpeed / speedDiv;
-				addOpponent(objectID, offset, z, speed);
+				addCar(objectID, offset, z, speed);
 				++_carsCount;
 			}
 		}
 		
 		
 		/**
-		 * Adds an opponent entity to a racetrack segment that is dependant on the z value.
+		 * Adds a car entity to a racetrack segment that is dependant on the z value.
 		 * 
 		 * @param objectID
 		 * @param offset
 		 * @param z
 		 * @param speed
 		 */
-		private function addOpponent(objectID:String, offset:Number, z:Number, speed:Number):void
+		private function addCar(objectID:String, offset:Number, z:Number, speed:Number):void
 		{
 			var object:RTObject = _rt.getObject(objectID);
 			if (!object) return;
-			var opponent:RTOpponent = new RTOpponent(offset, z, new RTEntity(object.clone()), speed);
-			var segment:RTSegment = findSegment(opponent.z);
-			segment.opponents.push(opponent);
-			_rt.opponents.push(opponent);
+			var car:RTCar = new RTCar(offset, z, new RTEntity(object.clone()), speed);
+			var segment:RTSegment = findSegment(car.z);
+			segment.cars.push(car);
+			_rt.opponents.push(car);
 		}
 		
 		
@@ -777,8 +800,7 @@ package tetragon.systems.racetrack
 			segment.point1 = new RTPoint(new RTWorld(lastY, i * _rt.segmentLength), new RTCamera(), new RTScreen());
 			segment.point2 = new RTPoint(new RTWorld(y, (i + 1) * _rt.segmentLength), new RTCamera(), new RTScreen());
 			segment.curve = curve;
-			segment.entities = new Vector.<RTEntity>();
-			segment.opponents = new Vector.<RTOpponent>();
+			segment.cars = new Vector.<RTCar>();
 			segment.colorSet = int(i / _rt.rumbleLength) % 2 ? _rt.colorSetDark : _rt.colorSetLight;
 			_rt.segments.push(segment);
 			++_segmentCount;
