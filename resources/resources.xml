@@ -33,10 +33,12 @@
 		<atf>
 			<resource id="textureATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</atf>
-		<swf/>
+		<swf>
+			<resource id="sounds" path="audio/sounds.swf" packageID="resourcePackage"/>
+		</swf>
 		<shader/>
 		<mp3>
-			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
+			<resource id="music" path="audio/music.mp3" packageID="resourcePackage"/>
 		</mp3>
 		<soundModule/>
 		<binary/>

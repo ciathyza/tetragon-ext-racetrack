@@ -28,6 +28,8 @@
  */
 package view.racing
 {
+	import modules.audio.AudioManager;
+
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.input.KeyMode;
 	import tetragon.systems.racetrack.RacetrackFactory;
@@ -35,7 +37,8 @@ package view.racing
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
 
-	import com.hexagonstar.util.debug.Debug;
+	import flash.media.Sound;
+	import flash.utils.Dictionary;
 	
 	
 	/**
@@ -64,6 +67,9 @@ package view.racing
 		private var _width:int;
 		private var _height:int;
 		
+		private var _audioManager:AudioManager;
+		private var _sounds:Dictionary;
+		
 		
 		// -----------------------------------------------------------------------------------------
 		// Signals
@@ -90,6 +96,9 @@ package view.racing
 			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
+			
+			var music:Sound = getResource("music");
+			_audioManager.playSound(music, AudioManager.MAX_LOOPS, 0.7);
 		}
 		
 		
@@ -231,7 +240,8 @@ package view.racing
 		
 		private function onRTPlaySound(soundID:String):void
 		{
-			Debug.trace(soundID);
+			var sound:Sound = _sounds[soundID];
+			if (sound) _audioManager.playSound(sound);
 		}
 		
 		
@@ -244,6 +254,7 @@ package view.racing
 		override protected function setup():void
 		{
 			super.setup();
+			_audioManager = main.moduleManager.getModule(AudioManager.defaultID);
 		}
 
 
@@ -255,6 +266,8 @@ package view.racing
 			registerResource("textures");
 			registerResource("racetrackObjects");
 			registerResource("racetrackLevels");
+			registerResource("sounds");
+			registerResource("music");
 		}
 		
 		
@@ -268,6 +281,11 @@ package view.racing
 			
 			_render2D = screenManager.render2D;
 			_render2D.antiAliasing = 0;
+			
+			/* Prepare sounds. */
+			
+			_sounds = new Dictionary();
+			_sounds["checkpointSound"] = resourceIndex.getInstanceFromSWFResource("sounds", "CheckpointSound");
 			
 			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
