@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.data.racetrack.vo
+package tetragon.data.racetrack.proto
 {
 	import tetragon.data.DataObject;
 	

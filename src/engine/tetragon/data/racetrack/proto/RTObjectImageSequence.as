@@ -26,56 +26,24 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.data.racetrack.vo
+package tetragon.data.racetrack.proto
 {
-	import tetragon.data.DataObject;
-	import tetragon.view.render2d.display.Image2D;
-
-	import flash.utils.Dictionary;
+	import tetragon.view.render2d.display.MovieClip2D;
 	
 	
 	/**
+	 * RTObjectImageSequence class
+	 *
 	 * @author Hexagon
 	 */
-	public class RTObject extends DataObject
+	public class RTObjectImageSequence
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * A map of RTObjectImageSequence objects.
-		 */
-		public var sequences:Dictionary;
-		
-		public var collectionID:String;
-		public var imageID:String;
-		public var image:Image2D;
-		public var type:String;
-		public var scale:Number;
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Constructor
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function RTObject(id:String)
-		{
-			_id = id;
-		}
-		
-		
-		public function clone():RTObject
-		{
-			var clone:RTObject = new RTObject(_id);
-			clone.image = image;
-			clone.collectionID = collectionID;
-			clone.type = type;
-			clone.scale = scale;
-			return clone;
-		}
+		public var id:String;
+		public var imageIDs:Vector.<String>;
+		public var movieClip:MovieClip2D;
 	}
 }

@@ -29,11 +29,11 @@
 package tetragon.data.racetrack
 {
 	import tetragon.data.DataObject;
+	import tetragon.data.racetrack.proto.RTObject;
+	import tetragon.data.racetrack.proto.RTObjectCollection;
+	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
-	import tetragon.data.racetrack.vo.RTObject;
-	import tetragon.data.racetrack.vo.RTObjectCollection;
-	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTSegment;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 

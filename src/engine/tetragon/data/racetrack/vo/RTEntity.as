@@ -28,6 +28,7 @@
  */
 package tetragon.data.racetrack.vo
 {
+	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.view.render2d.display.Image2D;
 	
 	

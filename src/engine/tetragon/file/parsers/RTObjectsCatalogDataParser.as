@@ -28,10 +28,10 @@
  */
 package tetragon.file.parsers
 {
+	import tetragon.data.racetrack.proto.RTObject;
+	import tetragon.data.racetrack.proto.RTObjectCollection;
+	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTObjectsCatalog;
-	import tetragon.data.racetrack.vo.RTObject;
-	import tetragon.data.racetrack.vo.RTObjectCollection;
-	import tetragon.data.racetrack.vo.RTObjectImageSequence;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
 
