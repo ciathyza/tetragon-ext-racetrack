@@ -28,6 +28,7 @@
  */
 package tetragon.data.racetrack.vo
 {
+	import tetragon.data.racetrack.proto.RTTrigger;
 	/**
 	 * Defines a single segment of a racetrack.
 	 * 
@@ -62,6 +63,16 @@ package tetragon.data.racetrack.vo
 		 * from/to a segment!
 		 */
 		public var cars:Vector.<RTCar>;
+		
+		/**
+		 * Segment-based triggers. Null if no triggers are assigned to the segment.
+		 */
+		public var triggers:Vector.<RTTrigger>;
+		
+		/**
+		 * Number of triggers.
+		 */
+		public var triggersNum:uint;
 		
 		/**
 		 * The color set that makes up the appearance of the segment.

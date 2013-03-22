@@ -36,6 +36,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.constants.RTRoadSectionType;
 	import tetragon.data.racetrack.constants.RTSettings;
+	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.*;
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
@@ -618,21 +619,48 @@ package tetragon.systems.racetrack
 		 */
 		private function addEntity(segNum:Number, objectID:String, offset:Number, scale:Number = 1.0):void
 		{
-			var object:RTObject = _rt.getObject(objectID);
-			if (!object) return;
+			var obj:RTObject = _rt.getObject(objectID);
+			if (!obj) return;
 			if (segNum >= _rt.segments.length || isNaN(segNum)) return;
 			
 			/* Calculate scaling bu taking the object's default scaling, the collection
 			 * scaling and the entity scale range into account. */
-			var col:RTObjectCollection = _rt.getCollection(object.collectionID);
-			var scl:Number = object.scale;
+			var col:RTObjectCollection = _rt.getCollection(obj.collectionID);
+			var scl:Number = obj.scale;
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var s:RTEntity = new RTEntity(object, offset, scl);
+			var s:RTEntity = new RTEntity(obj, offset, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];
+			
+			/* Check if object has any segment-based triggers assigned. */
+			if (obj.triggers)
+			{
+				var i:uint;
+				var tmpSegTriggers:Vector.<RTTrigger> = new <RTTrigger>[];
+				for (i = 0; i < obj.triggers.length; i++)
+				{
+					var trigger:RTTrigger = obj.triggers[i];
+					if (trigger.type == RTTriggerTypes.SEGMENT)
+					{
+						tmpSegTriggers.push(trigger);
+					}
+				}
+				
+				/* Add any found segment triggers to segment in fixed vector. */
+				if (tmpSegTriggers.length > 0)
+				{
+					seg.triggers = new Vector.<RTTrigger>(tmpSegTriggers.length, true);
+					seg.triggersNum = seg.triggers.length;
+					for (i = 0; i < seg.triggersNum; i++)
+					{
+						seg.triggers[i] = tmpSegTriggers[i];
+					}
+				}
+			}
+			
 			seg.entities.push(s);
 			++_entityCount;
 		}

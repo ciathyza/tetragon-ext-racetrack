@@ -43,16 +43,9 @@ package tetragon.data.racetrack.proto
 		public var action:String;
 		public var arguments:Array;
 		
-		
-		//-----------------------------------------------------------------------------------------
-		// Constructor
-		//-----------------------------------------------------------------------------------------
-		
 		/**
-		 * Creates a new instance of the class.
+		 * If true the trigger will be re-triggered while still on the same segment.
 		 */
-		public function RTTrigger()
-		{
-		}
+		public var retrigger:Boolean;
 	}
 }

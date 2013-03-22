@@ -30,9 +30,12 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.data.racetrack.constants.RTTriggerActions;
+	import tetragon.data.racetrack.proto.RTTrigger;
+	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
+	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
-	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
 	import tetragon.systems.ISystem;
@@ -68,6 +71,8 @@ package tetragon.systems.racetrack
 		//private var _bgScrollPrevY:Number;
 		
 		private var _racetrack:Racetrack;
+		
+		private var _prevSegment:RTSegment;
 		
 		private var _width:int;
 		private var _height:int;
@@ -127,6 +132,8 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Signals
 		// -----------------------------------------------------------------------------------------
+		
+		private var _playSoundSignal:RTPlaySoundSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -238,6 +245,12 @@ package tetragon.systems.racetrack
 				else _speed = accel(_speed, _deceleration, _dt);
 			}
 			
+			/* Check if the segment the player is on has any triggers. */
+			if (playerSegment.triggers)
+			{
+				processSegmentTriggers(playerSegment);
+			}
+			
 			/* Check if player drives onto off-road area. */
 			if ((_playerX < -1) || (_playerX > 1))
 			{
@@ -318,6 +331,35 @@ package tetragon.systems.racetrack
 					_currentLapTime += _dt;
 				}
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function processSegmentTriggers(segment:RTSegment):void
+		{
+			for (var i:uint = 0; i < segment.triggersNum; i++)
+			{
+				var trigger:RTTrigger = segment.triggers[i];
+				
+				/* Player is still on the same segment but trigger should not be
+				 * triggered again on the same segment. */
+				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
+				
+				switch (trigger.action)
+				{
+					case RTTriggerActions.PLAY_SOUND:
+						if (_playSoundSignal)
+						{
+							var soundID:String = trigger.arguments[0];
+							_playSoundSignal.dispatch(soundID);
+						}
+						break;
+				}
+			}
+			
+			_prevSegment = segment;
 		}
 		
 		
@@ -517,6 +559,8 @@ package tetragon.systems.racetrack
 			cameraAltitude = _racetrack.cameraAltitude;
 			fov = _racetrack.fov;
 			
+			_prevSegment = findSegment(_position + _playerZ);
+			
 			if (_racetrack.backgroundLayers)
 			{
 				if (!_bgScroller)
@@ -634,6 +678,13 @@ package tetragon.systems.racetrack
 		public function set isSteeringRight(v:Boolean):void
 		{
 			_isSteeringRight = v;
+		}
+		
+		
+		public function get playSoundSignal():RTPlaySoundSignal
+		{
+			if (!_playSoundSignal) _playSoundSignal = new RTPlaySoundSignal();
+			return _playSoundSignal;
 		}
 		
 		

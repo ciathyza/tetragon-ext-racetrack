@@ -34,6 +34,8 @@ package view.racing
 	import tetragon.systems.racetrack.RacetrackSystem;
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
+
+	import com.hexagonstar.util.debug.Debug;
 	
 	
 	/**
@@ -227,6 +229,12 @@ package view.racing
 		}
 		
 		
+		private function onRTPlaySound(soundID:String):void
+		{
+			Debug.trace(soundID);
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
@@ -297,6 +305,7 @@ package view.racing
 		{
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
+			_racetrackSystem.playSoundSignal.add(onRTPlaySound);
 		}
 		
 		
@@ -307,6 +316,7 @@ package view.racing
 		{
 			main.gameLoop.tickSignal.remove(onTick);
 			main.gameLoop.renderSignal.remove(onRender);
+			_racetrackSystem.playSoundSignal.remove(onRTPlaySound);
 		}
 
 
