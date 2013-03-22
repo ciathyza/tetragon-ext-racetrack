@@ -26,22 +26,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.setup
+package tetragon.command.racetrack
 {
-	import tetragon.command.racetrack.RTCameraAltitudeCommand;
-	import tetragon.command.racetrack.RTDrawDistanceCommand;
-	import tetragon.command.racetrack.RTFOVCommand;
-	import tetragon.data.racetrack.proto.RTLevelsCatalog;
-	import tetragon.data.racetrack.proto.RTObjectsCatalog;
-	import tetragon.file.parsers.RTLevelsCatalogDataParser;
-	import tetragon.file.parsers.RTObjectsCatalogDataParser;
+	import tetragon.command.CLICommand;
+	import tetragon.systems.racetrack.RacetrackSystem;
+
 	
-	
-	/**
-	 * Setup phase class for the Tetragon Racetrack Extension.
-	 */
-	public class RacetrackExtensionSetup extends Setup
+	public class RTCameraAltitudeCommand extends CLICommand
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		/** @private */
+		private var _value:Number;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function execute():void 
+		{
+			var system:RacetrackSystem = main.classRegistry.getSystem(RacetrackSystem.SYSTEM_ID);
+			if (system)
+			{
+				system.cameraAltitude = _value;
+			}
+			complete();
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------
@@ -51,82 +69,35 @@ package tetragon.setup
 		 */
 		override public function get name():String
 		{
-			return "racetrackExtension";
+			return "RTCameraAlt";
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get signature():Array
+		{
+			return ["value:Number"];
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get helpText():String
+		{
+			return "Changes the altitude of the Racetrack camera. Valid range: 500 to 8000.";
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Private Methods
+		// CLI Command Signature Arguments
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerModules():void
+		public function set value(v:Number):void
 		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerCLICommands():void
-		{
-			registrar.registerCommand("racetrack", "RTFieldOfView", "rtfov", RTFOVCommand, "Changes the field of view of the racetrack camera.");
-			registrar.registerCommand("racetrack", "RTDrawDistance", "rtdd", RTDrawDistanceCommand, "Changes the draw distance of the racetrack.");
-			registrar.registerCommand("racetrack", "RTCameraAlt", "rtca", RTCameraAltitudeCommand, "Changes the aititude of the racetrack camera.");
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerResourceFileTypes():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerComplexTypes():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerDataTypes():void
-		{
-			registrar.registerDataType(RTObjectsCatalog.RT_OBJECTS_CATALOG,
-				RTObjectsCatalogDataParser);
-			registrar.registerDataType(RTLevelsCatalog.RT_LEVELS_CATALOG,
-				RTLevelsCatalogDataParser);
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerResourceProcessors():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerEntitySystems():void
-		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerEntityComponents():void
-		{
+			_value = (v < 500) ? 500 : (v > 8000) ? 8000 : v;
 		}
 	}
 }

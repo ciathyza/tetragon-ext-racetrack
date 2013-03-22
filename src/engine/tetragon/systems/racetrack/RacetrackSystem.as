@@ -164,8 +164,6 @@ package tetragon.systems.racetrack
 		 */
 		public function reset():void
 		{
-			_racetrack.reset();
-			
 			_playerOffsetY = -1.0;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;

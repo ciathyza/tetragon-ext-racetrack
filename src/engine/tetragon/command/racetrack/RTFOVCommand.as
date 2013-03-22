@@ -69,7 +69,7 @@ package tetragon.command.racetrack
 		 */
 		override public function get name():String
 		{
-			return "rtfov";
+			return "RTFOV";
 		}
 		
 		
@@ -82,13 +82,22 @@ package tetragon.command.racetrack
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get helpText():String
+		{
+			return "Changes the Field Of View of the Racetrack camera. Valid range: 70 to 150.";
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// CLI Command Signature Arguments
 		//-----------------------------------------------------------------------------------------
 		
 		public function set value(v:Number):void
 		{
-			_value = (v < 80) ? 80 : (v > 140) ? 140 : v;
+			_value = (v < 70) ? 70 : (v > 150) ? 150 : v;
 		}
 	}
 }

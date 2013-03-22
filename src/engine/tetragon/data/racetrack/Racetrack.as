@@ -84,7 +84,7 @@ package tetragon.data.racetrack
 		public var fov:int;					// angle (degrees) for field of view (80 - 140)
 		public var cameraAltitude:Number;	// z height of camera (500 - 5000)
 		
-		public var segmentsNum:uint;
+		public var segmentsNum:uint;		// Number of total segments.
 		public var segments:Vector.<RTSegment>;
 		public var opponents:Vector.<RTOpponent>;
 		
@@ -115,11 +115,6 @@ package tetragon.data.racetrack
 		//-----------------------------------------------------------------------------------------
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
-		
-		public function reset():void
-		{
-		}
-		
 		
 		/**
 		 * 
@@ -194,10 +189,5 @@ package tetragon.data.racetrack
 			}
 			return s;
 		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Accessors
-		//-----------------------------------------------------------------------------------------
 	}
 }
