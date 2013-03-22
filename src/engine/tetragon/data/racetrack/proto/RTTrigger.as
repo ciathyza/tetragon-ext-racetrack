@@ -28,36 +28,20 @@
  */
 package tetragon.data.racetrack.proto
 {
-	import tetragon.data.DataObject;
-	import tetragon.view.render2d.display.Image2D;
-
-	import flash.utils.Dictionary;
-	
-	
 	/**
+	 * RTTrigger class
+	 *
 	 * @author Hexagon
 	 */
-	public class RTObject extends DataObject
+	public class RTTrigger
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * A map of RTObjectImageSequence objects.
-		 */
-		public var sequences:Dictionary;
-		
-		/**
-		 * An array of RTTrigger objects.
-		 */
-		public var triggers:Vector.<RTTrigger>;
-		
-		public var collectionID:String;
-		public var imageID:String;
-		public var image:Image2D;
 		public var type:String;
-		public var scale:Number;
+		public var action:String;
+		public var arguments:Array;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -67,9 +51,8 @@ package tetragon.data.racetrack.proto
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function RTObject(id:String)
+		public function RTTrigger()
 		{
-			_id = id;
 		}
 	}
 }

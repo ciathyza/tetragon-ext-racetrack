@@ -28,10 +28,13 @@
  */
 package tetragon.file.parsers
 {
+	import tetragon.data.racetrack.constants.RTTriggerActions;
+	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.data.racetrack.proto.RTObjectCollection;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTObjectsCatalog;
+	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
 
@@ -55,7 +58,10 @@ package tetragon.file.parsers
 			_xml = loader.xml;
 			var index:ResourceIndex = model;
 			var xmlList:XMLList = obtainXMLList(_xml, "racetrackObjectsCatalog");
+			var subList:XMLList;
 			var x:XML;
+			var y:XML;
+			var c:uint;
 			
 			for each (var xml:XML in xmlList)
 			{
@@ -89,6 +95,38 @@ package tetragon.file.parsers
 					obj.scale = extractNumber(x, "@scale");
 					if (isNaN(obj.scale)) obj.scale = 1.0;
 					
+					/* Parse triggers thar are assigned to an object. */
+					subList = x.triggers.trigger;
+					c = 0;
+					if (subList.length() > 0)
+					{
+						obj.triggers = new Vector.<RTTrigger>(subList.length(), true);
+						for each (y in subList)
+						{
+							var type:String = extractString(y, "@type");
+							var action:String = extractString(y, "@action");
+							if (!RTTriggerTypes.isValid(type))
+							{
+								warn("Unknown object trigger type: " + type);
+								continue;
+							}
+							else if (!RTTriggerActions.isValid(action))
+							{
+								warn("Unknown object trigger action: " + action);
+								continue;
+							}
+							else
+							{
+								var trigger:RTTrigger = new RTTrigger();
+								trigger.type = type;
+								trigger.action = action;
+								trigger.arguments = extractArray(y, "@arguments");
+								obj.triggers[c] = trigger;
+							}
+							++c;
+						}
+					}
+					
 					/* Static objects have only one imageID assigned! */
 					var imageID:String = extractString(x, "@imageID");
 					if (imageID && imageID.length > 0)
@@ -100,7 +138,7 @@ package tetragon.file.parsers
 					{
 						obj.sequences = new Dictionary();
 						/* Parse through animation sequences. */
-						for each (var y:XML in x.sequence)
+						for each (y in x.sequence)
 						{
 							var seq:RTObjectImageSequence = new RTObjectImageSequence();
 							seq.id = extractString(y, "@id");

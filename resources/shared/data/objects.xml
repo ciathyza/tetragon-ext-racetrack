@@ -29,7 +29,11 @@
 			<object id="billboard8" imageID="spr_billboard_8" collectionID="billboards" scale="1.0"/>
 			<object id="billboard9" imageID="spr_billboard_9" collectionID="billboards" scale="1.0"/>
 			
-			<object id="checkpoint" imageID="spr_checkpoint" collectionID="checkpoints" scale="1.0"/>
+			<object id="checkpoint" imageID="spr_checkpoint" collectionID="checkpoints" scale="1.0">
+				<triggers>
+					<trigger type="segment" action="playSound" arguments="checkpointSound"/>
+				</triggers>
+			</object>
 			
 			<object id="boulder1" imageID="spr_veg_boulder_1" collectionID="vegetation" scale="1.0"/>
 			<object id="boulder2" imageID="spr_veg_boulder_2" collectionID="vegetation" scale="1.0"/>

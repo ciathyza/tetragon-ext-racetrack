@@ -629,7 +629,7 @@ package tetragon.systems.racetrack
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var s:RTEntity = new RTEntity(object.clone(), offset, scl);
+			var s:RTEntity = new RTEntity(object, offset, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];
@@ -674,7 +674,7 @@ package tetragon.systems.racetrack
 		{
 			var object:RTObject = _rt.getObject(objectID);
 			if (!object) return;
-			var car:RTCar = new RTCar(offset, z, new RTEntity(object.clone()), speed);
+			var car:RTCar = new RTCar(offset, z, new RTEntity(object), speed);
 			var segment:RTSegment = findSegment(car.z);
 			segment.cars.push(car);
 			_rt.opponents.push(car);
