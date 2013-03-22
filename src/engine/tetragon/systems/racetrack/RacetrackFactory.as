@@ -34,7 +34,6 @@ package tetragon.systems.racetrack
 	import tetragon.data.atlas.Atlas;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.data.racetrack.Racetrack;
-	import tetragon.data.racetrack.constants.RTRoad;
 	import tetragon.data.racetrack.constants.RTRoadSectionType;
 	import tetragon.data.racetrack.constants.RTSettings;
 	import tetragon.data.racetrack.proto.*;
@@ -684,13 +683,13 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function addSCurves():void
+		private function addSCurves(curveLength:int = 50, curveIn:int = 2, curveOut:int = 4):void
 		{
-			addRoad(RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, -RTRoad.CURVE.EASY);
-			addRoad(RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.CURVE.MEDIUM);
-			addRoad(RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.CURVE.EASY);
-			addRoad(RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, -RTRoad.CURVE.EASY);
-			addRoad(RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, RTRoad.LENGTH.MEDIUM, -RTRoad.CURVE.MEDIUM);
+			addRoad(curveLength, curveLength, curveLength, -curveIn);
+			addRoad(curveLength, curveLength, curveLength, curveOut);
+			addRoad(curveLength, curveLength, curveLength, curveIn);
+			addRoad(curveLength, curveLength, curveLength, -curveIn);
+			addRoad(curveLength, curveLength, curveLength, -curveOut);
 		}
 		
 		
@@ -706,13 +705,13 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function addLowRollingHills(length:int, height:int):void
+		private function addLowRollingHills(length:int, height:int, curve:int = 2):void
 		{
 			addRoad(length, length, length, 0, height / 2);
 			addRoad(length, length, length, 0, -height);
-			addRoad(length, length, length, RTRoad.CURVE.EASY, height);
+			addRoad(length, length, length, curve, height);
 			addRoad(length, length, length, 0, 0);
-			addRoad(length, length, length, -RTRoad.CURVE.EASY, height / 2);
+			addRoad(length, length, length, -curve, height / 2);
 			addRoad(length, length, length, 0, 0);
 		}
 		
