@@ -266,7 +266,7 @@ package view.racing
 			registerResource("textures");
 			registerResource("racetrackObjects");
 			registerResource("racetrackLevels");
-			registerResource("sounds");
+			registerResource("soundCheckpoint");
 			registerResource("music");
 		}
 		
@@ -285,7 +285,7 @@ package view.racing
 			/* Prepare sounds. */
 			
 			_sounds = new Dictionary();
-			_sounds["checkpointSound"] = resourceIndex.getInstanceFromSWFResource("sounds", "CheckpointSound");
+			_sounds["checkpointSound"] = getResource("soundCheckpoint");
 			
 			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
