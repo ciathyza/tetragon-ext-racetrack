@@ -18,7 +18,6 @@
 	======================================================================================= -->
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
-		<file id="spriteAtlasFile" path="data/sprites.xml" packageID="resourcePackage"/>
 		<file id="textureAtlasFile" path="data/textures.xml" packageID="resourcePackage"/>
 		<file id="racetrackObjectsFile" path="data/objects.xml" packageID="resourcePackage"/>
 		<file id="racetrackLevelsFile" path="data/levels.xml" packageID="resourcePackage"/>
@@ -30,11 +29,9 @@
 	<media>
 		<image/>
 		<image32>
-			<resource id="spritePNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<atf>
-			<resource id="spritesATF" path="images/sprites.atf" packageID="resourcePackage"/>
-			<resource id="backgroundsATF" path="images/backgrounds.atf" packageID="resourcePackage"/>
+			<resource id="textureATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</atf>
 		<swf/>
 		<shader/>
@@ -54,10 +51,6 @@
 		</group>
 		<group type="TextureAtlas" id="textures" fileID="textureAtlasFile">
 			<resource id="textureAtlas"/>
-			<resource id="backgroundsAtlas"/>
-		</group>
-		<group type="SpriteAtlas" fileID="spriteAtlasFile">
-			<resource id="spriteAtlas"/>
 		</group>
 		<group type="RTObjectsCatalog">
 			<resource id="racetrackObjects" fileID="racetrackObjectsFile"/>

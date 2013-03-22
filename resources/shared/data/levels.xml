@@ -32,7 +32,7 @@
 				<finish		offroad="#009A00" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
 			</colors>
 			
-			<background textureAtlasID="backgroundsAtlas" scale="2.0">
+			<background textureAtlasID="textureAtlas" scale="2.0">
 				<layer imageID="bg_sky" parallax="1"/>
 				<layer imageID="bg_hills" parallax="2"/>
 				<layer imageID="bg_trees" parallax="4"/>
@@ -97,6 +97,10 @@
 				<entities id="" collectionID="buildings" start="1600" end="end" stepSize="20" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="1, -1" offset="" offsetMode="mult" preOffset="2.0" postOffset="5.0"/>
 				<entities id="" collectionID="billboards" start="1000" end="end-50" stepSize="100" stepInc="" subCount="" segRange="0, 50" scaleRange="" offsetRange="-1, 1" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="" collectionID="vegetation" start="1000" end="end-50" stepSize="100" stepInc="" subCount="20" segRange="0, 50" scaleRange="1.0, 3.0" offsetRange="-1, 1" offset="" offsetMode="mult" preOffset="1.5" postOffset=""/>
+				
+				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
+				
 				<entities id="" collectionID="" start="" end="" stepSize="" stepInc="" subCount="" segRange="" offsetRange="" offset="" scaleRange="" offsetMode="" preOffset="" postOffset=""/>
 			</objects>
 			<!--

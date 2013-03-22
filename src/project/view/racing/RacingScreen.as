@@ -28,7 +28,6 @@
  */
 package view.racing
 {
-	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.input.KeyMode;
 	import tetragon.systems.racetrack.RacetrackFactory;
@@ -261,8 +260,6 @@ package view.racing
 			
 			_render2D = screenManager.render2D;
 			_render2D.antiAliasing = 0;
-			
-			var backgrounds:TextureAtlas = resourceManager.process("backgroundsAtlas");
 			
 			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
