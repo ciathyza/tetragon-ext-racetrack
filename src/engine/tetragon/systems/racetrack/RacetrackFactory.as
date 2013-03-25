@@ -40,6 +40,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.proto.*;
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
+	import tetragon.file.resource.ResourceIndex;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
@@ -50,6 +51,7 @@ package tetragon.systems.racetrack
 	import com.hexagonstar.types.KeyValuePair;
 	import com.hexagonstar.util.string.stringIsEmptyOrNull;
 
+	import flash.display.BitmapData;
 	import flash.utils.Dictionary;
 	
 	
@@ -308,6 +310,7 @@ package tetragon.systems.racetrack
 					/* Prepare anim frames for objects that posses a sequence. */
 					for each (var seq:RTObjectImageSequence in obj.sequences)
 					{
+						if (seq.framerate <= 0) seq.framerate = obj.defaultFramerate;
 						var mcTextures:Vector.<Texture2D> = new Vector.<Texture2D>();
 						for (var i:uint = 0; i < seq.imageIDs.length; i++)
 						{
@@ -317,9 +320,11 @@ package tetragon.systems.racetrack
 						}
 						if (mcTextures.length > 0)
 						{
-							var mc:MovieClip2D = new MovieClip2D(mcTextures, 12);
+							var mc:MovieClip2D = new MovieClip2D(mcTextures, seq.framerate);
 							mc.blendMode = BlendMode2D.NORMAL;
 							mc.smoothing = TextureSmoothing2D.NONE;
+							mc.playMode = seq.playMode;
+							mc.playDirection = seq.playDirection;
 							seq.movieClip = mc;
 						}
 						else
@@ -346,7 +351,7 @@ package tetragon.systems.racetrack
 			
 			/* Prepare the player sprite. */
 			var playerObj:RTObject = _rt.getObject("player");
-			playerObj.image = (playerObj.sequences["straight"] as RTObjectImageSequence).movieClip;
+			playerObj.image = (playerObj.sequences[playerObj.defaultSequenceID] as RTObjectImageSequence).movieClip;
 			_rt.player = new RTEntity(playerObj);
 			
 			if (playerObj.image is MovieClip2D)
@@ -354,6 +359,13 @@ package tetragon.systems.racetrack
 				var pmc:MovieClip2D = playerObj.image as MovieClip2D;
 				Main.instance.screenManager.render2D.juggler.add(pmc);
 				pmc.play();
+			}
+			
+			if (!_rt.player.image)
+			{
+				Log.warn("No player image!", this);
+				var placeholder:BitmapData = ResourceIndex.getPlaceholderImage();
+				_rt.player.image = new Image2D(Texture2D.fromBitmapData(placeholder));
 			}
 			
 			/* The reference sprite width should be 1/3rd the (half-)roadWidth. */

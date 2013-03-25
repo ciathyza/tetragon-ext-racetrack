@@ -28,6 +28,8 @@
  */
 package tetragon.file.parsers
 {
+	import tetragon.data.constants.PlayDirection;
+	import tetragon.data.constants.PlayMode;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
@@ -136,12 +138,19 @@ package tetragon.file.parsers
 					/* Otherwise they must have a sequence of animation frames defined. */
 					else
 					{
+						obj.defaultSequenceID = extractString(x, "@defaultSequenceID");
+						obj.defaultFramerate = extractNumber(x, "@defaultFramerate", 12);
+						if (obj.defaultFramerate < 1) obj.defaultFramerate = 1;
+						else if (obj.defaultFramerate > 60) obj.defaultFramerate = 60;
 						obj.sequences = new Dictionary();
 						/* Parse through animation sequences. */
 						for each (y in x.sequence)
 						{
 							var seq:RTObjectImageSequence = new RTObjectImageSequence();
 							seq.id = extractString(y, "@id");
+							seq.playMode = extractString(y, "@playMode", PlayMode.LOOP);
+							seq.playDirection = extractString(y, "@playDirection", PlayDirection.FORWARD);
+							seq.framerate = extractNumber(y, "@framerate");
 							seq.imageIDs = new <String>[];
 							for each (var f:XML in y.frame)
 							{

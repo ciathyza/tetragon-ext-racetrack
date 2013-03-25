@@ -60,7 +60,7 @@
 			<object id="car5" imageID="spr_car_5" collectionID="cars" scale="1.7"/>
 			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
 			
-			<object id="player" collectionID="player" scale="1.0">
+			<object id="player" collectionID="player" scale="1.0" defaultSequenceID="straight">
 				<sequence id="straight">
 					<frame imageID="spr_player"/>
 				</sequence>

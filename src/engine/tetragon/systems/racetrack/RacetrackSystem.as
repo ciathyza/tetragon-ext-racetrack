@@ -272,7 +272,7 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Check if the segment the player is on has any triggers. */
-			if (playerSegment.triggers)
+			if (playerSegment.triggersNum > 0)
 			{
 				processSegmentTriggers(playerSegment);
 			}
@@ -898,6 +898,8 @@ package tetragon.systems.racetrack
 			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0,
 			hazeAlpha:Number = 1.0):void
 		{
+			if (!entity.image) return;
+			
 			scale *= entity.scale;
 			
 			/* Scale for projection AND relative to roadWidth. */

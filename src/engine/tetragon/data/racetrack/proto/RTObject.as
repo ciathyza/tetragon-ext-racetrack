@@ -47,6 +47,8 @@ package tetragon.data.racetrack.proto
 		 * A map of RTObjectImageSequence objects.
 		 */
 		public var sequences:Dictionary;
+		public var defaultSequenceID:String;
+		public var defaultFramerate:int;
 		
 		/**
 		 * An array of RTTrigger objects.

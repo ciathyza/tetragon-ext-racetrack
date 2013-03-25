@@ -45,5 +45,8 @@ package tetragon.data.racetrack.proto
 		public var id:String;
 		public var imageIDs:Vector.<String>;
 		public var movieClip:MovieClip2D;
+		public var playMode:String;
+		public var playDirection:String;
+		public var framerate:int;
 	}
 }
