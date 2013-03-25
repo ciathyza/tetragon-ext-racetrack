@@ -99,6 +99,8 @@ package view.racing
 			
 			var music:Sound = getResource("music");
 			_audioManager.playSound(music, AudioManager.MAX_LOOPS, 0.7);
+			
+			_racetrackSystem.start();
 		}
 		
 		

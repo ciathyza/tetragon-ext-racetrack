@@ -104,6 +104,8 @@ package tetragon.systems.racetrack
 		private var _isSteeringRight:Boolean;
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
+		private var _started:Boolean;
+		
 		
 		/* Racetrack properties */
 		private var _roadWidth:int;
@@ -167,10 +169,30 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		/**
+		 * Starts the racetrack system.
+		 */
+		public function start():void
+		{
+			_started = true;
+		}
+		
+		
+		/**
+		 * Stops the racetrack system.
+		 */
+		public function stop():void
+		{
+			_started = false;
+		}
+		
+		
+		/**
 		 * @inheritDoc
 		 */
 		public function reset():void
 		{
+			stop();
+			
 			_playerOffsetY = -1.0;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
@@ -191,6 +213,9 @@ package tetragon.systems.racetrack
 		 */
 		public function tick():void
 		{
+			/* only process non-render logic if system is started. */
+			if (!_started) return;
+			
 			_speedPercent = _speed / _maxSpeed;
 			
 			var i:int,
@@ -207,6 +232,7 @@ package tetragon.systems.racetrack
 			updateOpponents(_dt, playerSegment, playerWidth);
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
+			/* Handle player interaction. */
 			if (_isJump)
 			{
 				if (_playerOffsetY <= _playerJumpHeight)
@@ -331,35 +357,6 @@ package tetragon.systems.racetrack
 					_currentLapTime += _dt;
 				}
 			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function processSegmentTriggers(segment:RTSegment):void
-		{
-			for (var i:uint = 0; i < segment.triggersNum; i++)
-			{
-				var trigger:RTTrigger = segment.triggers[i];
-				
-				/* Player is still on the same segment but trigger should not be
-				 * triggered again on the same segment. */
-				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
-				
-				switch (trigger.action)
-				{
-					case RTTriggerActions.PLAY_SOUND:
-						if (_playSoundSignal)
-						{
-							var soundID:String = trigger.arguments[0];
-							_playSoundSignal.dispatch(soundID);
-						}
-						break;
-				}
-			}
-			
-			_prevSegment = segment;
 		}
 		
 		
@@ -791,6 +788,35 @@ package tetragon.systems.racetrack
 			if (op.offset < -0.9) return 0.1;
 			else if (op.offset > 0.9) return -0.1;
 			else return 0;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function processSegmentTriggers(segment:RTSegment):void
+		{
+			for (var i:uint = 0; i < segment.triggersNum; i++)
+			{
+				var trigger:RTTrigger = segment.triggers[i];
+				
+				/* Player is still on the same segment but trigger should not be
+				 * triggered again on the same segment. */
+				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
+				
+				switch (trigger.action)
+				{
+					case RTTriggerActions.PLAY_SOUND:
+						if (_playSoundSignal)
+						{
+							var soundID:String = trigger.arguments[0];
+							_playSoundSignal.dispatch(soundID);
+						}
+						break;
+				}
+			}
+			
+			_prevSegment = segment;
 		}
 		
 		
