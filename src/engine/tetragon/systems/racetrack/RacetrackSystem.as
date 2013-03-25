@@ -31,6 +31,7 @@ package tetragon.systems.racetrack
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
+	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
 	import tetragon.data.racetrack.vo.RTCar;
@@ -41,6 +42,7 @@ package tetragon.systems.racetrack
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
 	import tetragon.view.render.scroll.ParallaxLayer;
+	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
@@ -428,7 +430,7 @@ package tetragon.systems.racetrack
 					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, op.percent);
 					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
 					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, op.percent);
-					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
+					renderEntity(op.entity, null, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
 				}
 
 				/* Render roadside objects. */
@@ -440,7 +442,7 @@ package tetragon.systems.racetrack
 						spriteScale = seg.point1.screen.scale;
 						spriteX = seg.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
 						spriteY = seg.point1.screen.y;
-						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
+						renderEntity(entity, null, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
 					}
 				}
 				
@@ -451,25 +453,23 @@ package tetragon.systems.racetrack
 					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
 					var steering:int = _speed * (_isSteeringLeft ? -1 : _isSteeringRight ? 1 : 0);
 					var updown:Number = playerSegment.point2.world.y - playerSegment.point1.world.y;
-					var ent:RTEntity;
+					var seqID:String;
 					
 					if (steering < 0)
 					{
-						//ent = (updown > 0) ? _sprites.PLAYER_UPHILL_LEFT : _sprites.PLAYER_LEFT;
-						ent = (updown > 0) ? _racetrack.player : _racetrack.player; // TODO
+						seqID = (updown > 0) ? "leftUphill" : "left";
 					}
 					else if (steering > 0)
 					{
-						//ent = (updown > 0) ? _sprites.PLAYER_UPHILL_RIGHT : _sprites.PLAYER_RIGHT;
-						ent = (updown > 0) ? _racetrack.player : _racetrack.player; // TODO
+						seqID = (updown > 0) ? "rightUphill" : "right";
 					}
 					else
 					{
-						//ent = (updown > 0) ? _sprites.PLAYER_UPHILL_STRAIGHT : _sprites.PLAYER_STRAIGHT;
-						ent = (updown > 0) ? _racetrack.player : _racetrack.player; // TODO
+						seqID = (updown > 0) ? "straightUphill" : "straight";
 					}
 
-					renderEntity(ent,
+					renderEntity(_racetrack.player,
+						seqID,
 						_cameraDepth / _playerZ,
 						_widthHalf,
 						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + jitter,
@@ -894,17 +894,27 @@ package tetragon.systems.racetrack
 		 * @param clipY
 		 * @param hazeAlpha
 		 */
-		private function renderEntity(entity:RTEntity, scale:Number, destX:int, destY:int,
-			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0,
+		private function renderEntity(entity:RTEntity, sequenceID:String, scale:Number, destX:int,
+			destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0,
 			hazeAlpha:Number = 1.0):void
 		{
 			if (!entity.image) return;
 			
+			var image:Image2D = entity.image;
+			if (sequenceID)
+			{
+				var seq:RTObjectImageSequence = entity.object.sequences[sequenceID];
+				if (seq)
+				{
+					image = seq.movieClip;
+				}
+			}
+			
 			scale *= entity.scale;
 			
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (entity.image.width * scale * _widthHalf) * (_objectScale * _roadWidth);
-			var destH:int = (entity.image.height * scale * _widthHalf) * (_objectScale * _roadWidth);
+			var destW:int = (image.width * scale * _widthHalf) * (_objectScale * _roadWidth);
+			var destH:int = (image.height * scale * _widthHalf) * (_objectScale * _roadWidth);
 			
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);
@@ -913,7 +923,7 @@ package tetragon.systems.racetrack
 
 			if (clipH < destH)
 			{
-				_renderCanvas.drawImage(entity.image, destX, destY, destW, destH - clipH, (destW / entity.image.width), _hazeColor, hazeAlpha);
+				_renderCanvas.drawImage(image, destX, destY, destW, destH - clipH, (destW / image.width), _hazeColor, hazeAlpha);
 			}
 		}
 		

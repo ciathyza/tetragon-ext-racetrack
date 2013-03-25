@@ -60,6 +60,7 @@ package tetragon.data.racetrack.constants
 		
 		public static const MAX_CARS:String						= "maxCars";
 		
+		public static const PLAYER_OBJECT_ID:String				= "playerObjectID";
 		public static const PLAYER_JITTER:String				= "playerJitter";
 	}
 }

@@ -351,25 +351,27 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Prepare the player sprite. */
-			var playerObj:RTObject = _rt.getObject("player");
-			playerObj.image = (playerObj.sequences[playerObj.defaultSequenceID] as RTObjectImageSequence).movieClip;
-			_rt.player = new RTEntity(playerObj);
+			var playerObjectID:String = registry.settings.getString(RTSettings.PLAYER_OBJECT_ID);
+			var playerObj:RTObject = _rt.getObject(playerObjectID);
 			
-			if (playerObj.image is MovieClip2D)
+			if (playerObj.sequences)
 			{
+				var defaultSeq:RTObjectImageSequence = playerObj.sequences[playerObj.defaultSequenceID];
+				playerObj.image = defaultSeq.movieClip;
 				var pmc:MovieClip2D = playerObj.image as MovieClip2D;
 				Main.instance.screenManager.render2D.juggler.add(pmc);
 				pmc.play();
 			}
 			
-			if (!_rt.player.image)
+			if (!playerObj.image)
 			{
 				Log.warn("No player image!", this);
 				var placeholder:BitmapData = ResourceIndex.getPlaceholderImage();
-				_rt.player.image = new Image2D(Texture2D.fromBitmapData(placeholder));
+				playerObj.image = new Image2D(Texture2D.fromBitmapData(placeholder));
 			}
 			
 			/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
+			_rt.player = new RTEntity(playerObj);
 			_rt.objectScale = 0.3 * (1 / _rt.player.image.width);
 		}
 		
