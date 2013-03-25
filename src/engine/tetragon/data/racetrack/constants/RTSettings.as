@@ -59,5 +59,7 @@ package tetragon.data.racetrack.constants
 		public static const ENTITY_THINNING_MULT:String			= "entityThinningMult";
 		
 		public static const MAX_CARS:String						= "maxCars";
+		
+		public static const PLAYER_JITTER:String				= "playerJitter";
 	}
 }

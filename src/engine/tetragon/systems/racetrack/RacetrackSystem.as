@@ -448,7 +448,7 @@ package tetragon.systems.racetrack
 				if (seg == playerSegment)
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
-					var bounce:Number = (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]);
+					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
 					var steering:int = _speed * (_isSteeringLeft ? -1 : _isSteeringRight ? 1 : 0);
 					var updown:Number = playerSegment.point2.world.y - playerSegment.point1.world.y;
 					var ent:RTEntity;
@@ -472,7 +472,7 @@ package tetragon.systems.racetrack
 					renderEntity(ent,
 						_cameraDepth / _playerZ,
 						_widthHalf,
-						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + bounce,
+						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + jitter,
 						-0.5,
 						_playerOffsetY);
 				}

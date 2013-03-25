@@ -94,6 +94,7 @@ package tetragon.data.racetrack
 		public var collections:Dictionary;
 		
 		public var player:RTEntity;
+		public var playerJitter:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------

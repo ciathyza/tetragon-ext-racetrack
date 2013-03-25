@@ -33,4 +33,6 @@
 	<entityThinningMult>1</entityThinningMult>
 	<maxCars>1000</maxCars>
 	
+	<playerJitter>true</playerJitter>
+	
 </settings>

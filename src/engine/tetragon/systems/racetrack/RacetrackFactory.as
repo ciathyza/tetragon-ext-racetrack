@@ -200,6 +200,7 @@ package tetragon.systems.racetrack
 			_rt.rumbleLength = s.getNumber(RTSettings.DEFAULT_RUMBLE_LENGTH) || 3;
 			_rt.centrifugal = s.getNumber(RTSettings.DEFAULT_CENTRIFUGAL) || 0.3;
 			_rt.offRoadDecel = s.getNumber(RTSettings.DEFAULT_OFFROAD_DECELERATION) || 0.99;
+			_rt.playerJitter = s.getBoolean(RTSettings.PLAYER_JITTER);
 			
 			_entityThinningMult = s.getNumber(RTSettings.ENTITY_THINNING_MULT) || 1;
 			
