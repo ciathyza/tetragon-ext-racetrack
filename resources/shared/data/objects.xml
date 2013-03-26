@@ -60,7 +60,7 @@
 			<object id="car5" imageID="spr_car_5" collectionID="cars" scale="1.7"/>
 			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
 			
-			<object id="ring" collectionID="items" scale="1.0" defaultSequenceID="loop">
+			<object id="ring" collectionID="items" scale="1.0" defaultSequenceID="loop" defaultFramerate="25">
 				<triggers>
 					<trigger type="collision" action="playSound" arguments="ringCollectSound"/>
 					<trigger type="collision" action="addScore" arguments="100"/>

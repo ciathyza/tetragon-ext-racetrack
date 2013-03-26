@@ -86,7 +86,7 @@ package tetragon.data.racetrack
 		
 		public var segmentsNum:uint;		// Number of total segments.
 		public var segments:Vector.<RTSegment>;
-		public var opponents:Vector.<RTCar>;
+		public var cars:Vector.<RTCar>;
 		
 		public var objectScale:Number;
 		

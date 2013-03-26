@@ -35,7 +35,8 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
-	import tetragon.data.racetrack.signals.RTAddScoreSignal;
+	import tetragon.data.racetrack.signals.RTChangeScoreSignal;
+	import tetragon.data.racetrack.signals.RTChangeTimeSignal;
 	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
@@ -132,7 +133,8 @@ package tetragon.systems.racetrack
 		private var _cameraAltitude:Number;
 		private var _cameraDepth:Number;
 		private var _segments:Vector.<RTSegment>;
-		private var _opponents:Vector.<RTCar>;
+		private var _cars:Vector.<RTCar>;
+		private var _carsNum:uint;
 		private var _objects:Dictionary	;
 		private var _objectScale:Number;
 		
@@ -142,7 +144,8 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		private var _playSoundSignal:RTPlaySoundSignal;
-		private var _addScoreSignal:RTAddScoreSignal;
+		private var _changeScoreSignal:RTChangeScoreSignal;
+		private var _changeTimeSignal:RTChangeTimeSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -231,7 +234,7 @@ package tetragon.systems.racetrack
 				startPosition:Number = _position,
 				bgLayer:ParallaxLayer;
 			
-			updateOpponents(_dt, playerSegment, _playerWidth);
+			updateCars(_dt, playerSegment, _playerWidth);
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
 			/* Handle player interaction. */
@@ -541,7 +544,8 @@ package tetragon.systems.racetrack
 			_dt = _racetrack.dt;
 			
 			_segments = _racetrack.segments;
-			_opponents = _racetrack.opponents;
+			_cars = _racetrack.cars;
+			_carsNum = _cars.length;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
 			_playerWidth = _racetrack.player.image.width * _objectScale;
@@ -678,16 +682,18 @@ package tetragon.systems.racetrack
 		}
 		
 		
-		public function get addScoreSignal():RTAddScoreSignal
+		public function get changeScoreSignal():RTChangeScoreSignal
 		{
-			if (!_addScoreSignal) _addScoreSignal = new RTAddScoreSignal();
-			return _addScoreSignal;
+			if (!_changeScoreSignal) _changeScoreSignal = new RTChangeScoreSignal();
+			return _changeScoreSignal;
 		}
 		
 		
-		// -----------------------------------------------------------------------------------------
-		// Callback Handlers
-		// -----------------------------------------------------------------------------------------
+		public function get changeTimeSignal():RTChangeTimeSignal
+		{
+			if (!_changeTimeSignal) _changeTimeSignal = new RTChangeTimeSignal();
+			return _changeTimeSignal;
+		}
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -708,28 +714,28 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function updateOpponents(dt:Number, playerSegment:RTSegment, playerW:Number):void
+		private function updateCars(dt:Number, playerSegment:RTSegment, playerW:Number):void
 		{
 			var i:int,
-				op:RTCar,
+				car:RTCar,
 				oldSegment:RTSegment,
 				newSegment:RTSegment;
 			
-			for (i = 0; i < _opponents.length; i++)
+			for (i = 0; i < _carsNum; i++)
 			{
-				op = _opponents[i];
-				oldSegment = findSegment(op.z);
-				op.offset = op.offset + updateOpponentOffset(op, oldSegment, playerSegment, playerW);
-				op.z = increase(op.z, dt * op.speed, _trackLength);
-				op.percent = percentRemaining(op.z, _segmentLength);
+				car = _cars[i];
+				oldSegment = findSegment(car.z);
+				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
+				car.z = increase(car.z, dt * car.speed, _trackLength);
+				car.percent = percentRemaining(car.z, _segmentLength);
 				// useful for interpolation during rendering phase
-				newSegment = findSegment(op.z);
+				newSegment = findSegment(car.z);
 
 				if (oldSegment != newSegment)
 				{
-					var index:int = oldSegment.cars.indexOf(op);
+					var index:int = oldSegment.cars.indexOf(car);
 					oldSegment.cars.splice(index, 1);
-					newSegment.cars.push(op);
+					newSegment.cars.push(car);
 				}
 			}
 		}
@@ -738,55 +744,55 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function updateOpponentOffset(op:RTCar, opponentSegment:RTSegment,
+		private function updateCarOffset(car:RTCar, carSegment:RTSegment,
 			playerSegment:RTSegment, playerW:Number):Number
 		{
 			var i:int,
 				j:int,
 				dir:Number,
 				segment:RTSegment,
-				otherOp:RTCar,
-				otherOpW:Number,
+				otherCar:RTCar,
+				otherCarW:Number,
 				lookahead:int = 20,
-				opW:Number = op.entity.image.width * _objectScale;
+				carW:Number = car.entity.width * _objectScale;
 			
 			/* Optimization: dont bother steering around other cars when 'out of sight'
 			 * of the player. */
-			if ((opponentSegment.index - playerSegment.index) > _drawDistance) return 0;
+			if ((carSegment.index - playerSegment.index) > _drawDistance) return 0;
 
 			for (i = 1; i < lookahead; i++)
 			{
-				segment = _segments[(opponentSegment.index + i) % _segments.length];
+				segment = _segments[(carSegment.index + i) % _segments.length];
 
 				/* Car drive-around player AI */
-				if ((segment === playerSegment) && (op.speed > _speed) && (overlap(_playerX, playerW, op.offset, opW, 1.2)))
+				if ((segment === playerSegment) && (car.speed > _speed) && (overlap(_playerX, playerW, car.offset, carW, 1.2)))
 				{
 					if (_playerX > 0.5) dir = -1;
 					else if (_playerX < -0.5) dir = 1;
-					else dir = (op.offset > _playerX) ? 1 : -1;
+					else dir = (car.offset > _playerX) ? 1 : -1;
 					// The closer the cars (smaller i) and the greater the speed ratio,
 					// the larger the offset.
-					return dir * 1 / i * (op.speed - _speed) / _maxSpeed;
+					return dir * 1 / i * (car.speed - _speed) / _maxSpeed;
 				}
 
 				/* Car drive-around other car AI */
 				for (j = 0; j < segment.cars.length; j++)
 				{
-					otherOp = segment.cars[j];
-					otherOpW = otherOp.entity.image.width * _objectScale;
-					if ((op.speed > otherOp.speed) && overlap(op.offset, opW, otherOp.offset, otherOpW, 1.2))
+					otherCar = segment.cars[j];
+					otherCarW = otherCar.entity.width * _objectScale;
+					if ((car.speed > otherCar.speed) && overlap(car.offset, carW, otherCar.offset, otherCarW, 1.2))
 					{
-						if (otherOp.offset > 0.5) dir = -1;
-						else if (otherOp.offset < -0.5) dir = 1;
-						else dir = (op.offset > otherOp.offset) ? 1 : -1;
-						return dir * 1 / i * (op.speed - otherOp.speed) / _maxSpeed;
+						if (otherCar.offset > 0.5) dir = -1;
+						else if (otherCar.offset < -0.5) dir = 1;
+						else dir = (car.offset > otherCar.offset) ? 1 : -1;
+						return dir * 1 / i * (car.speed - otherCar.speed) / _maxSpeed;
 					}
 				}
 			}
 
 			// if no cars ahead, but car has somehow ended up off road, then steer back on.
-			if (op.offset < -0.9) return 0.1;
-			else if (op.offset > 0.9) return -0.1;
+			if (car.offset < -0.9) return 0.1;
+			else if (car.offset > 0.9) return -0.1;
 			else return 0;
 		}
 		
@@ -858,18 +864,24 @@ package tetragon.systems.racetrack
 			switch (trigger.action)
 			{
 				case RTTriggerActions.PLAY_SOUND:
-					if (_playSoundSignal)
-					{
-						var soundID:String = trigger.arguments[0];
-						_playSoundSignal.dispatch(soundID);
-					}
+					if (!_playSoundSignal) return;
+					_playSoundSignal.dispatch(String(trigger.arguments[0]));
 					break;
 				case RTTriggerActions.ADD_SCORE:
-					if (_addScoreSignal)
-					{
-						var score:int = trigger.arguments[0];
-						_addScoreSignal.dispatch(score);
-					}
+					if (!_changeScoreSignal) return;
+					_changeScoreSignal.dispatch(int(trigger.arguments[0]));
+					break;
+				case RTTriggerActions.SUBTRACT_SCORE:
+					if (!_changeScoreSignal) return;
+					_changeScoreSignal.dispatch(int(-(trigger.arguments[0])));
+					break;
+				case RTTriggerActions.ADD_TIME:
+					if (!_changeTimeSignal) return;
+					_changeTimeSignal.dispatch(int(trigger.arguments[0]));
+					break;
+				case RTTriggerActions.SUBTRACT_TIME:
+					if (!_changeTimeSignal) return;
+					_changeTimeSignal.dispatch(int(-(trigger.arguments[0])));
 					break;
 			}
 		}

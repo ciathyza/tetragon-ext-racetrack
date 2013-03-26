@@ -31,10 +31,7 @@ package tetragon.data.racetrack.signals
 	import com.hexagonstar.signals.Signal;
 	
 	
-	/**
-	 * RenderSignal class
-	 */
-	public class RTAddScoreSignal extends Signal
+	public class RTChangeScoreSignal extends Signal
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -45,7 +42,7 @@ package tetragon.data.racetrack.signals
 		 * 
 		 * @param score (int)
 		 */
-		public function RTAddScoreSignal()
+		public function RTChangeScoreSignal()
 		{
 			super(int);
 		}

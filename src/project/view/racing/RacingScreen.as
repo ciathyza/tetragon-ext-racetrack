@@ -248,7 +248,7 @@ package view.racing
 		}
 		
 		
-		private function onRTAddScore(score:int):void
+		private function onRTChangeScore(score:int):void
 		{
 			Log.trace("Adding score: " + score, this);
 		}
@@ -334,7 +334,7 @@ package view.racing
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
 			_racetrackSystem.playSoundSignal.add(onRTPlaySound);
-			_racetrackSystem.addScoreSignal.add(onRTAddScore);
+			_racetrackSystem.changeScoreSignal.add(onRTChangeScore);
 		}
 		
 		
@@ -346,7 +346,7 @@ package view.racing
 			main.gameLoop.tickSignal.remove(onTick);
 			main.gameLoop.renderSignal.remove(onRender);
 			_racetrackSystem.playSoundSignal.remove(onRTPlaySound);
-			_racetrackSystem.addScoreSignal.remove(onRTAddScore);
+			_racetrackSystem.changeScoreSignal.remove(onRTChangeScore);
 		}
 
 

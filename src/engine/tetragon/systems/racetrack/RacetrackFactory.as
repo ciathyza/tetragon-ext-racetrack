@@ -485,7 +485,7 @@ package tetragon.systems.racetrack
 		{
 			var i:uint;
 			var carsNum:uint = _level.opponentDistributionDefs.length;
-			_rt.opponents = new Vector.<RTCar>();
+			_rt.cars = new Vector.<RTCar>();
 			
 			for (i = 0; i < carsNum; i++)
 			{
@@ -740,7 +740,7 @@ package tetragon.systems.racetrack
 			var car:RTCar = new RTCar(offset, z, new RTEntity(object), speed);
 			var segment:RTSegment = findSegment(car.z);
 			segment.cars.push(car);
-			_rt.opponents.push(car);
+			_rt.cars.push(car);
 		}
 		
 		
