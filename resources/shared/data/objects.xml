@@ -60,6 +60,32 @@
 			<object id="car5" imageID="spr_car_5" collectionID="cars" scale="1.7"/>
 			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
 			
+			<object id="ring" collectionID="items" scale="1.0" defaultSequenceID="loop">
+				<sequence id="loop">
+					<frame imageID="spr_item_ring_01"/>
+					<frame imageID="spr_item_ring_02"/>
+					<frame imageID="spr_item_ring_03"/>
+					<frame imageID="spr_item_ring_04"/>
+					<frame imageID="spr_item_ring_05"/>
+					<frame imageID="spr_item_ring_06"/>
+					<frame imageID="spr_item_ring_07"/>
+					<frame imageID="spr_item_ring_08"/>
+					<frame imageID="spr_item_ring_09"/>
+					<frame imageID="spr_item_ring_10"/>
+					<frame imageID="spr_item_ring_11"/>
+					<frame imageID="spr_item_ring_12"/>
+					<frame imageID="spr_item_ring_13"/>
+					<frame imageID="spr_item_ring_14"/>
+					<frame imageID="spr_item_ring_15"/>
+					<frame imageID="spr_item_ring_16"/>
+					<frame imageID="spr_item_ring_17"/>
+					<frame imageID="spr_item_ring_18"/>
+					<frame imageID="spr_item_ring_19"/>
+					<frame imageID="spr_item_ring_20"/>
+					<frame imageID="spr_item_ring_21"/>
+				</sequence>
+			</object>
+			
 			<object id="player" collectionID="player" scale="1.0" defaultSequenceID="straight">
 				<sequence id="straight">
 					<frame imageID="spr_player"/>

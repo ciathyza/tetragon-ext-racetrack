@@ -98,6 +98,8 @@
 				<entities id="" collectionID="billboards" start="1000" end="end-50" stepSize="100" stepInc="" subCount="" segRange="0, 50" scaleRange="" offsetRange="-1, 1" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="" collectionID="vegetation" start="1000" end="end-50" stepSize="100" stepInc="" subCount="20" segRange="0, 50" scaleRange="1.0, 3.0" offsetRange="-1, 1" offset="" offsetMode="mult" preOffset="1.5" postOffset=""/>
 				
+				<entities id="" collectionID="items" start="50" end="end-100" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
+				
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
 				

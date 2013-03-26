@@ -41,6 +41,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceIndex;
+	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
@@ -287,6 +288,7 @@ package tetragon.systems.racetrack
 				_rt.addCollection(c);
 			}
 			
+			var juggler:Juggler2D = Main.instance.screenManager.render2D.juggler;
 			var textures:Dictionary = _textureAtlas.getImageMap();
 			
 			/* Create prototype objects. */
@@ -333,6 +335,19 @@ package tetragon.systems.racetrack
 							Log.warn("Sequence textures not found: " + seq.id, this);
 						}
 					}
+					
+					/* Assign default sequence as the object's image. */
+					var defaultSeq:RTObjectImageSequence = obj.sequences[obj.defaultSequenceID];
+					if (defaultSeq)
+					{
+						obj.image = defaultSeq.movieClip;
+						juggler.add(defaultSeq.movieClip);
+						defaultSeq.movieClip.play();
+					}
+					else
+					{
+						Log.warn("Object " + obj.id + " has no default anim sequence.", this);
+					}
 				}
 				else
 				{
@@ -353,15 +368,6 @@ package tetragon.systems.racetrack
 			/* Prepare the player sprite. */
 			var playerObjectID:String = registry.settings.getString(RTSettings.PLAYER_OBJECT_ID);
 			var playerObj:RTObject = _rt.getObject(playerObjectID);
-			
-			if (playerObj.sequences)
-			{
-				var defaultSeq:RTObjectImageSequence = playerObj.sequences[playerObj.defaultSequenceID];
-				playerObj.image = defaultSeq.movieClip;
-				var pmc:MovieClip2D = playerObj.image as MovieClip2D;
-				Main.instance.screenManager.render2D.juggler.add(pmc);
-				pmc.play();
-			}
 			
 			if (!playerObj.image)
 			{
@@ -567,6 +573,8 @@ package tetragon.systems.racetrack
 				+ "\n\tsegments: " + _segmentCount + " (empty: " + emptySegs + ")"
 				+ "\n\tentities: " + _entityCount
 				+ "\n\tcars: " + _carsCount, this);
+			
+			//Debug.trace(_rt.dump());
 		}
 		
 		
@@ -623,6 +631,7 @@ package tetragon.systems.racetrack
 					var offs:Number = offset;
 					if (offsetMode == "sub")		offs = offset - (preOffset + Math.random() * postOffset);
 					else if (offsetMode == "mult")	offs = offset * (preOffset + Math.random() * postOffset);
+					else if (offsetMode == "rand")	offs = randomNumber(offsetRange);
 					else							offs = offset + (preOffset + Math.random() * postOffset); // "add" is default offset mode.
 					
 					addEntity(i + segAdd, id, offs, scale);
@@ -888,6 +897,7 @@ package tetragon.systems.racetrack
 		
 		private function randomNumber(range:Array):Number
 		{
+			if (!range) return 0.0;
 			return interpolate(Number(range[0]), Number(range[1]), Math.random());
 		}
 		

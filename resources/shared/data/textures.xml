@@ -3,7 +3,7 @@
 =====================================================================
 Tetragon Texture Atlas File
 Created with TexturePacker - http://www.codeandweb.com/texturepacker
-$TexturePacker:SmartUpdate:6cb05cfad27c2bf5b846af43b2092836$
+$TexturePacker:SmartUpdate:f13a1fcf63c97b56aa26f5b95c5572b5$
 =====================================================================
 -->
 <data>
@@ -12,7 +12,7 @@ $TexturePacker:SmartUpdate:6cb05cfad27c2bf5b846af43b2092836$
 		<subTexture name="bg_sky" x="0" y="240" width="640" height="240"/>
 		<subTexture name="bg_trees" x="0" y="0" width="640" height="240"/>
 		<subTexture name="spr_billboard_1" x="784" y="88" width="120" height="68"/>
-		<subTexture name="spr_billboard_2" x="0" y="936" width="86" height="88"/>
+		<subTexture name="spr_billboard_2" x="728" y="453" width="86" height="88"/>
 		<subTexture name="spr_billboard_3" x="733" y="365" width="92" height="88"/>
 		<subTexture name="spr_billboard_4" x="912" y="0" width="107" height="68"/>
 		<subTexture name="spr_billboard_5" x="759" y="242" width="119" height="76"/>
@@ -21,38 +21,59 @@ $TexturePacker:SmartUpdate:6cb05cfad27c2bf5b846af43b2092836$
 		<subTexture name="spr_billboard_8" x="759" y="156" width="119" height="86"/>
 		<subTexture name="spr_billboard_9" x="640" y="144" width="119" height="86"/>
 		<subTexture name="spr_bldg_boathouse" x="904" y="130" width="119" height="86"/>
-		<subTexture name="spr_bldg_column" x="728" y="453" width="80" height="126"/>
-		<subTexture name="spr_bldg_tower" x="761" y="722" width="54" height="124"/>
+		<subTexture name="spr_bldg_column" x="943" y="420" width="80" height="126"/>
+		<subTexture name="spr_bldg_tower" x="0" y="828" width="54" height="124"/>
 		<subTexture name="spr_bldg_windmill" x="640" y="423" width="88" height="113"/>
-		<subTexture name="spr_car_1" x="942" y="633" width="64" height="45"/>
-		<subTexture name="spr_car_1_lean" x="878" y="597" width="64" height="45"/>
-		<subTexture name="spr_car_2" x="640" y="680" width="61" height="45"/>
-		<subTexture name="spr_car_2_lean" x="707" y="668" width="61" height="45"/>
-		<subTexture name="spr_car_3" x="720" y="579" width="70" height="44"/>
-		<subTexture name="spr_car_3_lean" x="808" y="561" width="70" height="44"/>
-		<subTexture name="spr_car_4" x="707" y="623" width="63" height="45"/>
-		<subTexture name="spr_car_4_lean" x="790" y="605" width="63" height="45"/>
-		<subTexture name="spr_car_5" x="831" y="714" width="58" height="45"/>
-		<subTexture name="spr_car_5_lean" x="914" y="678" width="58" height="45"/>
-		<subTexture name="spr_car_6" x="770" y="650" width="61" height="72"/>
-		<subTexture name="spr_car_6_lean" x="853" y="642" width="61" height="72"/>
-		<subTexture name="spr_checkpoint" x="825" y="410" width="83" height="69"/>
-		<subTexture name="spr_player" x="808" y="520" width="80" height="41"/>
-		<subTexture name="spr_player_left" x="888" y="500" width="80" height="41"/>
-		<subTexture name="spr_player_right" x="808" y="479" width="80" height="41"/>
-		<subTexture name="spr_player_uphill" x="908" y="455" width="80" height="45"/>
-		<subTexture name="spr_player_uphill_left" x="908" y="410" width="80" height="45"/>
-		<subTexture name="spr_player_uphill_right" x="640" y="536" width="80" height="45"/>
-		<subTexture name="spr_veg_boulder_1" x="640" y="581" width="67" height="99"/>
+		<subTexture name="spr_car_1" x="710" y="712" width="64" height="45"/>
+		<subTexture name="spr_car_1_lean" x="788" y="690" width="64" height="45"/>
+		<subTexture name="spr_car_2" x="0" y="780" width="61" height="45"/>
+		<subTexture name="spr_car_2_lean" x="774" y="735" width="61" height="45"/>
+		<subTexture name="spr_car_3" x="640" y="702" width="70" height="44"/>
+		<subTexture name="spr_car_3_lean" x="718" y="668" width="70" height="44"/>
+		<subTexture name="spr_car_4" x="924" y="681" width="63" height="45"/>
+		<subTexture name="spr_car_4_lean" x="924" y="636" width="63" height="45"/>
+		<subTexture name="spr_car_5" x="61" y="780" width="58" height="45"/>
+		<subTexture name="spr_car_5_lean" x="0" y="952" width="58" height="45"/>
+		<subTexture name="spr_car_6" x="913" y="726" width="61" height="72"/>
+		<subTexture name="spr_car_6_lean" x="852" y="725" width="61" height="72"/>
+		<subTexture name="spr_checkpoint" x="640" y="536" width="83" height="69"/>
+		<subTexture name="spr_item_ring_01" x="58" y="932" width="32" height="32"/>
+		<subTexture name="spr_item_ring_02" x="96" y="746" width="32" height="32"/>
+		<subTexture name="spr_item_ring_03" x="64" y="746" width="32" height="32"/>
+		<subTexture name="spr_item_ring_04" x="32" y="746" width="32" height="32"/>
+		<subTexture name="spr_item_ring_05" x="0" y="746" width="32" height="32"/>
+		<subTexture name="spr_item_ring_06" x="974" y="796" width="32" height="32"/>
+		<subTexture name="spr_item_ring_07" x="974" y="764" width="32" height="32"/>
+		<subTexture name="spr_item_ring_08" x="974" y="732" width="32" height="32"/>
+		<subTexture name="spr_item_ring_09" x="987" y="700" width="32" height="32"/>
+		<subTexture name="spr_item_ring_10" x="987" y="668" width="32" height="32"/>
+		<subTexture name="spr_item_ring_11" x="987" y="636" width="32" height="32"/>
+		<subTexture name="spr_item_ring_12" x="814" y="525" width="32" height="32"/>
+		<subTexture name="spr_item_ring_13" x="814" y="493" width="32" height="32"/>
+		<subTexture name="spr_item_ring_14" x="814" y="461" width="32" height="32"/>
+		<subTexture name="spr_item_ring_15" x="825" y="429" width="32" height="32"/>
+		<subTexture name="spr_item_ring_16" x="825" y="397" width="32" height="32"/>
+		<subTexture name="spr_item_ring_17" x="825" y="365" width="32" height="32"/>
+		<subTexture name="spr_item_ring_18" x="991" y="388" width="32" height="32"/>
+		<subTexture name="spr_item_ring_19" x="991" y="356" width="32" height="32"/>
+		<subTexture name="spr_item_ring_20" x="991" y="324" width="32" height="32"/>
+		<subTexture name="spr_item_ring_21" x="991" y="292" width="32" height="32"/>
+		<subTexture name="spr_player" x="720" y="627" width="80" height="41"/>
+		<subTexture name="spr_player_left" x="640" y="605" width="80" height="41"/>
+		<subTexture name="spr_player_right" x="723" y="586" width="80" height="41"/>
+		<subTexture name="spr_player_uphill" x="723" y="541" width="80" height="45"/>
+		<subTexture name="spr_player_uphill_left" x="943" y="591" width="80" height="45"/>
+		<subTexture name="spr_player_uphill_right" x="943" y="546" width="80" height="45"/>
+		<subTexture name="spr_veg_boulder_1" x="857" y="626" width="67" height="99"/>
 		<subTexture name="spr_veg_boulder_2" x="640" y="306" width="119" height="56"/>
 		<subTexture name="spr_veg_boulder_3" x="784" y="0" width="128" height="88"/>
 		<subTexture name="spr_veg_bush_1" x="912" y="68" width="96" height="62"/>
 		<subTexture name="spr_veg_bush_2" x="640" y="362" width="93" height="61"/>
 		<subTexture name="spr_veg_cactus" x="759" y="318" width="94" height="47"/>
-		<subTexture name="spr_veg_deadtree_1" x="968" y="500" width="54" height="133"/>
-		<subTexture name="spr_veg_deadtree_2" x="701" y="713" width="60" height="104"/>
-		<subTexture name="spr_veg_palmtree" x="0" y="720" width="86" height="216"/>
-		<subTexture name="spr_veg_stump" x="888" y="541" width="78" height="56"/>
+		<subTexture name="spr_veg_deadtree_1" x="803" y="557" width="54" height="133"/>
+		<subTexture name="spr_veg_deadtree_2" x="54" y="828" width="60" height="104"/>
+		<subTexture name="spr_veg_palmtree" x="857" y="410" width="86" height="216"/>
+		<subTexture name="spr_veg_stump" x="640" y="646" width="78" height="56"/>
 		<subTexture name="spr_veg_tree_1" x="640" y="0" width="144" height="144"/>
 		<subTexture name="spr_veg_tree_2" x="878" y="292" width="113" height="118"/>
 	</textureAtlas>
