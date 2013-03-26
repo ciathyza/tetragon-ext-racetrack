@@ -104,11 +104,11 @@ package tetragon.systems.racetrack
 		private var _speed:Number;				// current speed
 		private var _speedPercent:Number;
 		
-		private var _progressCounter:uint;
-		private var _lap:uint;
+		private var _progress:uint;
+		private var _currentLap:uint;
 		private var _startTime:uint;
 		private var _currentLapTime:uint;		// current lap time
-		private var _lastLapTime:uint;		// last lap time
+		private var _lastLapTime:uint;			// last lap time
 		private var _fastestLapTime:uint;
 		
 		private var _isAccelerating:Boolean;
@@ -117,6 +117,7 @@ package tetragon.systems.racetrack
 		private var _isSteeringRight:Boolean;
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
+		
 		private var _started:Boolean;
 		
 		/* Racetrack properties */
@@ -220,8 +221,8 @@ package tetragon.systems.racetrack
 			_heightHalf = _height * 0.5;
 			_bgScrollOffset = 0.0;
 			
-			_progressCounter = 0;
-			_lap = 1;
+			_progress = 0;
+			_currentLap = 1;
 			_startTime = 0;
 			_currentLapTime = 0;
 			_lastLapTime = 0;
@@ -250,8 +251,8 @@ package tetragon.systems.racetrack
 				{
 				}
 				
-				if (_lapSignal) _lapSignal.dispatch(_lap, _lastLapTime, fastest);
-				++_lap;
+				if (_lapSignal) _lapSignal.dispatch(_currentLap, _lastLapTime, fastest);
+				++_currentLap;
 			}
 			else
 			{
@@ -362,7 +363,7 @@ package tetragon.systems.racetrack
 			/* Increase move counter only if the player is moving. */
 			if (_prevSegment != playerSegment)
 			{
-				++_progressCounter;
+				++_progress;
 			}
 			
 			_prevSegment = playerSegment;
@@ -529,6 +530,26 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		/**
+		 * The progress of the player's movement on the racetrack. This value increases
+		 * by 1 whenever the player crosses the next racetrack segment.
+		 */
+		public function get progress():uint
+		{
+			return _progress;
+		}
+		
+		
+		/**
+		 * The current lap. This value starts with 1 and increases whenever the player
+		 * crosses the finish line.
+		 */
+		public function get currentLap():uint
+		{
+			return _currentLap;
+		}
+		
 		
 		public function get currentLapTime():uint
 		{
