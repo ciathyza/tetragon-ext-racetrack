@@ -35,15 +35,16 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
-	import tetragon.data.racetrack.signals.RTChangeScoreSignal;
-	import tetragon.data.racetrack.signals.RTChangeTimeSignal;
-	import tetragon.data.racetrack.signals.RTLapSignal;
-	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.data.racetrack.vo.RTEntity;
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
+	import tetragon.signals.RTChangeBonusSignal;
+	import tetragon.signals.RTChangeScoreSignal;
+	import tetragon.signals.RTChangeTimeSignal;
+	import tetragon.signals.RTLapSignal;
+	import tetragon.signals.RTPlaySoundSignal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
 	import tetragon.view.render.scroll.ParallaxLayer;
@@ -151,6 +152,7 @@ package tetragon.systems.racetrack
 		
 		private var _playSoundSignal:RTPlaySoundSignal;
 		private var _changeScoreSignal:RTChangeScoreSignal;
+		private var _changeBonusSignal:RTChangeBonusSignal;
 		private var _changeTimeSignal:RTChangeTimeSignal;
 		private var _lapSignal:RTLapSignal;
 		
@@ -759,6 +761,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get changeBonusSignal():RTChangeBonusSignal
+		{
+			if (!_changeBonusSignal) _changeBonusSignal = new RTChangeBonusSignal();
+			return _changeBonusSignal;
+		}
+		
+		
 		public function get changeTimeSignal():RTChangeTimeSignal
 		{
 			if (!_changeTimeSignal) _changeTimeSignal = new RTChangeTimeSignal();
@@ -886,7 +895,7 @@ package tetragon.systems.racetrack
 				/* Player is still on the same segment but trigger should not be
 				 * triggered again on the same segment. */
 				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
-				processTrigger(trigger);
+				processTrigger(trigger, "" + segment.index);
 			}
 		}
 		
@@ -910,8 +919,8 @@ package tetragon.systems.racetrack
 						for (var j:uint = 0; j < e.object.triggersNum; j++)
 						{
 							var trigger:RTTrigger = e.object.triggers[j];
-							if (trigger.type != RTTriggerTypes.COLLISION) continue;
-							processTrigger(trigger);
+							if (!trigger || trigger.type != RTTriggerTypes.COLLISION) continue;
+							processTrigger(trigger, e.object.id);
 						}
 					}
 					
@@ -935,7 +944,7 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function processTrigger(trigger:RTTrigger):void
+		private function processTrigger(trigger:RTTrigger, objectID:String):void
 		{
 			switch (trigger.action)
 			{
@@ -950,6 +959,14 @@ package tetragon.systems.racetrack
 				case RTTriggerActions.SUBTRACT_SCORE:
 					if (!_changeScoreSignal) return;
 					_changeScoreSignal.dispatch(int(-(trigger.arguments[0])));
+					break;
+				case RTTriggerActions.ADD_BONUS:
+					if (!_changeBonusSignal) return;
+					_changeBonusSignal.dispatch(int(trigger.arguments[0]), objectID);
+					break;
+				case RTTriggerActions.SUBTRACT_BONUS:
+					if (!_changeBonusSignal) return;
+					_changeBonusSignal.dispatch(int(-(trigger.arguments[0])), objectID);
 					break;
 				case RTTriggerActions.ADD_TIME:
 					if (!_changeTimeSignal) return;

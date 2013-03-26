@@ -26,12 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.data.racetrack.signals
+package tetragon.signals
 {
 	import com.hexagonstar.signals.Signal;
 	
 	
-	public class RTChangeTimeSignal extends Signal
+	public class RTChangeBonusSignal extends Signal
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -40,11 +40,12 @@ package tetragon.data.racetrack.signals
 		/**
 		 * Creates a new instance of the class.
 		 * 
-		 * @param time (int)
+		 * @param bonus (int)
+		 * @param objectID (String)
 		 */
-		public function RTChangeTimeSignal()
+		public function RTChangeBonusSignal()
 		{
-			super(int);
+			super(int, String);
 		}
 	}
 }

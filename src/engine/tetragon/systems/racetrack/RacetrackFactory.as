@@ -677,7 +677,7 @@ package tetragon.systems.racetrack
 				for (i = 0; i < obj.triggers.length; i++)
 				{
 					var trigger:RTTrigger = obj.triggers[i];
-					if (trigger.type == RTTriggerTypes.SEGMENT)
+					if (trigger && trigger.type == RTTriggerTypes.SEGMENT)
 					{
 						tmpSegTriggers.push(trigger);
 					}
