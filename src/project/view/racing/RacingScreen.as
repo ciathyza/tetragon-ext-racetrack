@@ -174,9 +174,19 @@ package view.racing
 		/**
 		 * @private
 		 */
+		private function onEnterFrame():void
+		{
+			_racetrackSystem.updateTimer();
+			//Debug.trace(_racetrackSystem.currentLapTime);
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function onTick():void
 		{
-			if (_racetrackSystem) _racetrackSystem.tick();
+			_racetrackSystem.tick();
 		}
 		
 		
@@ -185,7 +195,7 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			if (_racetrackSystem) _racetrackSystem.render();
+			_racetrackSystem.render();
 			_render2D.render();
 		}
 		
@@ -251,6 +261,13 @@ package view.racing
 		private function onRTChangeScore(score:int):void
 		{
 			Log.trace("Adding score: " + score, this);
+		}
+		
+		
+		private function onRTLap(lap:uint, lapTime:uint, fastest:Boolean):void
+		{
+			var time:Number = lapTime / 1000;
+			Log.trace("Lap Nr. " + lap + " (time: " + time + ", fastest: " + fastest + ")", this);
 		}
 		
 		
@@ -331,10 +348,12 @@ package view.racing
 		 */
 		override protected function addListeners():void
 		{
+			main.gameLoop.enterFrameSignal.add(onEnterFrame);
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
 			_racetrackSystem.playSoundSignal.add(onRTPlaySound);
 			_racetrackSystem.changeScoreSignal.add(onRTChangeScore);
+			_racetrackSystem.lapSignal.add(onRTLap);
 		}
 		
 		
@@ -343,10 +362,12 @@ package view.racing
 		 */
 		override protected function removeListeners():void
 		{
+			main.gameLoop.enterFrameSignal.remove(onEnterFrame);
 			main.gameLoop.tickSignal.remove(onTick);
 			main.gameLoop.renderSignal.remove(onRender);
 			_racetrackSystem.playSoundSignal.remove(onRTPlaySound);
 			_racetrackSystem.changeScoreSignal.remove(onRTChangeScore);
+			_racetrackSystem.lapSignal.remove(onRTLap);
 		}
 
 

@@ -37,6 +37,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.data.racetrack.signals.RTChangeScoreSignal;
 	import tetragon.data.racetrack.signals.RTChangeTimeSignal;
+	import tetragon.data.racetrack.signals.RTLapSignal;
 	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
@@ -51,6 +52,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
 	import flash.utils.Dictionary;
+	import flash.utils.getTimer;
 	
 	
 	/**
@@ -97,13 +99,17 @@ package tetragon.systems.racetrack
 		private var _playerJumpHeight:Number;
 		private var _playerWidth:Number;
 		
+		private var _startPosition:Number;
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _speed:Number;				// current speed
 		private var _speedPercent:Number;
 		
-		private var _currentLapTime:Number;		// current lap time
-		private var _lastLapTime:Number;		// last lap time
-		private var _fastestLapTime:Number;
+		private var _progressCounter:uint;
+		private var _lap:uint;
+		private var _startTime:uint;
+		private var _currentLapTime:uint;		// current lap time
+		private var _lastLapTime:uint;		// last lap time
+		private var _fastestLapTime:uint;
 		
 		private var _isAccelerating:Boolean;
 		private var _isBraking:Boolean;
@@ -112,7 +118,6 @@ package tetragon.systems.racetrack
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
 		private var _started:Boolean;
-		
 		
 		/* Racetrack properties */
 		private var _roadWidth:int;
@@ -146,6 +151,7 @@ package tetragon.systems.racetrack
 		private var _playSoundSignal:RTPlaySoundSignal;
 		private var _changeScoreSignal:RTChangeScoreSignal;
 		private var _changeTimeSignal:RTChangeTimeSignal;
+		private var _lapSignal:RTLapSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -184,6 +190,7 @@ package tetragon.systems.racetrack
 		public function start():void
 		{
 			_started = true;
+			_startTime = getTimer();
 		}
 		
 		
@@ -206,15 +213,50 @@ package tetragon.systems.racetrack
 			_playerOffsetY = -1.0;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
+			_startPosition = 0;
 			_position = 0;
 			_speed = 0;
 			_widthHalf = _width * 0.5;
 			_heightHalf = _height * 0.5;
 			_bgScrollOffset = 0.0;
 			
-			_currentLapTime = 0.0;
-			_lastLapTime = 0.0;
-			_fastestLapTime = 0.0;
+			_progressCounter = 0;
+			_lap = 1;
+			_startTime = 0;
+			_currentLapTime = 0;
+			_lastLapTime = 0;
+			_fastestLapTime = 0;
+		}
+		
+		
+		public function updateTimer():void
+		{
+			if (!_started || _position <= _playerZ) return;
+			
+			/* Reached the finish line. */
+			if (_currentLapTime > 0 && (_startPosition < _playerZ))
+			{
+				_lastLapTime = _currentLapTime;
+				_startTime = _currentLapTime;
+				_currentLapTime = 0;
+				var fastest:Boolean = false;
+				/* New fastest lap! */
+				if (_lastLapTime < _fastestLapTime)
+				{
+					_fastestLapTime = _lastLapTime;
+					fastest = true;
+				}
+				else
+				{
+				}
+				
+				if (_lapSignal) _lapSignal.dispatch(_lap, _lastLapTime, fastest);
+				++_lap;
+			}
+			else
+			{
+				_currentLapTime = getTimer() - _startTime;
+			}
 		}
 		
 		
@@ -231,10 +273,11 @@ package tetragon.systems.racetrack
 			var i:int,
 				playerSegment:RTSegment = findSegment(_position + _playerZ),
 				dx:Number = _dt * 2 * _speedPercent,
-				startPosition:Number = _position,
 				bgLayer:ParallaxLayer;
 			
 			updateCars(_dt, playerSegment, _playerWidth);
+			
+			_startPosition = _position;
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
 			/* Handle player interaction. */
@@ -316,10 +359,18 @@ package tetragon.systems.racetrack
 			_playerX = limit(_playerX, -3, 3);		// Don't ever let it go too far out of bounds
 			_speed = limit(_speed, 0, _maxSpeed);	// or exceed maxSpeed.
 			
+			/* Increase move counter only if the player is moving. */
+			if (_prevSegment != playerSegment)
+			{
+				++_progressCounter;
+			}
+			
+			_prevSegment = playerSegment;
+			
 			/* Calculate scroll offsets for BG layers. */
 			if (_bgScroller)
 			{
-				_bgScrollOffset = increase(_bgScrollOffset, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1.0);
+				_bgScrollOffset = increase(_bgScrollOffset, _bgSpeedMult * playerSegment.curve * (_position - _startPosition) / _segmentLength, 1.0);
 				var bgScrollX:Number = -(_bgScrollOffset * _bgScroller.layerWidth);
 				if (bgScrollX != _bgScrollPrevX)
 				{
@@ -331,26 +382,6 @@ package tetragon.systems.racetrack
 				//{
 				//	_bgScroller.tilesOffsetY = _bgScrollPrevY = bgScrollY;
 				//}
-			}
-			
-			/* Update track time stats. */
-			if (_position > _playerZ)
-			{
-				if (_currentLapTime && (startPosition < _playerZ))
-				{
-					_lastLapTime = _currentLapTime;
-					_currentLapTime = 0;
-					if (_lastLapTime <= _fastestLapTime)
-					{
-					}
-					else
-					{
-					}
-				}
-				else
-				{
-					_currentLapTime += _dt;
-				}
 			}
 		}
 		
@@ -498,6 +529,24 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		public function get currentLapTime():uint
+		{
+			return _currentLapTime;
+		}
+
+
+		public function get lastLapTime():uint
+		{
+			return _lastLapTime;
+		}
+
+
+		public function get fastestLapTime():uint
+		{
+			return _fastestLapTime;
+		}
+		
 		
 		public function get width():int
 		{
@@ -696,6 +745,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get lapSignal():RTLapSignal
+		{
+			if (!_lapSignal) _lapSignal = new RTLapSignal();
+			return _lapSignal;
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
@@ -811,7 +867,6 @@ package tetragon.systems.racetrack
 				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
 				processTrigger(trigger);
 			}
-			_prevSegment = segment;
 		}
 		
 		
