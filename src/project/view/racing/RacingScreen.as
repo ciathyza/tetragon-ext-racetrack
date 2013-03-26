@@ -177,7 +177,6 @@ package view.racing
 		private function onEnterFrame():void
 		{
 			_racetrackSystem.updateTimer();
-			//Debug.trace(_racetrackSystem.currentLapTime);
 		}
 		
 		
@@ -280,7 +279,13 @@ package view.racing
 		override protected function setup():void
 		{
 			super.setup();
+			
 			_audioManager = main.moduleManager.getModule(AudioManager.defaultID);
+			
+			_width = main.stage.stageWidth;
+			_height = main.stage.stageHeight;
+			_render2D = screenManager.render2D;
+			_render2D.antiAliasing = 0;
 		}
 
 
@@ -302,14 +307,7 @@ package view.racing
 		 */
 		override protected function createChildren():void
 		{
-			_width = main.stage.stageWidth;
-			_height = main.stage.stageHeight;
-			
-			_render2D = screenManager.render2D;
-			_render2D.antiAliasing = 0;
-			
 			/* Prepare sounds. */
-			
 			_sounds = new Dictionary();
 			_sounds["checkpointSound"] = getResource("soundCheckpoint");
 			_sounds["ringCollectSound"] = getResource("soundRing");
