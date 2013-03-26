@@ -30,9 +30,12 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.data.racetrack.constants.RTObjectType;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
+	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
+	import tetragon.data.racetrack.signals.RTAddScoreSignal;
 	import tetragon.data.racetrack.signals.RTPlaySoundSignal;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
@@ -91,6 +94,7 @@ package tetragon.systems.racetrack
 		
 		private var _playerOffsetY:Number;
 		private var _playerJumpHeight:Number;
+		private var _playerWidth:Number;
 		
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _speed:Number;				// current speed
@@ -138,6 +142,7 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		private var _playSoundSignal:RTPlaySoundSignal;
+		private var _addScoreSignal:RTAddScoreSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -221,17 +226,12 @@ package tetragon.systems.racetrack
 			_speedPercent = _speed / _maxSpeed;
 			
 			var i:int,
-				opponent:RTCar,
-				opponentWidth:Number,
-				entity:RTEntity,
-				entityWidth:Number,
 				playerSegment:RTSegment = findSegment(_position + _playerZ),
-				playerWidth:Number = _racetrack.player.image.width * _objectScale,
 				dx:Number = _dt * 2 * _speedPercent,
 				startPosition:Number = _position,
 				bgLayer:ParallaxLayer;
 			
-			updateOpponents(_dt, playerSegment, playerWidth);
+			updateOpponents(_dt, playerSegment, _playerWidth);
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
 			/* Handle player interaction. */
@@ -286,35 +286,25 @@ package tetragon.systems.racetrack
 				{
 					_speed = accel(_speed, _offRoadDecel, _dt);
 				}
-				/* Check player collision with obstacles. */
-				if (playerSegment.entities)
-				{
-					for (i = 0; i < playerSegment.entities.length; i++)
-					{
-						entity = playerSegment.entities[i];
-						entityWidth = entity.image.width * (_objectScale * entity.scale);
-						if (overlap(_playerX, playerWidth, entity.offset + entityWidth / 2 * (entity.offset > 0 ? 1 : -1), entityWidth))
-						{
-							_speed = _maxSpeed / 5;
-							/* Stop in front of sprite (at front of segment). */
-							_position = increase(playerSegment.point1.world.z, -_playerZ, _trackLength);
-							break;
-						}
-					}
-				}
+			}
+			
+			/* Check player collisions with other entities. */
+			if (playerSegment.entitiesNum > 0)
+			{
+				processEntityCollisions(playerSegment);
 			}
 			
 			/* Check player collision with opponents. */
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
-				opponent = playerSegment.cars[i];
-				opponentWidth = opponent.entity.image.width * (_objectScale * opponent.entity.scale);
-				if (_speed > opponent.speed)
+				var car:RTCar = playerSegment.cars[i];
+				if (_speed > car.speed)
 				{
-					if (overlap(_playerX, playerWidth, opponent.offset, opponentWidth, 0.8))
+					var carWidth:Number = car.entity.width * (_objectScale * car.entity.scale);
+					if (overlap(_playerX, _playerWidth, car.offset, carWidth, 0.8))
 					{
-						_speed = opponent.speed * (opponent.speed / _speed);
-						_position = increase(opponent.z, -_playerZ, _trackLength);
+						_speed = car.speed * (car.speed / _speed);
+						_position = increase(car.z, -_playerZ, _trackLength);
 						break;
 					}
 				}
@@ -433,12 +423,14 @@ package tetragon.systems.racetrack
 					renderEntity(op.entity, null, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
 				}
 
-				/* Render roadside objects. */
+				/* Render other objects. */
 				if (seg.entities)
 				{
 					for (j = 0; j < seg.entities.length; j++)
 					{
 						entity = seg.entities[j];
+						if (!entity.enabled) continue;
+						
 						spriteScale = seg.point1.screen.scale;
 						spriteX = seg.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
 						spriteY = seg.point1.screen.y;
@@ -552,6 +544,7 @@ package tetragon.systems.racetrack
 			_opponents = _racetrack.opponents;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
+			_playerWidth = _racetrack.player.image.width * _objectScale;
 			
 			cameraAltitude = _racetrack.cameraAltitude;
 			fov = _racetrack.fov;
@@ -685,6 +678,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get addScoreSignal():RTAddScoreSignal
+		{
+			if (!_addScoreSignal) _addScoreSignal = new RTAddScoreSignal();
+			return _addScoreSignal;
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
@@ -803,21 +803,77 @@ package tetragon.systems.racetrack
 				/* Player is still on the same segment but trigger should not be
 				 * triggered again on the same segment. */
 				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
-				
-				switch (trigger.action)
-				{
-					case RTTriggerActions.PLAY_SOUND:
-						if (_playSoundSignal)
-						{
-							var soundID:String = trigger.arguments[0];
-							_playSoundSignal.dispatch(soundID);
-						}
-						break;
-				}
+				processTrigger(trigger);
 			}
-			
 			_prevSegment = segment;
 		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function processEntityCollisions(segment:RTSegment):void
+		{
+			for (var i:uint = 0; i < segment.entitiesNum; i++)
+			{
+				var e:RTEntity = segment.entities[i];
+				if (!e.enabled) continue;
+				var w:Number = e.width * (_objectScale * e.scale);
+				
+				if (overlap(_playerX, _playerWidth, e.offset + (w * 0.5) * (e.offset > 0 ? 1 : -1), w))
+				{
+					/* Check the collided entity's triggers. */
+					if (e.object.triggersNum > 0)
+					{
+						for (var j:uint = 0; j < e.object.triggersNum; j++)
+						{
+							var trigger:RTTrigger = e.object.triggers[j];
+							if (trigger.type != RTTriggerTypes.COLLISION) continue;
+							processTrigger(trigger);
+						}
+					}
+					
+					if (e.type == RTObjectType.OFFROAD && (_playerX < -1 || _playerX > 1))
+					{
+						_speed = _maxSpeed / 5;
+						/* Stop in front of sprite (at front of segment). */
+						_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
+						break;
+					}
+					else if (e.type == RTObjectType.COLLECTIBLE)
+					{
+						/* Remove the entity from the racetrack! */
+						e.enabled = false;
+					}
+				}
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function processTrigger(trigger:RTTrigger):void
+		{
+			switch (trigger.action)
+			{
+				case RTTriggerActions.PLAY_SOUND:
+					if (_playSoundSignal)
+					{
+						var soundID:String = trigger.arguments[0];
+						_playSoundSignal.dispatch(soundID);
+					}
+					break;
+				case RTTriggerActions.ADD_SCORE:
+					if (_addScoreSignal)
+					{
+						var score:int = trigger.arguments[0];
+						_addScoreSignal.dispatch(score);
+					}
+					break;
+			}
+		}
+		
 		
 		
 		/**

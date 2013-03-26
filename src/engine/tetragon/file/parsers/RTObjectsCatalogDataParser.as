@@ -102,7 +102,8 @@ package tetragon.file.parsers
 					c = 0;
 					if (subList.length() > 0)
 					{
-						obj.triggers = new Vector.<RTTrigger>(subList.length(), true);
+						obj.triggersNum = subList.length();
+						obj.triggers = new Vector.<RTTrigger>(obj.triggersNum, true);
 						for each (y in subList)
 						{
 							var type:String = extractString(y, "@type");

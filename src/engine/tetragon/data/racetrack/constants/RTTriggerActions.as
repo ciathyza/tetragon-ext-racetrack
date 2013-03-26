@@ -34,7 +34,7 @@ package tetragon.data.racetrack.constants
 		//-----------------------------------------------------------------------------------------
 		
 		public static const PLAY_SOUND:String = "playSound";
-		public static const ADD_POINTS:String = "addPoints";
+		public static const ADD_SCORE:String = "addScore";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ package tetragon.data.racetrack.constants
 		 */
 		public static function isValid(string:String):Boolean
 		{
-			return string == PLAY_SOUND || string == ADD_POINTS;
+			return string == PLAY_SOUND || string == ADD_SCORE;
 		}
 	}
 }

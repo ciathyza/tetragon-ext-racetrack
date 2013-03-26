@@ -54,6 +54,7 @@ package tetragon.data.racetrack.proto
 		 * An array of RTTrigger objects.
 		 */
 		public var triggers:Vector.<RTTrigger>;
+		public var triggersNum:uint;
 		
 		public var collectionID:String;
 		public var imageID:String;

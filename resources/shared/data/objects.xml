@@ -9,9 +9,9 @@
 	
 	<racetrackObjectsCatalog id="racetrackObjects" textureAtlasID="textures">
 		<collections>
-			<collection id="billboards" type="obstacle" scale="2.5"/>
-			<collection id="vegetation" type="obstacle" scale="2.5"/>
-			<collection id="buildings" type="obstacle" scale="1.0"/>
+			<collection id="billboards" type="offroad" scale="2.5"/>
+			<collection id="vegetation" type="offroad" scale="2.5"/>
+			<collection id="buildings" type="offroad" scale="1.0"/>
 			<collection id="checkpoints" type="checkpoint" scale="2.5"/>
 			<collection id="items" type="collectible" scale="1.0"/>
 			<collection id="cars" type="opponent" scale="1.25"/>
@@ -61,6 +61,10 @@
 			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
 			
 			<object id="ring" collectionID="items" scale="1.0" defaultSequenceID="loop">
+				<triggers>
+					<trigger type="collision" action="playSound" arguments="ringCollectSound"/>
+					<trigger type="collision" action="addScore" arguments="100"/>
+				</triggers>
 				<sequence id="loop">
 					<frame imageID="spr_item_ring_01"/>
 					<frame imageID="spr_item_ring_02"/>

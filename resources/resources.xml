@@ -38,7 +38,10 @@
 		<shader/>
 		<mp3>
 			<resource id="music" path="audio/music.mp3" packageID="resourcePackage"/>
+		</mp3>
+		<mp3 id="sounds">
 			<resource id="soundCheckpoint" path="audio/sfx_checkpoint.mp3" packageID="resourcePackage"/>
+			<resource id="soundRing" path="audio/sfx_ring.mp3" packageID="resourcePackage"/>
 		</mp3>
 		<soundModule/>
 		<binary/>

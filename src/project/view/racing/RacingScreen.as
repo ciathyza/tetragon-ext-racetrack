@@ -31,6 +31,7 @@ package view.racing
 	import modules.audio.AudioManager;
 
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.debug.Log;
 	import tetragon.input.KeyMode;
 	import tetragon.systems.racetrack.RacetrackFactory;
 	import tetragon.systems.racetrack.RacetrackSystem;
@@ -247,6 +248,12 @@ package view.racing
 		}
 		
 		
+		private function onRTAddScore(score:int):void
+		{
+			Log.trace("Adding score: " + score, this);
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
@@ -268,7 +275,7 @@ package view.racing
 			registerResource("textures");
 			registerResource("racetrackObjects");
 			registerResource("racetrackLevels");
-			registerResource("soundCheckpoint");
+			registerResource("sounds");
 			registerResource("music");
 		}
 		
@@ -288,6 +295,7 @@ package view.racing
 			
 			_sounds = new Dictionary();
 			_sounds["checkpointSound"] = getResource("soundCheckpoint");
+			_sounds["ringCollectSound"] = getResource("soundRing");
 			
 			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
@@ -326,6 +334,7 @@ package view.racing
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
 			_racetrackSystem.playSoundSignal.add(onRTPlaySound);
+			_racetrackSystem.addScoreSignal.add(onRTAddScore);
 		}
 		
 		
@@ -337,6 +346,7 @@ package view.racing
 			main.gameLoop.tickSignal.remove(onTick);
 			main.gameLoop.renderSignal.remove(onRender);
 			_racetrackSystem.playSoundSignal.remove(onRTPlaySound);
+			_racetrackSystem.addScoreSignal.remove(onRTAddScore);
 		}
 
 

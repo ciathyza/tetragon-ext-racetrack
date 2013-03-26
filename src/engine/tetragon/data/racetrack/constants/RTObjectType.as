@@ -33,6 +33,7 @@ package tetragon.data.racetrack.constants
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
+		public static const OFFROAD:String		= "offroad";
 		public static const OBSTACLE:String		= "obstacle";
 		public static const OPPONENT:String		= "opponent";
 		public static const COLLECTIBLE:String	= "collectible";

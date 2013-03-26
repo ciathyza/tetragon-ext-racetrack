@@ -43,10 +43,12 @@ package tetragon.data.racetrack.vo
 		
 		public var object:RTObject;
 		public var image:Image2D;
+		public var width:Number;
 		public var collectionID:String;
 		public var type:String;
 		public var offset:Number;
 		public var scale:Number;
+		public var enabled:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -57,10 +59,12 @@ package tetragon.data.racetrack.vo
 		{
 			object = obj;
 			image = object.image;
+			width = image.width;
 			collectionID = object.collectionID;
 			type = object.type;
 			this.offset = offset;
 			this.scale = scale || obj.scale;
+			enabled = true;
 		}
 	}
 }

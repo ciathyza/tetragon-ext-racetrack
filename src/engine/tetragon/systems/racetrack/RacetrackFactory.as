@@ -664,7 +664,7 @@ package tetragon.systems.racetrack
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var s:RTEntity = new RTEntity(obj, offset, scl);
+			var e:RTEntity = new RTEntity(obj, offset, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];
@@ -695,7 +695,8 @@ package tetragon.systems.racetrack
 				}
 			}
 			
-			seg.entities.push(s);
+			seg.entities.push(e);
+			++seg.entitiesNum;
 			++_entityCount;
 		}
 		

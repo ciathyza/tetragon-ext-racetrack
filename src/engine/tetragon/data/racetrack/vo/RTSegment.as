@@ -58,6 +58,11 @@ package tetragon.data.racetrack.vo
 		public var entities:Vector.<RTEntity>;
 		
 		/**
+		 * Number of triggers.
+		 */
+		public var entitiesNum:uint;
+		
+		/**
 		 * The list of cars that are on the segment.
 		 * TODO Replace with faster linked list because cars are often removed and added
 		 * from/to a segment!
