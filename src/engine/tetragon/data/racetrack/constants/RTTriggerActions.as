@@ -33,13 +33,13 @@ package tetragon.data.racetrack.constants
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const PLAY_SOUND:String = "playSound";
-		public static const ADD_SCORE:String = "addScore";
-		public static const SUBTRACT_SCORE:String = "subtractScore";
-		public static const ADD_BONUS:String = "addBonus";
-		public static const SUBTRACT_BONUS:String = "subtractBonus";
-		public static const ADD_TIME:String = "addTime";
-		public static const SUBTRACT_TIME:String = "subtractTime";
+		public static const PLAY_SOUND:String		= "playSound";
+		public static const ADD_SCORE:String		= "addScore";
+		public static const SUBTRACT_SCORE:String	= "subtractScore";
+		public static const ADD_BONUS:String		= "addBonus";
+		public static const SUBTRACT_BONUS:String	= "subtractBonus";
+		public static const ADD_TIME:String			= "addTime";
+		public static const SUBTRACT_TIME:String	= "subtractTime";
 		
 		
 		//-----------------------------------------------------------------------------------------

@@ -27,18 +27,20 @@
  */
 package tetragon.data.racetrack.constants
 {
-	public final class RTObjectType
+	public final class RTRoadSectionTypes
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const OFFROAD:String		= "offroad";
-		public static const OBSTACLE:String		= "obstacle";
-		public static const OPPONENT:String		= "opponent";
-		public static const COLLECTIBLE:String	= "collectible";
-		public static const TRAFFIC:String		= "traffic";
-		public static const PLAYER:String		= "player";
-		public static const CHECKPOINT:String	= "checkpoint";
+		public static const STRAIGHT:String				= "straight";
+		public static const HILL:String					= "hill";
+		public static const VALLEY:String				= "valley";
+		public static const CURVE_R:String				= "curveR";
+		public static const CURVE_L:String				= "curveL";
+		public static const S_CURVES:String				= "sCurves";
+		public static const BUMPS:String				= "bumps";
+		public static const LOW_ROLLING_HILLS:String	= "lrh";
+		public static const DOWNHILL_TO_END:String		= "dhte";
 	}
 }

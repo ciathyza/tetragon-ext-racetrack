@@ -30,6 +30,7 @@ package tetragon.file.parsers
 {
 	import tetragon.data.constants.PlayDirection;
 	import tetragon.data.constants.PlayMode;
+	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
@@ -96,6 +97,33 @@ package tetragon.file.parsers
 					obj.collectionID = extractString(x, "@collectionID");
 					obj.scale = extractNumber(x, "@scale");
 					if (isNaN(obj.scale)) obj.scale = 1.0;
+					
+					/* Parse special object properties. */
+					subList = x.properties.property;
+					c = 0;
+					if (subList.length() > 0)
+					{
+						obj.propertiesNum = subList.length();
+						obj.properties = new Dictionary();
+						for each (y in subList)
+						{
+							var name:String = extractString(y, "@name");
+							var value:String = extractString(y, "@value");
+							if (name == null || name == "")
+							{
+								warn("A property name is missing for object \"" + obj.id + "\".");
+							}
+							else if (!RTObjectPropertyNames.isValid(name))
+							{
+								warn("Unknown property name \"" + name + "\" for object \""
+									+ obj.id + "\".");
+							}
+							else
+							{
+								obj.properties[name] = value;
+							}
+						}
+					}
 					
 					/* Parse triggers thar are assigned to an object. */
 					subList = x.triggers.trigger;

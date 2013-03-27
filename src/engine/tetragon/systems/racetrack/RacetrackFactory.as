@@ -34,8 +34,8 @@ package tetragon.systems.racetrack
 	import tetragon.data.atlas.Atlas;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.data.racetrack.Racetrack;
-	import tetragon.data.racetrack.constants.RTRoadSectionType;
-	import tetragon.data.racetrack.constants.RTSettings;
+	import tetragon.data.racetrack.constants.RTRoadSectionTypes;
+	import tetragon.data.racetrack.constants.RTSettingsNames;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.*;
 	import tetragon.data.racetrack.vo.*;
@@ -188,35 +188,35 @@ package tetragon.systems.racetrack
 			
 			/* Game Settings. */
 			var s:Settings = registry.settings;
-			var maxSpeedMult:Number = s.getNumber(RTSettings.DEFAULT_MAX_SPEED_MULT) || 1.0;
-			var accelerationDiv:Number = s.getNumber(RTSettings.DEFAULT_ACCELERATION_DIV) || 5.0;
-			var offRoadLimitDiv:Number = s.getNumber(RTSettings.DEFAULT_OFFROAD_LIMIT_DIV) || 4.0;
+			var maxSpeedMult:Number = s.getNumber(RTSettingsNames.DEFAULT_MAX_SPEED_MULT) || 1.0;
+			var accelerationDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_ACCELERATION_DIV) || 5.0;
+			var offRoadLimitDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_LIMIT_DIV) || 4.0;
 			
-			_rt.drawDistance = s.getNumber(RTSettings.DRAW_DISTANCE) || 300;	/* 100 - 500 */
-			_rt.fov = s.getNumber(RTSettings.FOV) || 100;						/* 80 - 140 */
-			_rt.cameraAltitude = s.getNumber(RTSettings.CAMERA_ALTITUDE) || 1000;/* 500 - 5000 */
-			_rt.maxCars = s.getNumber(RTSettings.MAX_CARS) || 1000;
-			_rt.roadWidth = s.getNumber(RTSettings.DEFAULT_ROAD_WIDTH) || 2000; /* 500 - 3000 */
-			_rt.segmentLength = s.getNumber(RTSettings.DEFAULT_SEGMENT_LENGTH) || 200;
-			_rt.rumbleLength = s.getNumber(RTSettings.DEFAULT_RUMBLE_LENGTH) || 3;
-			_rt.centrifugal = s.getNumber(RTSettings.DEFAULT_CENTRIFUGAL) || 0.3;
-			_rt.offRoadDecel = s.getNumber(RTSettings.DEFAULT_OFFROAD_DECELERATION) || 0.99;
-			_rt.playerJitter = s.getBoolean(RTSettings.PLAYER_JITTER);
+			_rt.drawDistance = s.getNumber(RTSettingsNames.DRAW_DISTANCE) || 300;	/* 100 - 500 */
+			_rt.fov = s.getNumber(RTSettingsNames.FOV) || 100;						/* 80 - 140 */
+			_rt.cameraAltitude = s.getNumber(RTSettingsNames.CAMERA_ALTITUDE) || 1000;/* 500 - 5000 */
+			_rt.maxCars = s.getNumber(RTSettingsNames.MAX_CARS) || 1000;
+			_rt.roadWidth = s.getNumber(RTSettingsNames.DEFAULT_ROAD_WIDTH) || 2000; /* 500 - 3000 */
+			_rt.segmentLength = s.getNumber(RTSettingsNames.DEFAULT_SEGMENT_LENGTH) || 200;
+			_rt.rumbleLength = s.getNumber(RTSettingsNames.DEFAULT_RUMBLE_LENGTH) || 3;
+			_rt.centrifugal = s.getNumber(RTSettingsNames.DEFAULT_CENTRIFUGAL) || 0.3;
+			_rt.offRoadDecel = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_DECELERATION) || 0.99;
+			_rt.playerJitter = s.getBoolean(RTSettingsNames.PLAYER_JITTER);
 			
-			_entityThinningMult = s.getNumber(RTSettings.ENTITY_THINNING_MULT) || 1;
+			_entityThinningMult = s.getNumber(RTSettingsNames.ENTITY_THINNING_MULT) || 1;
 			
 			/* Level-based parameters. */
-			_rt.hazeDensity = _level.settings[RTSettings.HAZE_DENSITY] || 10;
-			_rt.lanes = _level.settings[RTSettings.LANES] || 2;
-			_rt.roadWidth = _level.settings[RTSettings.ROAD_WIDTH] || _rt.roadWidth;
-			_rt.segmentLength = _level.settings[RTSettings.SEGMENT_LENGTH] || _rt.segmentLength;
-			_rt.rumbleLength = _level.settings[RTSettings.RUMBLE_LENGTH] || _rt.rumbleLength;
-			_rt.centrifugal = _level.settings[RTSettings.CENTRIFUGAL] || _rt.centrifugal;
-			_rt.offRoadDecel = _level.settings[RTSettings.OFFROAD_DECELERATION] || _rt.offRoadDecel;
+			_rt.hazeDensity = _level.settings[RTSettingsNames.HAZE_DENSITY] || 10;
+			_rt.lanes = _level.settings[RTSettingsNames.LANES] || 2;
+			_rt.roadWidth = _level.settings[RTSettingsNames.ROAD_WIDTH] || _rt.roadWidth;
+			_rt.segmentLength = _level.settings[RTSettingsNames.SEGMENT_LENGTH] || _rt.segmentLength;
+			_rt.rumbleLength = _level.settings[RTSettingsNames.RUMBLE_LENGTH] || _rt.rumbleLength;
+			_rt.centrifugal = _level.settings[RTSettingsNames.CENTRIFUGAL] || _rt.centrifugal;
+			_rt.offRoadDecel = _level.settings[RTSettingsNames.OFFROAD_DECELERATION] || _rt.offRoadDecel;
 			
-			maxSpeedMult = _level.settings[RTSettings.MAX_SPEED_MULT] || maxSpeedMult;
-			accelerationDiv = _level.settings[RTSettings.ACCELERATION_DIV] || accelerationDiv;
-			offRoadLimitDiv = _level.settings[RTSettings.OFFROAD_LIMIT_DIV] || offRoadLimitDiv;
+			maxSpeedMult = _level.settings[RTSettingsNames.MAX_SPEED_MULT] || maxSpeedMult;
+			accelerationDiv = _level.settings[RTSettingsNames.ACCELERATION_DIV] || accelerationDiv;
+			offRoadLimitDiv = _level.settings[RTSettingsNames.OFFROAD_LIMIT_DIV] || offRoadLimitDiv;
 			
 			/* Derived parameters. */
 			var cameraDepth:Number = 1 / Math.tan((_rt.fov / 2) * Math.PI / 180);
@@ -366,7 +366,7 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Prepare the player sprite. */
-			var playerObjectID:String = registry.settings.getString(RTSettings.PLAYER_OBJECT_ID);
+			var playerObjectID:String = registry.settings.getString(RTSettingsNames.PLAYER_OBJECT_ID);
 			var playerObj:RTObject = _rt.getObject(playerObjectID);
 			
 			if (!playerObj.image)
@@ -396,31 +396,31 @@ package tetragon.systems.racetrack
 				var section:RTRoadSection = _level.roadSections[i];
 				switch (section.type)
 				{
-					case RTRoadSectionType.STRAIGHT:
+					case RTRoadSectionTypes.STRAIGHT:
 						addStraight(section.length);
 						break;
-					case RTRoadSectionType.HILL:
+					case RTRoadSectionTypes.HILL:
 						addHill(section.length, section.height);
 						break;
-					case RTRoadSectionType.VALLEY:
+					case RTRoadSectionTypes.VALLEY:
 						addHill(section.length, -section.height);
 						break;
-					case RTRoadSectionType.LOW_ROLLING_HILLS:
+					case RTRoadSectionTypes.LOW_ROLLING_HILLS:
 						addLowRollingHills(section.length, section.height);
 						break;
-					case RTRoadSectionType.S_CURVES:
+					case RTRoadSectionTypes.S_CURVES:
 						addSCurves();
 						break;
-					case RTRoadSectionType.CURVE_L:
+					case RTRoadSectionTypes.CURVE_L:
 						addCurve(section.length, -section.curve, section.height);
 						break;
-					case RTRoadSectionType.CURVE_R:
+					case RTRoadSectionTypes.CURVE_R:
 						addCurve(section.length, section.curve, section.height);
 						break;
-					case RTRoadSectionType.BUMPS:
+					case RTRoadSectionTypes.BUMPS:
 						addBumps();
 						break;
-					case RTRoadSectionType.DOWNHILL_TO_END:
+					case RTRoadSectionTypes.DOWNHILL_TO_END:
 						addDownhillToEnd(section.length, section.curve);
 						break;
 					default:

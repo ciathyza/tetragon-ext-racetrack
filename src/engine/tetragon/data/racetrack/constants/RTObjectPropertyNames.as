@@ -27,14 +27,13 @@
  */
 package tetragon.data.racetrack.constants
 {
-	public final class RTTriggerTypes
+	public final class RTObjectPropertyNames
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const SEGMENT:String		= "segment";
-		public static const COLLISION:String	= "collision";
+		public static const OBSTACLE_HARDNESS:String = "obstacleHardness";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -49,7 +48,7 @@ package tetragon.data.racetrack.constants
 		 */
 		public static function isValid(string:String):Boolean
 		{
-			return string == SEGMENT || string == COLLISION;
+			return string == OBSTACLE_HARDNESS;
 		}
 	}
 }

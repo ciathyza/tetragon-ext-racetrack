@@ -27,7 +27,7 @@
  */
 package tetragon.data.racetrack.constants
 {
-	public final class RTSettings
+	public final class RTSettingsNames
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants

@@ -54,8 +54,16 @@
 			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
 			<object id="windmill" imageID="spr_bldg_windmill" collectionID="buildings" scale="5.0"/>
 			<!-- On-road Obstacles. -->
-			<object id="boulderObstacle" imageID="spr_veg_boulder_2" collectionID="obstacles" scale="1.0"/>
-			<object id="cactusObstacle" imageID="spr_veg_cactus" collectionID="obstacles" scale="1.0"/>
+			<object id="boulderObstacle" imageID="spr_veg_boulder_2" collectionID="obstacles" scale="1.0">
+				<properties>
+					<property name="obstacleHardness" value="100"/>
+				</properties>
+			</object>
+			<object id="cactusObstacle" imageID="spr_veg_cactus" collectionID="obstacles" scale="1.0">
+				<properties>
+					<property name="obstacleHardness" value="5"/>
+				</properties>
+			</object>
 			
 			<object id="car1" imageID="spr_car_1" collectionID="cars" scale="1.0"/>
 			<object id="car2" imageID="spr_car_2" collectionID="cars" scale="1.0"/>

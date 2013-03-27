@@ -30,7 +30,7 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
-	import tetragon.data.racetrack.constants.RTObjectType;
+	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
@@ -51,6 +51,8 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
+
+	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -926,14 +928,22 @@ package tetragon.systems.racetrack
 					
 					/* Offroad-type entities should only be checked for collision if the
 					 * player is actually off-road! */
-					if (e.type == RTObjectType.OFFROAD && (_playerX < -1 || _playerX > 1))
+					if (e.type == RTObjectTypes.OFFROAD && (_playerX < -1 || _playerX > 1))
 					{
 						_speed = _maxSpeed / 5;
 						/* Stop in front of sprite (at front of segment). */
 						_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 						break;
 					}
-					else if (e.type == RTObjectType.COLLECTIBLE)
+					else if (e.type == RTObjectTypes.OBSTACLES)
+					{
+						_speed = _maxSpeed / 5;
+						Debug.trace(_speed);
+						/* Stop in front of sprite (at front of segment). */
+						//_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
+						break;
+					}
+					else if (e.type == RTObjectTypes.COLLECTIBLE)
 					{
 						/* Remove the entity from the racetrack! */
 						e.enabled = false;

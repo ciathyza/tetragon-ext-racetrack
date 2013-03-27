@@ -50,6 +50,10 @@ package tetragon.data.racetrack.proto
 		public var defaultSequenceID:String;
 		public var defaultFramerate:int;
 		
+		/* Maps object-specific properties. */
+		public var properties:Dictionary;
+		public var propertiesNum:uint;
+		
 		/**
 		 * An array of RTTrigger objects.
 		 */
