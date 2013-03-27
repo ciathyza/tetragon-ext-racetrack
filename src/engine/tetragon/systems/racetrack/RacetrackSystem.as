@@ -924,6 +924,8 @@ package tetragon.systems.racetrack
 						}
 					}
 					
+					/* Offroad-type entities should only be checked for collision if the
+					 * player is actually off-road! */
 					if (e.type == RTObjectType.OFFROAD && (_playerX < -1 || _playerX > 1))
 					{
 						_speed = _maxSpeed / 5;

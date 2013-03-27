@@ -97,6 +97,8 @@ Defines the levels for the racetrack engine.
 				<entities id="" collectionID="buildings" start="1600" end="end" stepSize="20" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="1, -1" offset="" offsetMode="mult" preOffset="2.0" postOffset="5.0"/>
 				<entities id="" collectionID="billboards" start="1000" end="end-50" stepSize="100" stepInc="" subCount="" segRange="0, 50" scaleRange="" offsetRange="-1, 1" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="" collectionID="vegetation" start="1000" end="end-50" stepSize="100" stepInc="" subCount="20" segRange="0, 50" scaleRange="1.0, 3.0" offsetRange="-1, 1" offset="" offsetMode="mult" preOffset="1.5" postOffset=""/>
+				<!-- Add random on-road obstacles. -->
+				<entities id="" collectionID="obstacles" start="80" end="end-20" stepSize="97" stepInc="" subCount="" segRange="" scaleRange="0.5, 0.8" offsetRange="-1.0, 1.0" offset="" offsetMode="rand" preOffset="" postOffset=""/>
 				<!-- Add random collectible items on road. -->
 				<entities id="" collectionID="items" start="50" end="end-100" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<!-- Distribute regular checkpoints. -->

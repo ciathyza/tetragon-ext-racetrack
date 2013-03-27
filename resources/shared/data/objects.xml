@@ -12,6 +12,7 @@
 			<collection id="billboards" type="offroad" scale="2.5"/>
 			<collection id="vegetation" type="offroad" scale="2.5"/>
 			<collection id="buildings" type="offroad" scale="1.0"/>
+			<collection id="obstacles" type="obstacle" scale="1.0"/>
 			<collection id="checkpoints" type="checkpoint" scale="2.5"/>
 			<collection id="items" type="collectible" scale="1.0"/>
 			<collection id="cars" type="opponent" scale="1.25"/>
@@ -34,7 +35,7 @@
 					<trigger type="segment" action="playSound" arguments="checkpointSound"/>
 				</triggers>
 			</object>
-			
+			<!-- Offroad Vegetation. -->
 			<object id="boulder1" imageID="spr_veg_boulder_1" collectionID="vegetation" scale="1.0"/>
 			<object id="boulder2" imageID="spr_veg_boulder_2" collectionID="vegetation" scale="1.0"/>
 			<object id="boulder3" imageID="spr_veg_boulder_3" collectionID="vegetation" scale="1.0"/>
@@ -47,11 +48,14 @@
 			<object id="stump" imageID="spr_veg_stump" collectionID="vegetation" scale="1.0"/>
 			<object id="tree1" imageID="spr_veg_tree_1" collectionID="vegetation" scale="1.0"/>
 			<object id="tree2" imageID="spr_veg_tree_2" collectionID="vegetation" scale="1.0"/>
-			
+			<!-- Offroad Buildings. -->
 			<object id="boathouse" imageID="spr_bldg_boathouse" collectionID="buildings" scale="3.0"/>
 			<object id="column" imageID="spr_bldg_column" collectionID="buildings" scale="3.0"/>
 			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
 			<object id="windmill" imageID="spr_bldg_windmill" collectionID="buildings" scale="5.0"/>
+			<!-- On-road Obstacles. -->
+			<object id="boulderObstacle" imageID="spr_veg_boulder_2" collectionID="obstacles" scale="1.0"/>
+			<object id="cactusObstacle" imageID="spr_veg_cactus" collectionID="obstacles" scale="1.0"/>
 			
 			<object id="car1" imageID="spr_car_1" collectionID="cars" scale="1.0"/>
 			<object id="car2" imageID="spr_car_2" collectionID="cars" scale="1.0"/>
