@@ -153,6 +153,7 @@ package tetragon.file.parsers
 								trigger.type = type;
 								trigger.action = action;
 								trigger.arguments = extractArray(y, "@arguments");
+								trigger.multi = extractBoolean(y, "@multi");
 								obj.triggers[c] = trigger;
 							}
 							++c;

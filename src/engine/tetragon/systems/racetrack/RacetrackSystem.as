@@ -811,6 +811,19 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
+		private function calculateDerivedParameters():void
+		{
+			if (_fov > 0 && !isNaN(_cameraAltitude))
+			{
+				_cameraDepth = 1 / Math.tan((_fov / 2) * Math.PI / 180);
+				_playerZ = (_cameraAltitude * _cameraDepth);
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function updateCars(dt:Number, playerSegment:RTSegment, playerW:Number):void
 		{
 			var i:int,
@@ -1030,6 +1043,10 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		// -----------------------------------------------------------------------------------------
+		// Object Trigger Actions
+		// -----------------------------------------------------------------------------------------
+		
 		/**
 		 * @private
 		 */
@@ -1055,19 +1072,6 @@ package tetragon.systems.racetrack
 				{
 					_allowControls = true;
 				}, true);
-			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function calculateDerivedParameters():void
-		{
-			if (_fov > 0 && !isNaN(_cameraAltitude))
-			{
-				_cameraDepth = 1 / Math.tan((_fov / 2) * Math.PI / 180);
-				_playerZ = (_cameraAltitude * _cameraDepth);
 			}
 		}
 		
