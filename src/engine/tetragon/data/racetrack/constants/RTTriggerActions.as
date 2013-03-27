@@ -41,6 +41,7 @@ package tetragon.data.racetrack.constants
 		public static const ADD_TIME:String				= "addTime";
 		public static const SUBTRACT_TIME:String		= "subtractTime";
 		public static const CHANGE_OBJECT_STATE:String	= "changeObjectState";
+		public static const DISABLE_PLAYER:String		= "disablePlayer";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -62,7 +63,8 @@ package tetragon.data.racetrack.constants
 				|| string == SUBTRACT_BONUS
 				|| string == ADD_TIME
 				|| string == SUBTRACT_TIME
-				|| string == CHANGE_OBJECT_STATE;
+				|| string == CHANGE_OBJECT_STATE
+				|| string == DISABLE_PLAYER;
 		}
 	}
 }

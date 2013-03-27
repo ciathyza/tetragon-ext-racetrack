@@ -54,6 +54,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
+	import com.hexagonstar.time.Interval;
 	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
@@ -116,6 +117,7 @@ package tetragon.systems.racetrack
 		private var _lastLapTime:uint;			// last lap time
 		private var _fastestLapTime:uint;
 		
+		private var _allowControls:Boolean;
 		private var _isAccelerating:Boolean;
 		private var _isBraking:Boolean;
 		private var _isSteeringLeft:Boolean;
@@ -233,6 +235,8 @@ package tetragon.systems.racetrack
 			_currentLapTime = 0;
 			_lastLapTime = 0;
 			_fastestLapTime = 0;
+			
+			_allowControls = true;
 		}
 		
 		
@@ -288,42 +292,45 @@ package tetragon.systems.racetrack
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
 			/* Handle player interaction. */
-			if (_isJump)
+			if (_allowControls)
 			{
-				if (_playerOffsetY <= _playerJumpHeight)
+				if (_isJump)
 				{
-					_isJump = false;
-					_isFall = true;
+					if (_playerOffsetY <= _playerJumpHeight)
+					{
+						_isJump = false;
+						_isFall = true;
+					}
+					else
+					{
+						_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
+					}
+				}
+				else if (_isFall)
+				{
+					if (_playerOffsetY < -1.0)
+					{
+						_playerOffsetY += (1.1 - _speedPercent) * 0.36;
+					}
+					else
+					{
+						_playerOffsetY = -1.0;
+						_isFall = false;
+					}
 				}
 				else
 				{
-					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
+					/* Update left/right steering. */
+					if (_isSteeringLeft) _playerX = _playerX - dx;
+					else if (_isSteeringRight) _playerX = _playerX + dx;
+					
+					_playerX = _playerX - (dx * _speedPercent * playerSegment.curve * _centrifugal);
+					
+					/* Update acceleration & decceleration. */
+					if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
+					else if (_isBraking) _speed = accel(_speed, _braking, _dt);
+					else _speed = accel(_speed, _deceleration, _dt);
 				}
-			}
-			else if (_isFall)
-			{
-				if (_playerOffsetY < -1.0)
-				{
-					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
-				}
-				else
-				{
-					_playerOffsetY = -1.0;
-					_isFall = false;
-				}
-			}
-			else
-			{
-				/* Update left/right steering. */
-				if (_isSteeringLeft) _playerX = _playerX - dx;
-				else if (_isSteeringRight) _playerX = _playerX + dx;
-				
-				_playerX = _playerX - (dx * _speedPercent * playerSegment.curve * _centrifugal);
-				
-				/* Update acceleration & decceleration. */
-				if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
-				else if (_isBraking) _speed = accel(_speed, _braking, _dt);
-				else _speed = accel(_speed, _deceleration, _dt);
 			}
 			
 			/* Check if the segment the player is on has any triggers. */
@@ -974,6 +981,8 @@ package tetragon.systems.racetrack
 		private function processTrigger(trigger:RTTrigger, entity:RTEntity):void
 		{
 			var s:String;
+			var duration:Number;
+			
 			switch (trigger.action)
 			{
 				case RTTriggerActions.PLAY_SOUND:
@@ -1010,8 +1019,12 @@ package tetragon.systems.racetrack
 					var targetObjectID:String = trigger.arguments[0];
 					var targetObject:RTObject = _racetrack.objects[targetObjectID];
 					var targetStateID:String = trigger.arguments[1];
-					var duration:Number = trigger.arguments[2];
+					duration = trigger.arguments[2];
 					switchObjectState(targetObject, targetStateID, duration);
+					break;
+				case RTTriggerActions.DISABLE_PLAYER:
+					duration = trigger.arguments[0];
+					disablePlayer(duration);
 					break;
 			}
 		}
@@ -1029,6 +1042,21 @@ package tetragon.systems.racetrack
 			}
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private function disablePlayer(duration:Number):void
+		{
+			_allowControls = false;
+			if (duration > 0.0)
+			{
+				Interval.setTimeOut(duration * 1000, function():void
+				{
+					_allowControls = true;
+				}, true);
+			}
+		}
 		
 		
 		/**
