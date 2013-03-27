@@ -871,6 +871,8 @@ package tetragon.systems.racetrack
 		 */
 		private function processPlayerControls(segment:RTSegment):void
 		{
+			var playerStateID:String;
+			
 			if (_isJump)
 			{
 				if (_playerOffsetY <= _playerJumpHeight)
@@ -880,6 +882,7 @@ package tetragon.systems.racetrack
 				}
 				else
 				{
+					playerStateID = "jump";
 					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
 				}
 			}
@@ -887,6 +890,7 @@ package tetragon.systems.racetrack
 			{
 				if (_playerOffsetY < -1.0)
 				{
+					playerStateID = "fall";
 					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
 				}
 				else
@@ -898,7 +902,6 @@ package tetragon.systems.racetrack
 			else
 			{
 				var dx:Number = _dt * 2 * _speedPercent;
-				var playerStateID:String = "idle";
 				
 				/* Update left/right steering. */
 				if (_isSteeringLeft)
@@ -929,15 +932,19 @@ package tetragon.systems.racetrack
 					_speed = accel(_speed, _deceleration);
 				}
 				
-				if (!_isIdleAfterCollision && _speed > 0)
+				if (_speed <= 0)
+				{
+					playerStateID = "idle";
+				}
+				else if (!_isIdleAfterCollision)
 				{
 					playerStateID = "moveForward";
 				}
-				
-				if (!_suppressDefaultPlayerStates)
-				{
-					_racetrack.player.object.switchToState(playerStateID);
-				}
+			}
+			
+			if (playerStateID && !_suppressDefaultPlayerStates)
+			{
+				_racetrack.player.object.switchToState(playerStateID);
 			}
 		}
 		
