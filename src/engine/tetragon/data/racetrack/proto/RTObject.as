@@ -72,6 +72,7 @@ package tetragon.data.racetrack.proto
 		 */
 		public var sequences:Dictionary;
 		public var sequencesNum:uint;
+		public var currentSequence:RTObjectImageSequence;
 		
 		/**
 		 * Maps object-specific properties.
@@ -128,12 +129,25 @@ package tetragon.data.racetrack.proto
 				(image as MovieClip2D).stop();
 			}
 			
-			juggler.add(seq.movieClip);
-			seq.movieClip.play();
+			currentSequence = seq;
+			juggler.add(currentSequence.movieClip);
+			currentSequence.movieClip.play();
 			
-			image = seq.movieClip;
+			image = currentSequence.movieClip;
 			
 			return 1;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		public function changeAnimFramerate(fps:int):void
+		{
+			if (!currentSequence) return;
+			if (fps < 1) fps = 1;
+			else if (fps > 60) fps = 60;
+			currentSequence.movieClip.fps = fps;
 		}
 	}
 }

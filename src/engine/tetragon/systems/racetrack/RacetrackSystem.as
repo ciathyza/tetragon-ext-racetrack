@@ -945,6 +945,11 @@ package tetragon.systems.racetrack
 			if (playerStateID && !_suppressDefaultPlayerStates)
 			{
 				_racetrack.player.object.switchToState(playerStateID);
+				// TODO make fps influence on player anim enable/disable via game settings!
+				var fps:int = (_speed * 0.6) / 300;
+				if (fps < 6) fps = 6;
+				else if (fps > 20) fps = 20;
+				_racetrack.player.object.changeAnimFramerate(fps);
 			}
 		}
 		
