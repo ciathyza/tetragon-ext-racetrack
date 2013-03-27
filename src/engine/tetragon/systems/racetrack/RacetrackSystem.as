@@ -49,7 +49,6 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTPlaySoundSignal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
-	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
@@ -273,7 +272,7 @@ package tetragon.systems.racetrack
 		
 		
 		/**
-		 * Ticks the racetrack non-render logic.
+		 * Ticks the racetrack system's non-render logic.
 		 */
 		public function tick():void
 		{
@@ -281,11 +280,7 @@ package tetragon.systems.racetrack
 			if (!_started) return;
 			
 			_speedPercent = _speed / _maxSpeed;
-			
-			var i:int,
-				playerSegment:RTSegment = findSegment(_position + _playerZ),
-				dx:Number = _dt * 2 * _speedPercent,
-				bgLayer:ParallaxLayer;
+			var i:int, playerSegment:RTSegment = findSegment(_position + _playerZ);
 			
 			updateCars(_dt, playerSegment, _playerWidth);
 			
@@ -295,43 +290,7 @@ package tetragon.systems.racetrack
 			/* Handle player interaction. */
 			if (_allowControls)
 			{
-				if (_isJump)
-				{
-					if (_playerOffsetY <= _playerJumpHeight)
-					{
-						_isJump = false;
-						_isFall = true;
-					}
-					else
-					{
-						_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
-					}
-				}
-				else if (_isFall)
-				{
-					if (_playerOffsetY < -1.0)
-					{
-						_playerOffsetY += (1.1 - _speedPercent) * 0.36;
-					}
-					else
-					{
-						_playerOffsetY = -1.0;
-						_isFall = false;
-					}
-				}
-				else
-				{
-					/* Update left/right steering. */
-					if (_isSteeringLeft) _playerX = _playerX - dx;
-					else if (_isSteeringRight) _playerX = _playerX + dx;
-					
-					_playerX = _playerX - (dx * _speedPercent * playerSegment.curve * _centrifugal);
-					
-					/* Update acceleration & decceleration. */
-					if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
-					else if (_isBraking) _speed = accel(_speed, _braking, _dt);
-					else _speed = accel(_speed, _deceleration, _dt);
-				}
+				processPlayerControls(playerSegment);
 			}
 			
 			/* Check if the segment the player is on has any triggers. */
@@ -906,6 +865,52 @@ package tetragon.systems.racetrack
 			if (car.offset < -0.9) return 0.1;
 			else if (car.offset > 0.9) return -0.1;
 			else return 0;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function processPlayerControls(segment:RTSegment):void
+		{
+			if (_isJump)
+			{
+				if (_playerOffsetY <= _playerJumpHeight)
+				{
+					_isJump = false;
+					_isFall = true;
+				}
+				else
+				{
+					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
+				}
+			}
+			else if (_isFall)
+			{
+				if (_playerOffsetY < -1.0)
+				{
+					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
+				}
+				else
+				{
+					_playerOffsetY = -1.0;
+					_isFall = false;
+				}
+			}
+			else
+			{
+				var dx:Number = _dt * 2 * _speedPercent;
+				/* Update left/right steering. */
+				if (_isSteeringLeft) _playerX = _playerX - dx;
+				else if (_isSteeringRight) _playerX = _playerX + dx;
+				
+				_playerX = _playerX - (dx * _speedPercent * segment.curve * _centrifugal);
+				
+				/* Update acceleration & decceleration. */
+				if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
+				else if (_isBraking) _speed = accel(_speed, _braking, _dt);
+				else _speed = accel(_speed, _deceleration, _dt);
+			}
 		}
 		
 		
