@@ -41,7 +41,6 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceIndex;
-	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
@@ -123,7 +122,7 @@ package tetragon.systems.racetrack
 			initDefaults();
 			prepareColors();
 			prepareBackgroundLayers();
-			prepareSprites();
+			prepareObjects();
 			
 			createRoad();
 			createEntities();
@@ -280,7 +279,7 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function prepareSprites():void
+		private function prepareObjects():void
 		{
 			/* Create empty collections. */
 			for each (var c:RTObjectCollection in _objectsCatalog.collections)
@@ -288,7 +287,7 @@ package tetragon.systems.racetrack
 				_rt.addCollection(c);
 			}
 			
-			var juggler:Juggler2D = Main.instance.screenManager.render2D.juggler;
+			RTObject.juggler = Main.instance.screenManager.render2D.juggler;
 			var textures:Dictionary = _textureAtlas.getImageMap();
 			
 			/* Create prototype objects. */
@@ -308,7 +307,7 @@ package tetragon.systems.racetrack
 						Log.warn("Texture not found: " + obj.imageID, this);
 					}
 				}
-				else if (obj.sequences)
+				else if (obj.sequencesNum > 0)
 				{
 					/* Prepare anim frames for objects that posses a sequence. */
 					for each (var seq:RTObjectImageSequence in obj.sequences)
@@ -335,23 +334,21 @@ package tetragon.systems.racetrack
 							Log.warn("Sequence textures not found: " + seq.id, this);
 						}
 					}
-					
-					/* Assign default sequence as the object's image. */
-					var defaultSeq:RTObjectImageSequence = obj.sequences[obj.defaultSequenceID];
-					if (defaultSeq)
-					{
-						obj.image = defaultSeq.movieClip;
-						juggler.add(defaultSeq.movieClip);
-						defaultSeq.movieClip.play();
-					}
-					else
-					{
-						Log.warn("Object " + obj.id + " has no default anim sequence.", this);
-					}
 				}
 				else
 				{
 					Log.warn("Object " + obj.id + " has no images!", this);
+				}
+				
+				/* Assign default object state. */
+				var success:int = obj.switchToState(obj.defaultStateID);
+				if (success == -1)
+				{
+					Log.warn("Could not switch object " + obj.id + " to its default state.", this);
+				}
+				else if (success == -2)
+				{
+					Log.warn("Object " + obj.id + " has a default state but no default anim sequence.", this);
 				}
 				
 				/* Add object to collection if it belongs to one. */

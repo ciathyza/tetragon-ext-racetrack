@@ -98,6 +98,7 @@ package tetragon.file.parsers
 					obj.collectionID = extractString(x, "@collectionID");
 					obj.scale = extractNumber(x, "@scale");
 					if (isNaN(obj.scale)) obj.scale = 1.0;
+					obj.defaultStateID = extractString(x, "@defaultStateID");
 					
 					/* Parse special object properties. */
 					subList = x.properties.property;
@@ -171,7 +172,6 @@ package tetragon.file.parsers
 							{
 								var state:RTObjectState = new RTObjectState(stateID);
 								state.sequenceID = extractString(y, "@sequenceID");
-								state.duration = extractNumber(y, "@duration", 0.0);
 								obj.states[stateID] = state;
 							}
 						}
@@ -186,25 +186,30 @@ package tetragon.file.parsers
 					/* Otherwise they must have a sequence of animation frames defined. */
 					else
 					{
-						obj.defaultSequenceID = extractString(x, "@defaultSequenceID");
-						obj.defaultFramerate = extractNumber(x, "@defaultFramerate", 12);
+						obj.defaultFramerate = extractNumber(x.sequences, "@defaultFramerate", 12);
 						if (obj.defaultFramerate < 1) obj.defaultFramerate = 1;
 						else if (obj.defaultFramerate > 60) obj.defaultFramerate = 60;
-						obj.sequences = new Dictionary();
-						/* Parse through animation sequences. */
-						for each (y in x.sequence)
+						
+						subList = x.sequences.sequence;
+						if (subList.length() > 0)
 						{
-							var seq:RTObjectImageSequence = new RTObjectImageSequence();
-							seq.id = extractString(y, "@id");
-							seq.playMode = extractString(y, "@playMode", PlayMode.LOOP);
-							seq.playDirection = extractString(y, "@playDirection", PlayDirection.FORWARD);
-							seq.framerate = extractNumber(y, "@framerate");
-							seq.imageIDs = new <String>[];
-							for each (var f:XML in y.frame)
+							obj.sequencesNum = subList.length();
+							obj.sequences = new Dictionary();
+							/* Parse through animation sequences. */
+							for each (y in subList)
 							{
-								seq.imageIDs.push(extractString(f, "@imageID"));
+								var seq:RTObjectImageSequence = new RTObjectImageSequence();
+								seq.id = extractString(y, "@id");
+								seq.playMode = extractString(y, "@playMode", PlayMode.LOOP);
+								seq.playDirection = extractString(y, "@playDirection", PlayDirection.FORWARD);
+								seq.framerate = extractNumber(y, "@framerate");
+								seq.imageIDs = new <String>[];
+								for each (var f:XML in y.frame)
+								{
+									seq.imageIDs.push(extractString(f, "@imageID"));
+								}
+								obj.sequences[seq.id] = seq;
 							}
-							obj.sequences[seq.id] = seq;
 						}
 					}
 					catalog.objects[obj.id] = obj;

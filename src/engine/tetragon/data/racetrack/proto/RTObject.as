@@ -29,6 +29,7 @@
 package tetragon.data.racetrack.proto
 {
 	import tetragon.data.DataObject;
+	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.Image2D;
 
 	import flash.utils.Dictionary;
@@ -43,12 +44,28 @@ package tetragon.data.racetrack.proto
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		public static var juggler:Juggler2D;
+		
+		public var collectionID:String;
+		public var defaultStateID:String;
+		public var defaultFramerate:int;
+		public var imageID:String;
+		public var image:Image2D;
+		public var type:String;
+		public var scale:Number;
+		
+		/**
+		 * Maps object states.
+		 */
+		public var states:Dictionary;
+		public var statesNum:int;
+		public var currentState:RTObjectState;
+		
 		/**
 		 * A map of RTObjectImageSequence objects.
 		 */
 		public var sequences:Dictionary;
-		public var defaultSequenceID:String;
-		public var defaultFramerate:int;
+		public var sequencesNum:uint;
 		
 		/**
 		 * Maps object-specific properties.
@@ -57,22 +74,10 @@ package tetragon.data.racetrack.proto
 		public var propertiesNum:uint;
 		
 		/**
-		 * Maps object states.
-		 */
-		public var states:Dictionary;
-		public var statesNum:int;
-		
-		/**
 		 * An array of RTTrigger objects.
 		 */
 		public var triggers:Vector.<RTTrigger>;
 		public var triggersNum:uint;
-		
-		public var collectionID:String;
-		public var imageID:String;
-		public var image:Image2D;
-		public var type:String;
-		public var scale:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -85,6 +90,24 @@ package tetragon.data.racetrack.proto
 		public function RTObject(id:String)
 		{
 			_id = id;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		public function switchToState(stateID:String):int
+		{
+			if (!states || stateID == null || stateID == "") return 0;
+			var state:RTObjectState = states[stateID];
+			if (!state) return -1;
+			currentState = state;
+			var stateSeq:RTObjectImageSequence = sequences[state.sequenceID];
+			if (!stateSeq) return -2;
+			image = stateSeq.movieClip;
+			juggler.add(stateSeq.movieClip);
+			stateSeq.movieClip.play();
+			return 1;
 		}
 	}
 }

@@ -34,6 +34,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
+	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.data.racetrack.vo.RTCar;
@@ -52,6 +53,8 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
+
+	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -896,7 +899,7 @@ package tetragon.systems.racetrack
 				/* Player is still on the same segment but trigger should not be
 				 * triggered again on the same segment. */
 				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
-				processTrigger(trigger, "" + segment.index);
+				processTrigger(trigger, null);
 			}
 		}
 		
@@ -921,7 +924,7 @@ package tetragon.systems.racetrack
 						{
 							var trigger:RTTrigger = e.object.triggers[j];
 							if (!trigger || trigger.type != RTTriggerTypes.COLLISION) continue;
-							processTrigger(trigger, e.object.id);
+							processTrigger(trigger, e);
 						}
 					}
 					
@@ -964,9 +967,13 @@ package tetragon.systems.racetrack
 		
 		/**
 		 * @private
+		 * 
+		 * @param trigger The triggered trigger.
+		 * @param entity The entity that was collided.
 		 */
-		private function processTrigger(trigger:RTTrigger, objectID:String):void
+		private function processTrigger(trigger:RTTrigger, entity:RTEntity):void
 		{
+			var s:String;
 			switch (trigger.action)
 			{
 				case RTTriggerActions.PLAY_SOUND:
@@ -983,11 +990,13 @@ package tetragon.systems.racetrack
 					break;
 				case RTTriggerActions.ADD_BONUS:
 					if (!_changeBonusSignal) return;
-					_changeBonusSignal.dispatch(int(trigger.arguments[0]), objectID);
+					s = entity ? entity.object.id : "segment";
+					_changeBonusSignal.dispatch(int(trigger.arguments[0]), s);
 					break;
 				case RTTriggerActions.SUBTRACT_BONUS:
 					if (!_changeBonusSignal) return;
-					_changeBonusSignal.dispatch(int(-(trigger.arguments[0])), objectID);
+					s = entity ? entity.object.id : "segment";
+					_changeBonusSignal.dispatch(int(-(trigger.arguments[0])), s);
 					break;
 				case RTTriggerActions.ADD_TIME:
 					if (!_changeTimeSignal) return;
@@ -997,7 +1006,23 @@ package tetragon.systems.racetrack
 					if (!_changeTimeSignal) return;
 					_changeTimeSignal.dispatch(int(-(trigger.arguments[0])));
 					break;
+				case RTTriggerActions.CHANGE_OBJECT_STATE:
+					var targetObjectID:String = trigger.arguments[0];
+					var targetObject:RTObject = _racetrack.objects[targetObjectID];
+					var targetStateID:String = trigger.arguments[1];
+					var duration:Number = trigger.arguments[2];
+					switchObjectState(targetObject, targetStateID, duration);
+					break;
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function switchObjectState(object:RTObject, stateID:String, duration:Number):void
+		{
+			Debug.trace(object + " --> " + stateID);
 		}
 		
 		
