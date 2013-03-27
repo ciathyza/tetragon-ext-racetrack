@@ -30,6 +30,7 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
@@ -51,8 +52,6 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
-
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -935,12 +934,22 @@ package tetragon.systems.racetrack
 						_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 						break;
 					}
-					else if (e.type == RTObjectTypes.OBSTACLES)
+					/* On-road obstacles. */
+					else if (e.type == RTObjectTypes.OBSTACLE)
 					{
-						_speed = _maxSpeed / 5;
-						Debug.trace(_speed);
+						var hardness:int = 100;
+						if (e.object.propertiesNum > 0)
+						{
+							hardness = e.object.properties[RTObjectPropertyNames.OBSTACLE_HARDNESS];
+						}
+						_speed = _maxSpeed / hardness;
 						/* Stop in front of sprite (at front of segment). */
-						//_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
+						if (hardness >= 100)
+						{
+							/* Determines how quick player can steer away from obstacle after being stopped. */
+							_speed = _maxSpeed / 5;
+							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
+						}
 						break;
 					}
 					else if (e.type == RTObjectTypes.COLLECTIBLE)

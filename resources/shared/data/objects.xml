@@ -56,12 +56,13 @@
 			<!-- On-road Obstacles. -->
 			<object id="boulderObstacle" imageID="spr_veg_boulder_2" collectionID="obstacles" scale="1.0">
 				<properties>
+					<!-- A hardness of 100 means full-stop, any lower value slows down the player -->
 					<property name="obstacleHardness" value="100"/>
 				</properties>
 			</object>
 			<object id="cactusObstacle" imageID="spr_veg_cactus" collectionID="obstacles" scale="1.0">
 				<properties>
-					<property name="obstacleHardness" value="5"/>
+					<property name="obstacleHardness" value="4"/>
 				</properties>
 			</object>
 			
