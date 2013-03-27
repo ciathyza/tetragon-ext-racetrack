@@ -31,6 +31,9 @@ package tetragon.data.racetrack.proto
 	import tetragon.data.DataObject;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.Image2D;
+	import tetragon.view.render2d.display.MovieClip2D;
+
+	import com.hexagonstar.time.Interval;
 
 	import flash.utils.Dictionary;
 	
@@ -60,6 +63,7 @@ package tetragon.data.racetrack.proto
 		public var states:Dictionary;
 		public var statesNum:int;
 		public var currentState:RTObjectState;
+		public var currentStateID:String;
 		
 		/**
 		 * A map of RTObjectImageSequence objects.
@@ -79,6 +83,8 @@ package tetragon.data.racetrack.proto
 		public var triggers:Vector.<RTTrigger>;
 		public var triggersNum:uint;
 		
+		private var _interval:Interval;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -94,19 +100,49 @@ package tetragon.data.racetrack.proto
 		
 		
 		/**
-		 * @private
+		 * Switches the object to the specified state.
+		 * 
+		 * @param stateID
+		 * @param duration Duration for that the state should be switched to. If 0, the
+		 *        new state will be permanent.
+		 * @return 1, 0, -1, or -2.
 		 */
-		public function switchToState(stateID:String):int
+		public function switchToState(stateID:String, duration:Number = 0.0):int
 		{
-			if (!states || stateID == null || stateID == "") return 0;
+			if (!states || stateID == currentStateID || stateID == null || stateID == "") return 0;
+			
 			var state:RTObjectState = states[stateID];
 			if (!state) return -1;
+			
+			currentStateID = stateID;
 			currentState = state;
+			
 			var stateSeq:RTObjectImageSequence = sequences[state.sequenceID];
 			if (!stateSeq) return -2;
-			image = stateSeq.movieClip;
+			
+			/* Disable any currenlty used anim seq. */
+			if (image is MovieClip2D)
+			{
+				(image as MovieClip2D).stop();
+			}
+			
 			juggler.add(stateSeq.movieClip);
 			stateSeq.movieClip.play();
+			
+			image = stateSeq.movieClip;
+			
+			if (duration > 0.0)
+			{
+				if (!_interval) _interval = new Interval(0, 0, null, null);
+				else _interval.stop();
+				_interval.delay = duration * 1000;
+				_interval.callBack = function():void
+				{
+					switchToState(defaultStateID);
+				};
+				_interval.start();
+			}
+			
 			return 1;
 		}
 	}

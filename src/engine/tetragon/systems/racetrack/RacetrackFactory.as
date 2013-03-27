@@ -375,7 +375,7 @@ package tetragon.systems.racetrack
 			
 			/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
 			_rt.player = new RTEntity(playerObj);
-			_rt.objectScale = 0.3 * (1 / _rt.player.image.width);
+			_rt.objectScale = 0.3 * (1 / _rt.player.width);
 		}
 		
 		

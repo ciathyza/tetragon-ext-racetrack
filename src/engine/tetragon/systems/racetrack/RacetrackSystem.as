@@ -624,7 +624,7 @@ package tetragon.systems.racetrack
 			_carsNum = _cars.length;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
-			_playerWidth = _racetrack.player.image.width * _objectScale;
+			_playerWidth = _racetrack.player.width * _objectScale;
 			
 			cameraAltitude = _racetrack.cameraAltitude;
 			fov = _racetrack.fov;
@@ -1022,7 +1022,11 @@ package tetragon.systems.racetrack
 		 */
 		private function switchObjectState(object:RTObject, stateID:String, duration:Number):void
 		{
-			Debug.trace(object + " --> " + stateID);
+			var success:int = object.switchToState(stateID, duration);
+			if (success == 1)
+			{
+				Debug.trace(stateID);
+			}
 		}
 		
 		
@@ -1105,9 +1109,10 @@ package tetragon.systems.racetrack
 			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
 			clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
-			if (!entity.image) return;
+			if (!entity.object.image) return;
 			
-			var image:Image2D = entity.image;
+			var image:Image2D = entity.object.image;
+			// TODO Remove and add handling of object state here!
 			if (sequenceID)
 			{
 				var seq:RTObjectImageSequence = entity.object.sequences[sequenceID];

@@ -29,7 +29,6 @@
 package tetragon.data.racetrack.vo
 {
 	import tetragon.data.racetrack.proto.RTObject;
-	import tetragon.view.render2d.display.Image2D;
 	
 	
 	/**
@@ -42,9 +41,9 @@ package tetragon.data.racetrack.vo
 		//-----------------------------------------------------------------------------------------
 		
 		public var object:RTObject;
-		public var image:Image2D;
-		public var width:Number;
 		public var collectionID:String;
+		public var width:Number;
+		public var height:Number;
 		public var type:String;
 		public var offset:Number;
 		public var scale:Number;
@@ -58,8 +57,8 @@ package tetragon.data.racetrack.vo
 		public function RTEntity(obj:RTObject, offset:Number = 0.0, scale:Number = NaN)
 		{
 			object = obj;
-			image = object.image;
-			width = image.width;
+			width = object.image.width;
+			height = object.image.height;
 			collectionID = object.collectionID;
 			type = object.type;
 			this.offset = offset;
