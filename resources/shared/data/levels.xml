@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	=====================================================================================
-	RACETRACK FILE
-	Defines the levels for the racetrack engine.
-	=====================================================================================
+===================================================================================================
+RACETRACK LEVELS CATALOG FILE
+Defines the levels for the racetrack engine.
+===================================================================================================
 -->
 <data>
-	
 	<racetrackLevelsCatalog id="racetrackLevels">
 		<level id="demoLevel" objectsCatalogID="racetrackObjects" nameID="demoLevelName">
-			
+			<!-- ==================================================================================
+			Level-based Settings
+			=================================================================================== -->
 			<settings>
 				<setting name="lanes"				value="3"/>
 				<setting name="hazeDensity"			value="10"/>
@@ -22,7 +23,9 @@
 				<setting name="offRoadLimitDiv"		value=""/>
 				<setting name="offRoadDeceleration"	value=""/>
 			</settings>
-			
+			<!-- ==================================================================================
+			Level Colors
+			=================================================================================== -->
 			<colors>
 				<background	value="#72D7EE"/>
 				<haze		value="#163D1A"/>
@@ -31,22 +34,21 @@
 				<start		offroad="#10AA10" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
 				<finish		offroad="#009A00" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
 			</colors>
-			
+			<!-- ==================================================================================
+			Level Background Layers
+			=================================================================================== -->
 			<background textureAtlasID="textures" scale="2.0">
 				<layer imageID="bg_sky" parallax="1"/>
 				<layer imageID="bg_hills" parallax="2"/>
 				<layer imageID="bg_trees" parallax="4"/>
 			</background>
-			
-			<!--
-				=====================================================================================
-				Road Construction
-				Types:		straight, hill, valley, lowRollingHills, scurves, curve, bumps, downhillToEnd
-				Lengths:	none (0), short (25), medium (50), long (100), any number
-				Heights:	none (0), low (20), medium (40), high (60), extreme (100), any number
-				Curves:		none (0), easy (2), medium (4), hard (6), any number
-				=====================================================================================
-			-->
+			<!-- ==================================================================================
+			Road Construction
+			Types:		straight, hill, valley, lowRollingHills, scurves, curve, bumps, downhillToEnd
+			Lengths:	none (0), short (25), medium (50), long (100), any number
+			Heights:	none (0), low (20), medium (40), high (60), extreme (100), any number
+			Curves:		none (0), easy (2), medium (4), hard (6), any number
+			=================================================================================== -->
 			<road>
 				<section type="straight"	length="12"		height=""			curve=""/>
 				<section type="hill"		length="short"	height="low"		curve=""/>
@@ -64,11 +66,9 @@
 				<section type="hill"		length="medium"	height="extreme"	curve="easy"/>
 				<section type="dhte"		length="200"	height=""			curve=""/>
 			</road>
-			<!--
-				=====================================================================================
-				Entity Distribution Defs
-				=====================================================================================
-			-->
+			<!-- ==================================================================================
+			Object Entity Distribution
+			=================================================================================== -->
 			<objects>
 				<!-- Add row of billboards right after start line. -->
 				<entity id="billboard7" segNum="20" offset="-1"/>
@@ -97,24 +97,19 @@
 				<entities id="" collectionID="buildings" start="1600" end="end" stepSize="20" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="1, -1" offset="" offsetMode="mult" preOffset="2.0" postOffset="5.0"/>
 				<entities id="" collectionID="billboards" start="1000" end="end-50" stepSize="100" stepInc="" subCount="" segRange="0, 50" scaleRange="" offsetRange="-1, 1" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="" collectionID="vegetation" start="1000" end="end-50" stepSize="100" stepInc="" subCount="20" segRange="0, 50" scaleRange="1.0, 3.0" offsetRange="-1, 1" offset="" offsetMode="mult" preOffset="1.5" postOffset=""/>
-				
+				<!-- Add random collectible items on road. -->
 				<entities id="" collectionID="items" start="50" end="end-100" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
-				
+				<!-- Distribute regular checkpoints. -->
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
-				
 				<entities id="" collectionID="" start="" end="" stepSize="" stepInc="" subCount="" segRange="" offsetRange="" offset="" scaleRange="" offsetMode="" preOffset="" postOffset=""/>
 			</objects>
-			<!--
-				=====================================================================================
-				Opponent Defs
-				=====================================================================================
-			-->
+			<!-- ==================================================================================
+			Opponent Distribution
+			=================================================================================== -->
 			<opponents>
 				<entities collectionID="cars" count="200" offsetRange="-0.8, 0.8" speedFactor="4"/>
 			</opponents>
-			
 		</level>
 	</racetrackLevelsCatalog>
-	
 </data>
