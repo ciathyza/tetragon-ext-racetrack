@@ -33,13 +33,14 @@ package tetragon.data.racetrack.constants
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const PLAY_SOUND:String		= "playSound";
-		public static const ADD_SCORE:String		= "addScore";
-		public static const SUBTRACT_SCORE:String	= "subtractScore";
-		public static const ADD_BONUS:String		= "addBonus";
-		public static const SUBTRACT_BONUS:String	= "subtractBonus";
-		public static const ADD_TIME:String			= "addTime";
-		public static const SUBTRACT_TIME:String	= "subtractTime";
+		public static const PLAY_SOUND:String			= "playSound";
+		public static const ADD_SCORE:String			= "addScore";
+		public static const SUBTRACT_SCORE:String		= "subtractScore";
+		public static const ADD_BONUS:String			= "addBonus";
+		public static const SUBTRACT_BONUS:String		= "subtractBonus";
+		public static const ADD_TIME:String				= "addTime";
+		public static const SUBTRACT_TIME:String		= "subtractTime";
+		public static const CHANGE_OBJECT_STATE:String	= "changeObjectState";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -60,7 +61,8 @@ package tetragon.data.racetrack.constants
 				|| string == ADD_BONUS
 				|| string == SUBTRACT_BONUS
 				|| string == ADD_TIME
-				|| string == SUBTRACT_TIME;
+				|| string == SUBTRACT_TIME
+				|| string == CHANGE_OBJECT_STATE;
 		}
 	}
 }

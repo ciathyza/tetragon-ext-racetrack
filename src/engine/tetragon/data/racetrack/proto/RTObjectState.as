@@ -29,50 +29,21 @@
 package tetragon.data.racetrack.proto
 {
 	import tetragon.data.DataObject;
-	import tetragon.view.render2d.display.Image2D;
-
-	import flash.utils.Dictionary;
 	
 	
 	/**
+	 * RTObjectState class
+	 *
 	 * @author Hexagon
 	 */
-	public class RTObject extends DataObject
+	public class RTObjectState extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * A map of RTObjectImageSequence objects.
-		 */
-		public var sequences:Dictionary;
-		public var defaultSequenceID:String;
-		public var defaultFramerate:int;
-		
-		/**
-		 * Maps object-specific properties.
-		 */
-		public var properties:Dictionary;
-		public var propertiesNum:uint;
-		
-		/**
-		 * Maps object states.
-		 */
-		public var states:Dictionary;
-		public var statesNum:int;
-		
-		/**
-		 * An array of RTTrigger objects.
-		 */
-		public var triggers:Vector.<RTTrigger>;
-		public var triggersNum:uint;
-		
-		public var collectionID:String;
-		public var imageID:String;
-		public var image:Image2D;
-		public var type:String;
-		public var scale:Number;
+		public var sequenceID:String;
+		public var duration:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -82,7 +53,7 @@ package tetragon.data.racetrack.proto
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function RTObject(id:String)
+		public function RTObjectState(id:String)
 		{
 			_id = id;
 		}

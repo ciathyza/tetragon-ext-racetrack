@@ -36,6 +36,7 @@ package tetragon.file.parsers
 	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.data.racetrack.proto.RTObjectCollection;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
+	import tetragon.data.racetrack.proto.RTObjectState;
 	import tetragon.data.racetrack.proto.RTObjectsCatalog;
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.file.resource.ResourceIndex;
@@ -100,7 +101,6 @@ package tetragon.file.parsers
 					
 					/* Parse special object properties. */
 					subList = x.properties.property;
-					c = 0;
 					if (subList.length() > 0)
 					{
 						obj.propertiesNum = subList.length();
@@ -155,6 +155,25 @@ package tetragon.file.parsers
 								obj.triggers[c] = trigger;
 							}
 							++c;
+						}
+					}
+					
+					/* Parse object states. */
+					subList = x.states.state;
+					if (subList.length() > 0)
+					{
+						obj.statesNum = subList.length();
+						obj.states = new Dictionary();
+						for each (y in subList)
+						{
+							var stateID:String = extractString(y, "@id");
+							if (stateID != null && stateID != "")
+							{
+								var state:RTObjectState = new RTObjectState(stateID);
+								state.sequenceID = extractString(y, "@sequenceID");
+								state.duration = extractNumber(y, "@duration", 0.0);
+								obj.states[stateID] = state;
+							}
 						}
 					}
 					
