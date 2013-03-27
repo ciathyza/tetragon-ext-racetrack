@@ -1055,9 +1055,9 @@ package tetragon.systems.racetrack
 		 * @param clipY
 		 * @param hazeAlpha
 		 */
-		private function renderEntity(entity:RTEntity, sequenceID:String, scale:Number, destX:int,
-			destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0,
-			hazeAlpha:Number = 1.0):void
+		private function renderEntity(entity:RTEntity, sequenceID:String, scale:Number,
+			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
+			clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			if (!entity.image) return;
 			
@@ -1074,17 +1074,18 @@ package tetragon.systems.racetrack
 			scale *= entity.scale;
 			
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (image.width * scale * _widthHalf) * (_objectScale * _roadWidth);
-			var destH:int = (image.height * scale * _widthHalf) * (_objectScale * _roadWidth);
+			var destW:Number = (image.width * scale * _widthHalf) * (_objectScale * _roadWidth);
+			var destH:Number = (image.height * scale * _widthHalf) * (_objectScale * _roadWidth);
 			
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);
 
 			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
 
-			if (clipH < destH)
+			if (clipH < int(destH))
 			{
-				_renderCanvas.drawImage(image, destX, destY, destW, destH - clipH, (destW / image.width), _hazeColor, hazeAlpha);
+				_renderCanvas.drawImage(image, destX, destY, destW, destH - clipH,
+					(destW / image.width), _hazeColor, hazeAlpha);
 			}
 		}
 		
