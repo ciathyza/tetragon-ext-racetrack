@@ -43,10 +43,5 @@ package tetragon.data.racetrack.proto
 		public var action:String;
 		public var arguments:Array;
 		public var multi:Boolean;
-		
-		/**
-		 * If true the trigger will be re-triggered while still on the same segment.
-		 */
-		public var retrigger:Boolean;
 	}
 }

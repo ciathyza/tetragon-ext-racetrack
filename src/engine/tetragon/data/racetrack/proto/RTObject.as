@@ -99,6 +99,10 @@ package tetragon.data.racetrack.proto
 		}
 		
 		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/**
 		 * Switches the object to the specified state.
 		 * 
@@ -117,8 +121,8 @@ package tetragon.data.racetrack.proto
 			currentStateID = stateID;
 			currentState = state;
 			
-			var stateSeq:RTObjectImageSequence = sequences[state.sequenceID];
-			if (!stateSeq) return -2;
+			var seq:RTObjectImageSequence = sequences[state.sequenceID];
+			if (!seq) return -2;
 			
 			/* Disable any currenlty used anim seq. */
 			if (image is MovieClip2D)
@@ -126,15 +130,15 @@ package tetragon.data.racetrack.proto
 				(image as MovieClip2D).stop();
 			}
 			
-			juggler.add(stateSeq.movieClip);
-			stateSeq.movieClip.play();
+			juggler.add(seq.movieClip);
+			seq.movieClip.play();
 			
-			image = stateSeq.movieClip;
+			image = seq.movieClip;
 			
 			if (duration > 0.0)
 			{
 				if (!_interval) _interval = new Interval(0, 0, null, null);
-				else _interval.stop();
+				else _interval.reset();
 				_interval.delay = duration * 1000;
 				_interval.callBack = function():void
 				{

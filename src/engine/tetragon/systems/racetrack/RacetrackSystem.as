@@ -55,7 +55,6 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
 	import com.hexagonstar.time.Interval;
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -107,6 +106,7 @@ package tetragon.systems.racetrack
 		
 		private var _startPosition:Number;
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _prevPosition:Number;
 		private var _speed:Number;				// current speed
 		private var _speedPercent:Number;
 		
@@ -224,6 +224,7 @@ package tetragon.systems.racetrack
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
 			_startPosition = 0;
 			_position = 0;
+			_prevPosition = -1;
 			_speed = 0;
 			_widthHalf = _width * 0.5;
 			_heightHalf = _height * 0.5;
@@ -379,6 +380,7 @@ package tetragon.systems.racetrack
 				++_progress;
 			}
 			
+			_prevPosition = _position;
 			_prevSegment = playerSegment;
 			
 			/* Calculate scroll offsets for BG layers. */
@@ -918,7 +920,7 @@ package tetragon.systems.racetrack
 				
 				/* Player is still on the same segment but trigger should not be
 				 * triggered again on the same segment. */
-				if (!trigger.retrigger && segment.index == _prevSegment.index) continue;
+				if (!trigger.multi && segment.index == _prevSegment.index) continue;
 				processTrigger(trigger, null);
 			}
 		}
@@ -944,6 +946,8 @@ package tetragon.systems.racetrack
 						{
 							var trigger:RTTrigger = e.object.triggers[j];
 							if (!trigger || trigger.type != RTTriggerTypes.COLLISION) continue;
+							/* Don't retrigger on same segment if not multi-trigger! */
+							if (!trigger.multi && segment.index == _prevSegment.index) continue;
 							processTrigger(trigger, e);
 						}
 					}
@@ -1055,7 +1059,6 @@ package tetragon.systems.racetrack
 			var success:int = object.switchToState(stateID, duration);
 			if (success == 1)
 			{
-				Debug.trace(stateID);
 			}
 		}
 		
