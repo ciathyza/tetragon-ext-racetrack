@@ -35,7 +35,6 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
-	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
@@ -123,6 +122,7 @@ package tetragon.systems.racetrack
 		private var _isSteeringRight:Boolean;
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
+		private var _isIdleAfterCollision:Boolean;
 		
 		private var _started:Boolean;
 		
@@ -279,13 +279,13 @@ package tetragon.systems.racetrack
 			/* only process non-render logic if system is started. */
 			if (!_started) return;
 			
-			_speedPercent = _speed / _maxSpeed;
 			var i:int, playerSegment:RTSegment = findSegment(_position + _playerZ);
 			
-			updateCars(_dt, playerSegment, _playerWidth);
-			
+			_speedPercent = _speed / _maxSpeed;
 			_startPosition = _position;
 			_position = increase(_position, _dt * _speed, _trackLength);
+			
+			updateCars(playerSegment, _playerWidth);
 			
 			/* Handle player interaction. */
 			if (_allowControls)
@@ -299,22 +299,19 @@ package tetragon.systems.racetrack
 				processSegmentTriggers(playerSegment);
 			}
 			
-			/* Check if player drives onto off-road area. */
-			if ((_playerX < -1) || (_playerX > 1))
-			{
-				if (_speed > _offRoadLimit)
-				{
-					_speed = accel(_speed, _offRoadDecel, _dt);
-				}
-			}
-			
 			/* Check player collisions with other entities. */
 			if (playerSegment.entitiesNum > 0)
 			{
 				processEntityCollisions(playerSegment);
 			}
 			
-			/* Check player collision with opponents. */
+			/* Slow down if player drives onto off-road area. */
+			if ((_playerX < -1 || _playerX > 1) && _speed > _offRoadLimit)
+			{
+				_speed = accel(_speed, _offRoadDecel);
+			}
+			
+			/* Check player collision with other cars. */
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
 				var car:RTCar = playerSegment.cars[i];
@@ -429,7 +426,7 @@ package tetragon.systems.racetrack
 					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, op.percent);
 					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
 					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, op.percent);
-					renderEntity(op.entity, null, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
+					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
 				}
 
 				/* Render other objects. */
@@ -443,7 +440,7 @@ package tetragon.systems.racetrack
 						spriteScale = seg.point1.screen.scale;
 						spriteX = seg.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
 						spriteY = seg.point1.screen.y;
-						renderEntity(entity, null, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
+						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
 					}
 				}
 				
@@ -470,7 +467,6 @@ package tetragon.systems.racetrack
 					}
 
 					renderEntity(_racetrack.player,
-						seqID,
 						_cameraDepth / _playerZ,
 						_widthHalf,
 						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + jitter,
@@ -785,7 +781,7 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function updateCars(dt:Number, playerSegment:RTSegment, playerW:Number):void
+		private function updateCars(playerSegment:RTSegment, playerW:Number):void
 		{
 			var i:int,
 				car:RTCar,
@@ -797,7 +793,7 @@ package tetragon.systems.racetrack
 				car = _cars[i];
 				oldSegment = findSegment(car.z);
 				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
-				car.z = increase(car.z, dt * car.speed, _trackLength);
+				car.z = increase(car.z, _dt * car.speed, _trackLength);
 				car.percent = percentRemaining(car.z, _segmentLength);
 				// useful for interpolation during rendering phase
 				newSegment = findSegment(car.z);
@@ -900,16 +896,43 @@ package tetragon.systems.racetrack
 			else
 			{
 				var dx:Number = _dt * 2 * _speedPercent;
+				var playerStateID:String = "idle";
+				
 				/* Update left/right steering. */
-				if (_isSteeringLeft) _playerX = _playerX - dx;
-				else if (_isSteeringRight) _playerX = _playerX + dx;
+				if (_isSteeringLeft)
+				{
+					playerStateID = "moveLeft";
+					_playerX = _playerX - dx;
+				}
+				else if (_isSteeringRight)
+				{
+					playerStateID = "moveRight";
+					_playerX = _playerX + dx;
+				}
 				
 				_playerX = _playerX - (dx * _speedPercent * segment.curve * _centrifugal);
 				
 				/* Update acceleration & decceleration. */
-				if (_isAccelerating) _speed = accel(_speed, _acceleration, _dt);
-				else if (_isBraking) _speed = accel(_speed, _braking, _dt);
-				else _speed = accel(_speed, _deceleration, _dt);
+				if (_isAccelerating)
+				{
+					_isIdleAfterCollision = false;
+					_speed = accel(_speed, _acceleration);
+				}
+				else if (_isBraking)
+				{
+					_speed = accel(_speed, _braking);
+				}
+				else
+				{
+					_speed = accel(_speed, _deceleration);
+				}
+				
+				if (!_isIdleAfterCollision && _speed > 0)
+				{
+					playerStateID = "moveForward";
+				}
+				
+				_racetrack.player.object.switchToState(playerStateID);
 			}
 		}
 		
@@ -981,6 +1004,7 @@ package tetragon.systems.racetrack
 							/* Determines how quick player can steer away from obstacle after being stopped. */
 							_speed = _maxSpeed / 5;
 							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
+							_isIdleAfterCollision = true;
 						}
 						break;
 					}
@@ -1145,22 +1169,22 @@ package tetragon.systems.racetrack
 		 * @param clipY
 		 * @param hazeAlpha
 		 */
-		private function renderEntity(entity:RTEntity, sequenceID:String, scale:Number,
+		private function renderEntity(entity:RTEntity, scale:Number,
 			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
 			clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			if (!entity.object.image) return;
 			
 			var image:Image2D = entity.object.image;
-			// TODO Remove and add handling of object state here!
-			if (sequenceID)
-			{
-				var seq:RTObjectImageSequence = entity.object.sequences[sequenceID];
-				if (seq)
-				{
-					image = seq.movieClip;
-				}
-			}
+			
+			//if (sequenceID)
+			//{
+			//	var seq:RTObjectImageSequence = entity.object.sequences[sequenceID];
+			//	if (seq)
+			//	{
+			//		image = seq.movieClip;
+			//	}
+			//}
 			
 			scale *= entity.scale;
 			
@@ -1200,9 +1224,9 @@ package tetragon.systems.racetrack
 		}
 
 
-		private function accel(v:Number, accel:Number, dt:Number):Number
+		private function accel(v:Number, accel:Number):Number
 		{
-			return v + (accel * dt);
+			return v + (accel * _dt);
 		}
 
 
