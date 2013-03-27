@@ -122,7 +122,9 @@ package tetragon.systems.racetrack
 		private var _isSteeringRight:Boolean;
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
+		
 		private var _isIdleAfterCollision:Boolean;
+		private var _suppressDefaultPlayerStates:Boolean;
 		
 		private var _started:Boolean;
 		
@@ -932,7 +934,10 @@ package tetragon.systems.racetrack
 					playerStateID = "moveForward";
 				}
 				
-				_racetrack.player.object.switchToState(playerStateID);
+				if (!_suppressDefaultPlayerStates)
+				{
+					_racetrack.player.object.switchToState(playerStateID);
+				}
 			}
 		}
 		
@@ -1082,12 +1087,32 @@ package tetragon.systems.racetrack
 		
 		/**
 		 * @private
+		 * 
+		 * @param duration Duration for that the state should be switched to. If 0, the
+		 *        new state will be permanent.
 		 */
 		private function switchObjectState(object:RTObject, stateID:String, duration:Number):void
 		{
-			var success:int = object.switchToState(stateID, duration);
+			if (object.isPlayer)
+			{
+				_suppressDefaultPlayerStates = true;
+			}
+			
+			var success:int = object.switchToState(stateID);
 			if (success == 1)
 			{
+				if (duration > 0.0)
+				{
+					if (!object.interval) object.interval = new Interval(0, 0, null, null);
+					else object.interval.reset();
+					object.interval.delay = duration * 1000;
+					object.interval.callBack = function():void
+					{
+						object.switchToState(object.defaultStateID);
+						_suppressDefaultPlayerStates = false;
+					};
+					object.interval.start();
+				}
 			}
 		}
 		

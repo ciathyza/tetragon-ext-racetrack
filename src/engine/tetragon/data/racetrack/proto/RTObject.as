@@ -56,6 +56,8 @@ package tetragon.data.racetrack.proto
 		public var image:Image2D;
 		public var type:String;
 		public var scale:Number;
+		public var isPlayer:Boolean;
+		public var interval:Interval;
 		
 		/**
 		 * Maps object states.
@@ -83,8 +85,6 @@ package tetragon.data.racetrack.proto
 		public var triggers:Vector.<RTTrigger>;
 		public var triggersNum:uint;
 		
-		private var _interval:Interval;
-		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -107,11 +107,9 @@ package tetragon.data.racetrack.proto
 		 * Switches the object to the specified state.
 		 * 
 		 * @param stateID
-		 * @param duration Duration for that the state should be switched to. If 0, the
-		 *        new state will be permanent.
 		 * @return 1, 0, -1, or -2.
 		 */
-		public function switchToState(stateID:String, duration:Number = 0.0):int
+		public function switchToState(stateID:String):int
 		{
 			if (!states || stateID == currentStateID || stateID == null || stateID == "") return 0;
 			
@@ -134,18 +132,6 @@ package tetragon.data.racetrack.proto
 			seq.movieClip.play();
 			
 			image = seq.movieClip;
-			
-			if (duration > 0.0)
-			{
-				if (!_interval) _interval = new Interval(0, 0, null, null);
-				else _interval.reset();
-				_interval.delay = duration * 1000;
-				_interval.callBack = function():void
-				{
-					switchToState(defaultStateID);
-				};
-				_interval.start();
-			}
 			
 			return 1;
 		}

@@ -366,16 +366,24 @@ package tetragon.systems.racetrack
 			var playerObjectID:String = registry.settings.getString(RTSettingsNames.PLAYER_OBJECT_ID);
 			var playerObj:RTObject = _rt.getObject(playerObjectID);
 			
-			if (!playerObj.image)
+			if (playerObj)
 			{
-				Log.warn("No player image!", this);
-				var placeholder:BitmapData = ResourceIndex.getPlaceholderImage();
-				playerObj.image = new Image2D(Texture2D.fromBitmapData(placeholder));
+				playerObj.isPlayer = true;
+				if (!playerObj.image)
+				{
+					Log.warn("No player image!", this);
+					var placeholder:BitmapData = ResourceIndex.getPlaceholderImage();
+					playerObj.image = new Image2D(Texture2D.fromBitmapData(placeholder));
+				}
+				
+				/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
+				_rt.player = new RTEntity(playerObj);
+				_rt.objectScale = 0.3 * (1 / _rt.player.width);
 			}
-			
-			/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
-			_rt.player = new RTEntity(playerObj);
-			_rt.objectScale = 0.3 * (1 / _rt.player.width);
+			else
+			{
+				Log.error("No player object!", this);
+			}
 		}
 		
 		
