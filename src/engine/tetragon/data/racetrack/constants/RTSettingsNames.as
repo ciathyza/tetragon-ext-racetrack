@@ -35,6 +35,7 @@ package tetragon.data.racetrack.constants
 		
 		public static const LANES:String						= "lanes";
 		public static const HAZE_DENSITY:String					= "hazeDensity";
+		public static const HAZE_THRESHOLD:String				= "hazeThreshold";
 		public static const ROAD_WIDTH:String					= "roadWidth";
 		public static const SEGMENT_LENGTH:String				= "segmentLength";
 		public static const RUMBLE_LENGTH:String				= "rumbleLength";

@@ -13,7 +13,8 @@ Defines the levels for the racetrack engine.
 			=================================================================================== -->
 			<settings>
 				<setting name="lanes"				value="3"/>
-				<setting name="hazeDensity"			value="10"/>
+				<setting name="hazeDensity"			value="16"/>
+				<setting name="hazeThreshold"		value="0.99"/>
 				<setting name="roadWidth"			value=""/>
 				<setting name="segmentLength"		value=""/>
 				<setting name="rumbleLength"		value=""/>
@@ -27,7 +28,7 @@ Defines the levels for the racetrack engine.
 			Level Colors
 			=================================================================================== -->
 			<colors>
-				<background	value="#72D7EE"/>
+				<background	value="#000000"/>
 				<haze		value="#163D1A"/>
 				<light		offroad="#10AA10" road="#6B6B6B" rumble="#555555" lane=""/>
 				<dark		offroad="#009A00" road="#696969" rumble="#BBBBBB" lane="#CCCCCC"/>

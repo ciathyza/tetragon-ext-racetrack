@@ -54,6 +54,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
 	import com.hexagonstar.time.Interval;
+	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -136,6 +137,7 @@ package tetragon.systems.racetrack
 		private var _lanes:int;
 		private var _hazeDensity:int;
 		private var _hazeColor:uint;
+		private var _hazeThreshold:Number;
 		private var _acceleration:Number;
 		private var _deceleration:Number;
 		private var _braking:Number;
@@ -360,7 +362,7 @@ package tetragon.systems.racetrack
 			}
 		}
 		
-		
+		private var _once:Boolean;
 		/**
 		 * Renders the racetrack.
 		 */
@@ -396,7 +398,8 @@ package tetragon.systems.racetrack
 				seg = _segments[(baseSegment.index + i) % _segments.length];
 				seg.looped = seg.index < baseSegment.index;
 				/* Apply exponential haze alpha value. */
-				seg.haze = 1 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
+				seg.haze = 1.0 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
+				if (!_once) Debug.trace(seg.index + ": " + seg.haze);
 				seg.clip = maxY;
 
 				project(seg.point1, (_playerX * _roadWidth) - x, _playerY + _cameraAltitude, _position - (seg.looped ? _trackLength : 0));
@@ -415,6 +418,7 @@ package tetragon.systems.racetrack
 				renderSegment(i, seg.point1.screen.x, seg.point1.screen.y, seg.point1.screen.w, seg.point2.screen.x, seg.point2.screen.y, seg.point2.screen.w, seg.colorSet, seg.haze);
 				maxY = seg.point1.screen.y;
 			}
+			_once = true;
 
 			/* PHASE 2: Back to front render the sprites. */
 			for (i = (_drawDistance - 1); i > 0; i--)
@@ -561,6 +565,7 @@ package tetragon.systems.racetrack
 			_lanes = _racetrack.lanes;
 			_hazeDensity = _racetrack.hazeDensity;
 			_hazeColor = _racetrack.hazeColor;
+			_hazeThreshold = _racetrack.hazeThreshold;
 			_acceleration = _racetrack.acceleration;
 			_deceleration = _racetrack.deceleration;
 			_braking = _racetrack.braking;
@@ -1163,13 +1168,14 @@ package tetragon.systems.racetrack
 			
 			/* Draw offroad area segment. */
 			//if (nr % 2 == 0)
-			_renderCanvas.drawRect(0, y2, _width, y1 - y2, colorSet.offroad, _hazeColor, hazeAlpha);
+			_renderCanvas.drawRect(0, y2, _width, y1 - y2, colorSet.offroad, _hazeColor, hazeAlpha,
+				_hazeThreshold);
 			
 			/* Draw the road segment. */
-			_renderCanvas.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, colorSet.rumble, _hazeColor, hazeAlpha);
-			_renderCanvas.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, colorSet.rumble, _hazeColor, hazeAlpha);
-			_renderCanvas.drawQuad(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, colorSet.road, _hazeColor, hazeAlpha);
-
+			_renderCanvas.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, colorSet.rumble, _hazeColor, hazeAlpha, _hazeThreshold);
+			_renderCanvas.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, colorSet.rumble, _hazeColor, hazeAlpha, _hazeThreshold);
+			_renderCanvas.drawQuad(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, colorSet.road, _hazeColor, hazeAlpha, _hazeThreshold);
+			
 			/* Draw lane strips. */
 			if (colorSet.lane > 0)
 			{
@@ -1182,7 +1188,8 @@ package tetragon.systems.racetrack
 
 				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
 				{
-					_renderCanvas.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, colorSet.lane, _hazeColor, hazeAlpha);
+					_renderCanvas.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2,
+						lx2 - l2 / 2, y2, colorSet.lane, _hazeColor, hazeAlpha, _hazeThreshold);
 				}
 			}
 		}
@@ -1221,7 +1228,7 @@ package tetragon.systems.racetrack
 			if (clipH < int(destH))
 			{
 				_renderCanvas.drawImage(image, destX, destY, destW, destH - clipH,
-					(destW / image.width), _hazeColor, hazeAlpha);
+					(destW / image.width), _hazeColor, hazeAlpha, _hazeThreshold);
 			}
 		}
 		

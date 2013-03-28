@@ -59,6 +59,7 @@ package tetragon.data.racetrack
 		
 		public var backgroundColor:uint;
 		public var hazeColor:uint;
+		public var hazeThreshold:Number;
 		public var colorSetLight:RTColorSet;
 		public var colorSetDark:RTColorSet;
 		public var colorSetStart:RTColorSet;

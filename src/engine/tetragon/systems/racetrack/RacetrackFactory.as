@@ -206,6 +206,7 @@ package tetragon.systems.racetrack
 			
 			/* Level-based parameters. */
 			_rt.hazeDensity = _level.settings[RTSettingsNames.HAZE_DENSITY] || 10;
+			_rt.hazeThreshold = _level.settings[RTSettingsNames.HAZE_THRESHOLD] || 0.99;
 			_rt.lanes = _level.settings[RTSettingsNames.LANES] || 2;
 			_rt.roadWidth = _level.settings[RTSettingsNames.ROAD_WIDTH] || _rt.roadWidth;
 			_rt.segmentLength = _level.settings[RTSettingsNames.SEGMENT_LENGTH] || _rt.segmentLength;
