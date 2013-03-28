@@ -190,11 +190,11 @@ package tetragon.systems.racetrack
 			var accelerationDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_ACCELERATION_DIV) || 5.0;
 			var offRoadLimitDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_LIMIT_DIV) || 4.0;
 			
-			_rt.drawDistance = s.getNumber(RTSettingsNames.DRAW_DISTANCE) || 300;	/* 100 - 500 */
-			_rt.fov = s.getNumber(RTSettingsNames.FOV) || 100;						/* 80 - 140 */
-			_rt.cameraAltitude = s.getNumber(RTSettingsNames.CAMERA_ALTITUDE) || 1000;/* 500 - 5000 */
+			_rt.drawDistance = s.getNumber(RTSettingsNames.DEFAULT_DRAW_DISTANCE) || 300;			/* 100 - 500 */
+			_rt.fov = s.getNumber(RTSettingsNames.DEFAULT_FOV) || 100;								/* 80 - 140 */
+			_rt.cameraAltitude = s.getNumber(RTSettingsNames.DEFAULT_CAMERA_ALTITUDE) || 1000;		/* 500 - 5000 */
 			_rt.maxCars = s.getNumber(RTSettingsNames.MAX_CARS) || 1000;
-			_rt.roadWidth = s.getNumber(RTSettingsNames.DEFAULT_ROAD_WIDTH) || 2000; /* 500 - 3000 */
+			_rt.roadWidth = s.getNumber(RTSettingsNames.DEFAULT_ROAD_WIDTH) || 2000;				/* 500 - 3000 */
 			_rt.segmentLength = s.getNumber(RTSettingsNames.DEFAULT_SEGMENT_LENGTH) || 200;
 			_rt.rumbleLength = s.getNumber(RTSettingsNames.DEFAULT_RUMBLE_LENGTH) || 3;
 			_rt.centrifugal = s.getNumber(RTSettingsNames.DEFAULT_CENTRIFUGAL) || 0.3;

@@ -25,10 +25,9 @@
 	<defaultMaxSpeedMult>1.0</defaultMaxSpeedMult>
 	<defaultAccelerationDiv>5.0</defaultAccelerationDiv>
 	<defaultOffRoadLimitDiv>4.0</defaultOffRoadLimitDiv>
-	
-	<fov>100</fov>							<!-- Valid range: 80 - 150 -->
-	<cameraAltitude>1000</cameraAltitude>	<!-- Valid range: 500 - 5000 -->
-	<drawDistance>300</drawDistance>		<!-- Valid range: 100 - 500 -->
+	<defaultFOV>100</defaultFOV>						<!-- Valid range: 80 - 150 -->
+	<defaultCameraAltitude>1000</defaultCameraAltitude>	<!-- Valid range: 500 - 5000 -->
+	<defaultDrawDistance>300</defaultDrawDistance>		<!-- Valid range: 100 - 500 -->
 	
 	<entityThinningMult>1</entityThinningMult>
 	<maxCars>1000</maxCars>

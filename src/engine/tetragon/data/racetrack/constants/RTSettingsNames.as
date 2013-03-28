@@ -53,6 +53,9 @@ package tetragon.data.racetrack.constants
 		public static const DEFAULT_ACCELERATION_DIV:String		= "defaultAccelerationDiv";
 		public static const DEFAULT_OFFROAD_LIMIT_DIV:String	= "defaultOffRoadLimitDiv";
 		public static const DEFAULT_OFFROAD_DECELERATION:String	= "defaultOffRoadDeceleration";
+		public static const DEFAULT_FOV:String					= "defaultFOV";
+		public static const DEFAULT_CAMERA_ALTITUDE:String		= "defaultCameraAltitude";
+		public static const DEFAULT_DRAW_DISTANCE:String		= "defaultDrawDistance";
 		
 		public static const FOV:String							= "fov";
 		public static const CAMERA_ALTITUDE:String				= "cameraAltitude";
