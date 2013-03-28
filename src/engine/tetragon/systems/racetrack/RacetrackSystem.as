@@ -452,23 +452,6 @@ package tetragon.systems.racetrack
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
 					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
-					var steering:int = _speed * (_isSteeringLeft ? -1 : _isSteeringRight ? 1 : 0);
-					var updown:Number = playerSegment.point2.world.y - playerSegment.point1.world.y;
-					var seqID:String;
-					
-					if (steering < 0)
-					{
-						seqID = (updown > 0) ? "leftUphill" : "left";
-					}
-					else if (steering > 0)
-					{
-						seqID = (updown > 0) ? "rightUphill" : "right";
-					}
-					else
-					{
-						seqID = (updown > 0) ? "straightUphill" : "straight";
-					}
-
 					renderEntity(_racetrack.player,
 						_cameraDepth / _playerZ,
 						_widthHalf,
@@ -903,17 +886,28 @@ package tetragon.systems.racetrack
 			else
 			{
 				var dx:Number = _dt * 2 * _speedPercent;
+				var updown:Number = segment.point2.world.y - segment.point1.world.y - 20;
 				
 				/* Update left/right steering. */
 				if (_isSteeringLeft)
 				{
-					playerStateID = RTPlayerDefaultStateNames.MOVE_LEFT;
+					playerStateID = (updown > 0)
+						? RTPlayerDefaultStateNames.MOVE_LEFT_UP
+						: RTPlayerDefaultStateNames.MOVE_LEFT;
 					_playerX = _playerX - dx;
 				}
 				else if (_isSteeringRight)
 				{
-					playerStateID = RTPlayerDefaultStateNames.MOVE_RIGHT;
+					playerStateID = (updown > 0)
+						? RTPlayerDefaultStateNames.MOVE_RIGHT_UP
+						: RTPlayerDefaultStateNames.MOVE_RIGHT;
 					_playerX = _playerX + dx;
+				}
+				else
+				{
+					playerStateID = (updown > 0)
+						? RTPlayerDefaultStateNames.MOVE_FORWARD_UP
+						: RTPlayerDefaultStateNames.MOVE_FORWARD;
 				}
 				
 				_playerX = _playerX - (dx * _speedPercent * segment.curve * _centrifugal);
@@ -939,7 +933,6 @@ package tetragon.systems.racetrack
 				}
 				else if (!_isIdleAfterCollision)
 				{
-					playerStateID = RTPlayerDefaultStateNames.MOVE_FORWARD;
 				}
 			}
 			
