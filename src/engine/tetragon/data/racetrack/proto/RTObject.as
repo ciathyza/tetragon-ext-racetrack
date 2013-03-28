@@ -125,27 +125,35 @@ package tetragon.data.racetrack.proto
 			if (!seq) return -2;
 			
 			/* Disable any currenlty used anim seq. */
-			if (image is MovieClip2D)
-			{
-				(image as MovieClip2D).stop();
-			}
+			if (image is MovieClip2D) (image as MovieClip2D).stop();
 			
 			currentSequence = seq;
-			juggler.add(currentSequence.movieClip);
-			currentSequence.movieClip.play();
 			
-			image = currentSequence.movieClip;
+			if (currentSequence.movieClip)
+			{
+				juggler.add(currentSequence.movieClip);
+				currentSequence.movieClip.play();
+				image = currentSequence.movieClip;
+				return 1;
+			}
+			else if (currentSequence.image)
+			{
+				image = currentSequence.image;
+				return 1;
+			}
 			
-			return 1;
+			return 0;
 		}
 		
 		
 		/**
-		 * @private
+		 * Changes the framerate of the currently played anim sequence.
+		 * 
+		 * @param fps
 		 */
 		public function changeAnimFramerate(fps:int):void
 		{
-			if (!currentSequence) return;
+			if (!currentSequence || !currentSequence.movieClip) return;
 			if (fps < 1) fps = 1;
 			else if (fps > 60) fps = 60;
 			currentSequence.movieClip.fps = fps;

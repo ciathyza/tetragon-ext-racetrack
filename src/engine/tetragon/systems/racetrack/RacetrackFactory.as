@@ -285,6 +285,7 @@ package tetragon.systems.racetrack
 			var textures:Dictionary = _textureAtlas.getImageMap();
 			var placeholder:Texture2D = Texture2D.fromBitmapData(ResourceIndex.getPlaceholderImage());
 			var texture:Texture2D;
+			var imageID:String;
 			
 			/* Create empty collections. */
 			for each (var c:RTObjectCollection in _objectsCatalog.collections)
@@ -302,30 +303,50 @@ package tetragon.systems.racetrack
 					for each (var seq:RTObjectImageSequence in obj.sequences)
 					{
 						if (seq.framerate <= 0) seq.framerate = obj.defaultFramerate;
-						var mcTextures:Vector.<Texture2D> = new Vector.<Texture2D>();
-						for (var i:uint = 0; i < seq.imageIDs.length; i++)
+						
+						var framesNum:uint = seq.imageIDs.length;
+						/* If the sequence has only one frame, use an Image2D because it's cheaper */
+						if (framesNum == 1)
 						{
-							var imageID:String = seq.imageIDs[i];
+							imageID = seq.imageIDs[0];
 							texture = _textureAtlas.getImage(imageID);
 							if (!texture)
 							{
 								Log.warn("Sequence \"" + seq.id + "\" doesn't have image " + imageID, this);
 								texture = placeholder;
 							}
-							mcTextures.push(texture);
+							seq.image = new Image2D(texture);
+							seq.image.blendMode = BlendMode2D.NORMAL;
+							seq.image.smoothing = TextureSmoothing2D.NONE;
 						}
-						if (mcTextures.length > 0)
-						{
-							var mc:MovieClip2D = new MovieClip2D(mcTextures, seq.framerate);
-							mc.blendMode = BlendMode2D.NORMAL;
-							mc.smoothing = TextureSmoothing2D.NONE;
-							mc.playMode = seq.playMode;
-							mc.playDirection = seq.playDirection;
-							seq.movieClip = mc;
-						}
+						/* ... Otherwise create a MovieClip2D */
 						else
 						{
-							Log.warn("Sequence \"" + seq.id + "\" has no images.", this);
+							var mcTextures:Vector.<Texture2D> = new Vector.<Texture2D>();
+							for (var i:uint = 0; i < framesNum; i++)
+							{
+								imageID = seq.imageIDs[i];
+								texture = _textureAtlas.getImage(imageID);
+								if (!texture)
+								{
+									Log.warn("Sequence \"" + seq.id + "\" doesn't have image " + imageID, this);
+									texture = placeholder;
+								}
+								mcTextures.push(texture);
+							}
+							if (mcTextures.length > 0)
+							{
+								var mc:MovieClip2D = new MovieClip2D(mcTextures, seq.framerate);
+								mc.blendMode = BlendMode2D.NORMAL;
+								mc.smoothing = TextureSmoothing2D.NONE;
+								mc.playMode = seq.playMode;
+								mc.playDirection = seq.playDirection;
+								seq.movieClip = mc;
+							}
+							else
+							{
+								Log.warn("Sequence \"" + seq.id + "\" has no images.", this);
+							}
 						}
 					}
 				}

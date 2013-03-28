@@ -28,6 +28,7 @@
  */
 package tetragon.data.racetrack.proto
 {
+	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
 	
 	
@@ -44,6 +45,7 @@ package tetragon.data.racetrack.proto
 		
 		public var id:String;
 		public var imageIDs:Vector.<String>;
+		public var image:Image2D;
 		public var movieClip:MovieClip2D;
 		public var playMode:String;
 		public var playDirection:String;
