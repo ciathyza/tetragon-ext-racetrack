@@ -926,16 +926,13 @@ package tetragon.systems.racetrack
 				{
 					_speed = accel(_speed, _deceleration);
 				}
-				
-				if (_speed <= 0)
-				{
-					playerStateID = RTPlayerDefaultStateNames.IDLE;
-				}
-				else if (!_isIdleAfterCollision)
-				{
-				}
 			}
 			
+			if (_speed <= 0 || _isIdleAfterCollision)
+			{
+				playerStateID = RTPlayerDefaultStateNames.IDLE;
+			}
+				
 			if (playerStateID && !_suppressDefaultPlayerStates)
 			{
 				_racetrack.player.object.switchToState(playerStateID);
