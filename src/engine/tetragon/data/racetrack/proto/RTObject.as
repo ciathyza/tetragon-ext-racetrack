@@ -125,7 +125,11 @@ package tetragon.data.racetrack.proto
 			if (!seq) return -2;
 			
 			/* Disable any currenlty used anim seq. */
-			if (image is MovieClip2D) (image as MovieClip2D).stop();
+			if (image is MovieClip2D)
+			{
+				(image as MovieClip2D).stop();
+				juggler.remove(image as MovieClip2D);
+			}
 			
 			currentSequence = seq;
 			

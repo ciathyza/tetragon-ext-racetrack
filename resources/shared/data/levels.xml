@@ -104,7 +104,8 @@ Defines the levels for the racetrack engine.
 				<!-- Add random on-road obstacles. -->
 				<entities id="" collectionID="obstacles" start="80" end="end-20" stepSize="97" stepInc="" subCount="" segRange="" scaleRange="0.5, 0.8" offsetRange="-1.0, 1.0" offset="" offsetMode="rand" preOffset="" postOffset=""/>
 				<!-- Add random collectible items on road. -->
-				<entities id="" collectionID="items" start="50" end="end-100" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="" collectionID="items" start="50" end="end-500" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="" collectionID="items" start="end-500" end="end-100" stepSize="3" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="" offsetMode="" preOffset="" postOffset=""/>
 				<!-- Distribute regular checkpoints. -->
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
