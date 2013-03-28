@@ -54,7 +54,6 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
 	import com.hexagonstar.time.Interval;
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -362,7 +361,6 @@ package tetragon.systems.racetrack
 			}
 		}
 		
-		private var _once:Boolean;
 		/**
 		 * Renders the racetrack.
 		 */
@@ -399,7 +397,6 @@ package tetragon.systems.racetrack
 				seg.looped = seg.index < baseSegment.index;
 				/* Apply exponential haze alpha value. */
 				seg.haze = 1.0 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
-				if (!_once) Debug.trace(seg.index + ": " + seg.haze);
 				seg.clip = maxY;
 
 				project(seg.point1, (_playerX * _roadWidth) - x, _playerY + _cameraAltitude, _position - (seg.looped ? _trackLength : 0));
@@ -418,7 +415,6 @@ package tetragon.systems.racetrack
 				renderSegment(i, seg.point1.screen.x, seg.point1.screen.y, seg.point1.screen.w, seg.point2.screen.x, seg.point2.screen.y, seg.point2.screen.w, seg.colorSet, seg.haze);
 				maxY = seg.point1.screen.y;
 			}
-			_once = true;
 
 			/* PHASE 2: Back to front render the sprites. */
 			for (i = (_drawDistance - 1); i > 0; i--)
