@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	=====================================================================================
-	RACETRACK OBJECTS FILE
+	===========================================================================================
+	RACETRACK OBJECTS CATALOG FILE
 	Defines sprite collections and objects for the racetrack engine.
-	=====================================================================================
+	===========================================================================================
 -->
 <data>
-	
 	<racetrackObjectsCatalog id="racetrackObjects" textureAtlasID="textures">
+		<!-- ==================================================================================
+		Object Collections
+		=================================================================================== -->
 		<collections>
 			<collection id="billboards" type="offroad" scale="2.5"/>
 			<collection id="vegetation" type="offroad" scale="2.5"/>
@@ -19,7 +21,11 @@
 			<collection id="traffic" type="traffic" scale="1.25"/>
 			<collection id="player" type="player" scale="1.0"/>
 		</collections>
+		<!-- ==================================================================================
+		Object Definitions
+		=================================================================================== -->
 		<objects>
+			<!-- Offroad Obstacles & Vegetation. -->
 			<object id="billboard1" imageID="spr_billboard_1" collectionID="billboards" scale="1.0"/>
 			<object id="billboard2" imageID="spr_billboard_2" collectionID="billboards" scale="1.0"/>
 			<object id="billboard3" imageID="spr_billboard_3" collectionID="billboards" scale="1.0"/>
@@ -29,13 +35,6 @@
 			<object id="billboard7" imageID="spr_billboard_7" collectionID="billboards" scale="1.0"/>
 			<object id="billboard8" imageID="spr_billboard_8" collectionID="billboards" scale="1.0"/>
 			<object id="billboard9" imageID="spr_billboard_9" collectionID="billboards" scale="1.0"/>
-			
-			<object id="checkpoint" imageID="spr_checkpoint" collectionID="checkpoints" scale="1.0">
-				<triggers>
-					<trigger type="segment" action="playSound" arguments="checkpointSound"/>
-				</triggers>
-			</object>
-			<!-- Offroad Vegetation. -->
 			<object id="boulder1" imageID="spr_veg_boulder_1" collectionID="vegetation" scale="1.0"/>
 			<object id="boulder2" imageID="spr_veg_boulder_2" collectionID="vegetation" scale="1.0"/>
 			<object id="boulder3" imageID="spr_veg_boulder_3" collectionID="vegetation" scale="1.0"/>
@@ -48,7 +47,6 @@
 			<object id="stump" imageID="spr_veg_stump" collectionID="vegetation" scale="1.0"/>
 			<object id="tree1" imageID="spr_veg_tree_1" collectionID="vegetation" scale="1.0"/>
 			<object id="tree2" imageID="spr_veg_tree_2" collectionID="vegetation" scale="1.0"/>
-			<!-- Offroad Buildings. -->
 			<object id="boathouse" imageID="spr_bldg_boathouse" collectionID="buildings" scale="3.0"/>
 			<object id="column" imageID="spr_bldg_column" collectionID="buildings" scale="3.0"/>
 			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
@@ -65,65 +63,88 @@
 					<property name="obstacleHardness" value="4"/>
 				</properties>
 			</object>
-			
+			<!-- Checkpoint Objects -->
+			<object id="checkpoint" imageID="spr_checkpoint" collectionID="checkpoints" scale="1.0">
+				<triggers>
+					<trigger type="segment" action="playSound" arguments="checkpointSound"/>
+				</triggers>
+			</object>
+			<!-- Opponents & Traffic -->
 			<object id="car1" imageID="spr_car_1" collectionID="cars" scale="1.0"/>
 			<object id="car2" imageID="spr_car_2" collectionID="cars" scale="1.0"/>
 			<object id="car3" imageID="spr_car_3" collectionID="cars" scale="1.0"/>
 			<object id="car4" imageID="spr_car_4" collectionID="cars" scale="1.0"/>
 			<object id="car5" imageID="spr_car_5" collectionID="cars" scale="1.7"/>
 			<object id="car6" imageID="spr_car_6" collectionID="cars" scale="2.0"/>
-			
-			<object id="ring" collectionID="items" scale="1.0" defaultSequenceID="loop" defaultFramerate="25">
+			<!-- Collectible items -->
+			<object id="ring" collectionID="items" scale="1.0" defaultStateID="loop">
+				<states>
+					<state id="loop" sequenceID="loop"/>
+				</states>
 				<triggers>
 					<trigger type="collision" action="playSound" arguments="ringCollectSound"/>
 					<trigger type="collision" action="addScore" arguments="100"/>
 				</triggers>
-				<sequence id="loop">
-					<frame imageID="spr_item_ring_01"/>
-					<frame imageID="spr_item_ring_02"/>
-					<frame imageID="spr_item_ring_03"/>
-					<frame imageID="spr_item_ring_04"/>
-					<frame imageID="spr_item_ring_05"/>
-					<frame imageID="spr_item_ring_06"/>
-					<frame imageID="spr_item_ring_07"/>
-					<frame imageID="spr_item_ring_08"/>
-					<frame imageID="spr_item_ring_09"/>
-					<frame imageID="spr_item_ring_10"/>
-					<frame imageID="spr_item_ring_11"/>
-					<frame imageID="spr_item_ring_12"/>
-					<frame imageID="spr_item_ring_13"/>
-					<frame imageID="spr_item_ring_14"/>
-					<frame imageID="spr_item_ring_15"/>
-					<frame imageID="spr_item_ring_16"/>
-					<frame imageID="spr_item_ring_17"/>
-					<frame imageID="spr_item_ring_18"/>
-					<frame imageID="spr_item_ring_19"/>
-					<frame imageID="spr_item_ring_20"/>
-					<frame imageID="spr_item_ring_21"/>
-				</sequence>
+				<sequences defaultFramerate="25">
+					<sequence id="loop">
+						<frame imageID="spr_item_ring_01"/>
+						<frame imageID="spr_item_ring_02"/>
+						<frame imageID="spr_item_ring_03"/>
+						<frame imageID="spr_item_ring_04"/>
+						<frame imageID="spr_item_ring_05"/>
+						<frame imageID="spr_item_ring_06"/>
+						<frame imageID="spr_item_ring_07"/>
+						<frame imageID="spr_item_ring_08"/>
+						<frame imageID="spr_item_ring_09"/>
+						<frame imageID="spr_item_ring_10"/>
+						<frame imageID="spr_item_ring_11"/>
+						<frame imageID="spr_item_ring_12"/>
+						<frame imageID="spr_item_ring_13"/>
+						<frame imageID="spr_item_ring_14"/>
+						<frame imageID="spr_item_ring_15"/>
+						<frame imageID="spr_item_ring_16"/>
+						<frame imageID="spr_item_ring_17"/>
+						<frame imageID="spr_item_ring_18"/>
+						<frame imageID="spr_item_ring_19"/>
+						<frame imageID="spr_item_ring_20"/>
+						<frame imageID="spr_item_ring_21"/>
+					</sequence>
+				</sequences>
 			</object>
-			
-			<object id="player" collectionID="player" scale="1.0" defaultSequenceID="straight">
-				<sequence id="straight">
-					<frame imageID="spr_player"/>
-				</sequence>
-				<sequence id="straightUphill">
-					<frame imageID="spr_player_uphill"/>
-				</sequence>
-				<sequence id="left">
-					<frame imageID="spr_player_left"/>
-				</sequence>
-				<sequence id="leftUphill">
-					<frame imageID="spr_player_uphill_left"/>
-				</sequence>
-				<sequence id="right">
-					<frame imageID="spr_player_right"/>
-				</sequence>
-				<sequence id="rightUphill">
-					<frame imageID="spr_player_uphill_right"/>
-				</sequence>
+			<!-- Player Object -->
+			<object id="player" collectionID="player" scale="1.0" defaultStateID="idle">
+				<states>
+					<state id="idle" sequenceID="straight"/>
+					<state id="moveForward" sequenceID="straight"/>
+					<state id="moveUp" sequenceID="straightUphill"/>
+					<state id="moveLeft" sequenceID="left"/>
+					<state id="moveLeftUp" sequenceID="leftUphill"/>
+					<state id="moveRight" sequenceID="right"/>
+					<state id="moveRightUp" sequenceID="rightUphill"/>
+					<state id="jump" sequenceID="straight"/>
+					<state id="fall" sequenceID="straight"/>
+				</states>
+				<sequences>
+					<sequence id="straight">
+						<frame imageID="spr_player"/>
+					</sequence>
+					<sequence id="straightUphill">
+						<frame imageID="spr_player_uphill"/>
+					</sequence>
+					<sequence id="left">
+						<frame imageID="spr_player_left"/>
+					</sequence>
+					<sequence id="leftUphill">
+						<frame imageID="spr_player_uphill_left"/>
+					</sequence>
+					<sequence id="right">
+						<frame imageID="spr_player_right"/>
+					</sequence>
+					<sequence id="rightUphill">
+						<frame imageID="spr_player_uphill_right"/>
+					</sequence>
+				</sequences>
 			</object>
 	 	</objects>
  	</racetrackObjectsCatalog>
-	
 </data>
