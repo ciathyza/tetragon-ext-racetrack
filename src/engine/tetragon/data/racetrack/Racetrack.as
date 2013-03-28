@@ -95,6 +95,7 @@ package tetragon.data.racetrack
 		
 		public var player:RTEntity;
 		public var playerJitter:Boolean;
+		public var playerAnimDynamicFPS:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------

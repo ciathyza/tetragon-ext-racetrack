@@ -116,7 +116,7 @@
 				<states>
 					<state id="idle" sequenceID="straight"/>
 					<state id="moveForward" sequenceID="straight"/>
-					<state id="moveUp" sequenceID="straightUphill"/>
+					<state id="moveForwardUp" sequenceID="straightUphill"/>
 					<state id="moveLeft" sequenceID="left"/>
 					<state id="moveLeftUp" sequenceID="leftUphill"/>
 					<state id="moveRight" sequenceID="right"/>

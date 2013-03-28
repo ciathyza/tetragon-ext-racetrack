@@ -62,5 +62,6 @@ package tetragon.data.racetrack.constants
 		
 		public static const PLAYER_OBJECT_ID:String				= "playerObjectID";
 		public static const PLAYER_JITTER:String				= "playerJitter";
+		public static const PLAYER_ANIM_DYNAMIC_FPS:String		= "playerAnimDynamicFPS";
 	}
 }

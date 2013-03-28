@@ -32,6 +32,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTObjectTypes;
+	import tetragon.data.racetrack.constants.RTPlayerDefaultStateNames;
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
@@ -882,7 +883,7 @@ package tetragon.systems.racetrack
 				}
 				else
 				{
-					playerStateID = "jump";
+					playerStateID = RTPlayerDefaultStateNames.JUMP;
 					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
 				}
 			}
@@ -890,7 +891,7 @@ package tetragon.systems.racetrack
 			{
 				if (_playerOffsetY < -1.0)
 				{
-					playerStateID = "fall";
+					playerStateID = RTPlayerDefaultStateNames.FALL;
 					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
 				}
 				else
@@ -906,12 +907,12 @@ package tetragon.systems.racetrack
 				/* Update left/right steering. */
 				if (_isSteeringLeft)
 				{
-					playerStateID = "moveLeft";
+					playerStateID = RTPlayerDefaultStateNames.MOVE_LEFT;
 					_playerX = _playerX - dx;
 				}
 				else if (_isSteeringRight)
 				{
-					playerStateID = "moveRight";
+					playerStateID = RTPlayerDefaultStateNames.MOVE_RIGHT;
 					_playerX = _playerX + dx;
 				}
 				
@@ -934,22 +935,24 @@ package tetragon.systems.racetrack
 				
 				if (_speed <= 0)
 				{
-					playerStateID = "idle";
+					playerStateID = RTPlayerDefaultStateNames.IDLE;
 				}
 				else if (!_isIdleAfterCollision)
 				{
-					playerStateID = "moveForward";
+					playerStateID = RTPlayerDefaultStateNames.MOVE_FORWARD;
 				}
 			}
 			
 			if (playerStateID && !_suppressDefaultPlayerStates)
 			{
 				_racetrack.player.object.switchToState(playerStateID);
-				// TODO make fps influence on player anim enable/disable via game settings!
-				var fps:int = (_speed * 0.6) / 300;
-				if (fps < 6) fps = 6;
-				else if (fps > 20) fps = 20;
-				_racetrack.player.object.changeAnimFramerate(fps);
+				if (_racetrack.playerAnimDynamicFPS)
+				{
+					var fps:int = (_speed * 0.6) / 300;
+					if (fps < 6) fps = 6;
+					else if (fps > 20) fps = 20;
+					_racetrack.player.object.changeAnimFramerate(fps);
+				}
 			}
 		}
 		
