@@ -44,6 +44,7 @@ package tetragon.data.racetrack.proto
 		
 		public var type:String;
 		public var scale:Number;
+		public var pixelOffsetY:Number;
 		public var objects:Vector.<RTObject>;
 		
 		

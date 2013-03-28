@@ -184,7 +184,7 @@ package tetragon.file.parsers
 						def.multi = String(y.name()) == "entities";
 						def.objectID = extractString(y, "@id");
 						def.segment = extractString(y, "@segNum");
-						def.offset = extractNumber(y, "@offset", 0);
+						def.offsetX = extractNumber(y, "@offset", 0);
 						def.collectionID = extractString(y, "@collectionID");
 						def.start = extractString(y, "@start");
 						def.end = extractString(y, "@end");

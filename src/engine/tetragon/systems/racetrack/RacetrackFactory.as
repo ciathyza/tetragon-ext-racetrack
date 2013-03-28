@@ -364,6 +364,17 @@ package tetragon.systems.racetrack
 				{
 					obj.type = col.type;
 					col.objects.push(obj);
+					/* Try to take Y offset from collection if the object has none. */
+					if (isNaN(obj.pixelOffsetY))
+					{
+						obj.pixelOffsetY = col.pixelOffsetY;
+					}
+				}
+				
+				/* If offset is still NaN set it to 0. */
+				if (isNaN(obj.pixelOffsetY))
+				{
+					obj.pixelOffsetY = 0;
 				}
 				
 				/* Store object in global objects map. */
@@ -477,14 +488,14 @@ package tetragon.systems.racetrack
 					
 					addEntities(def.objectID, def.collectionID, start, end, def.stepSize,
 						def.stepInc, def.subCount, def.segRange, def.scaleRange, def.offsetRange,
-						def.offset, def.offsetMode, def.preOffset, def.postOffset);
+						def.offsetX, def.offsetMode, def.preOffset, def.postOffset);
 				}
 				else
 				{
 					if (def.segment == null) continue;
 					/* Parse special markers in segment number string. */
 					var segNum:Number = parseOffsetMarker(def.segment);
-					addEntity(segNum, def.objectID, def.offset);
+					addEntity(segNum, def.objectID, def.offsetX);
 				}
 			}
 		}
@@ -611,7 +622,7 @@ package tetragon.systems.racetrack
 		private function addEntities(objectID:String, collectionID:String,
 			start:int, end:int, stepSize:int = 1, stepInc:int = 0, subCount:int = 1,
 			segRange:Array = null, scaleRange:Array = null, offsetRange:Array = null,
-			offset:Number = 0.0, offsetMode:String = null, preOffset:Number = 0.0,
+			offsetX:Number = 0.0, offsetMode:String = null, preOffset:Number = 0.0,
 			postOffset:Number = 0.0):void
 		{
 			var collection:RTObjectCollection = collectionID ? _rt.getCollection(collectionID) : null;
@@ -631,7 +642,7 @@ package tetragon.systems.racetrack
 				{
 					/* If we got a collection take a random object ID from it every iteration. */
 					if (collection) id = randomIDFromCollection(collection);
-					if (offsetRange) offset = randomChoice(offsetRange);
+					if (offsetRange) offsetX = randomChoice(offsetRange);
 					if (scaleRange) scale = randomNumber(scaleRange);
 					
 					if (segRange)
@@ -640,13 +651,13 @@ package tetragon.systems.racetrack
 						else segAdd = randomInt(segRange[0], segRange[1]);
 					}
 					
-					var offs:Number = offset;
-					if (offsetMode == "sub")		offs = offset - (preOffset + Math.random() * postOffset);
-					else if (offsetMode == "mult")	offs = offset * (preOffset + Math.random() * postOffset);
-					else if (offsetMode == "rand")	offs = randomNumber(offsetRange);
-					else							offs = offset + (preOffset + Math.random() * postOffset); // "add" is default offset mode.
+					var ox:Number = offsetX;
+					if (offsetMode == "sub")		ox = offsetX - (preOffset + Math.random() * postOffset);
+					else if (offsetMode == "mult")	ox = offsetX * (preOffset + Math.random() * postOffset);
+					else if (offsetMode == "rand")	ox = randomNumber(offsetRange);
+					else							ox = offsetX + (preOffset + Math.random() * postOffset); // "add" is default offset mode.
 					
-					addEntity(i + segAdd, id, offs, scale);
+					addEntity(i + segAdd, id, ox, scale);
 					++count;
 				}
 			}
@@ -663,7 +674,7 @@ package tetragon.systems.racetrack
 		 * @param offset
 		 * @param scale Entity-specific scale value.
 		 */
-		private function addEntity(segNum:Number, objectID:String, offset:Number, scale:Number = 1.0):void
+		private function addEntity(segNum:Number, objectID:String, offsetX:Number, scale:Number = 1.0):void
 		{
 			var obj:RTObject = _rt.getObject(objectID);
 			if (!obj || !obj.image) return;
@@ -676,7 +687,7 @@ package tetragon.systems.racetrack
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var e:RTEntity = new RTEntity(obj, offset, scl);
+			var e:RTEntity = new RTEntity(obj, offsetX, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];

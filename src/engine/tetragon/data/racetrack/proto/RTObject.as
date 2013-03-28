@@ -56,6 +56,7 @@ package tetragon.data.racetrack.proto
 		public var image:Image2D;
 		public var type:String;
 		public var scale:Number;
+		public var pixelOffsetY:Number;
 		public var isPlayer:Boolean;
 		public var interval:Interval;
 		

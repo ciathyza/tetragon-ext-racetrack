@@ -429,9 +429,9 @@ package tetragon.systems.racetrack
 					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, op.percent);
 					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
 					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, op.percent);
-					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, seg.clip, seg.haze);
+					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, entity.pixelOffsetY, seg.clip, seg.haze);
 				}
-
+				
 				/* Render other objects. */
 				if (seg.entities)
 				{
@@ -441,9 +441,9 @@ package tetragon.systems.racetrack
 						if (!entity.enabled) continue;
 						
 						spriteScale = seg.point1.screen.scale;
-						spriteX = seg.point1.screen.x + (spriteScale * entity.offset * _roadWidth * _widthHalf);
+						spriteX = seg.point1.screen.x + (spriteScale * entity.offsetX * _roadWidth * _widthHalf);
 						spriteY = seg.point1.screen.y;
-						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offset < 0 ? -1 : 0), -1, seg.clip, seg.haze);
+						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offsetX < 0 ? -1 : 0), -1, entity.pixelOffsetY, seg.clip, seg.haze);
 					}
 				}
 				
@@ -457,7 +457,8 @@ package tetragon.systems.racetrack
 						_widthHalf,
 						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + jitter,
 						-0.5,
-						_playerOffsetY);
+						_playerOffsetY,
+						_racetrack.player.pixelOffsetY);
 				}
 			}
 			
@@ -975,7 +976,7 @@ package tetragon.systems.racetrack
 				if (!e.enabled) continue;
 				var w:Number = e.width * (_objectScale * e.scale);
 				
-				if (overlap(_playerX, _playerWidth, e.offset + (w * 0.5) * (e.offset > 0 ? 1 : -1), w))
+				if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * (e.offsetX > 0 ? 1 : -1), w))
 				{
 					/* Check the collided entity's triggers. */
 					if (e.object.triggersNum > 0)
@@ -1201,21 +1202,11 @@ package tetragon.systems.racetrack
 		 */
 		private function renderEntity(entity:RTEntity, scale:Number,
 			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
-			clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
+			pixelOffsetY:int = 0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			if (!entity.object.image) return;
 			
 			var image:Image2D = entity.object.image;
-			
-			//if (sequenceID)
-			//{
-			//	var seq:RTObjectImageSequence = entity.object.sequences[sequenceID];
-			//	if (seq)
-			//	{
-			//		image = seq.movieClip;
-			//	}
-			//}
-			
 			scale *= entity.scale;
 			
 			/* Scale for projection AND relative to roadWidth. */
@@ -1223,7 +1214,7 @@ package tetragon.systems.racetrack
 			var destH:Number = (image.height * scale * _widthHalf) * (_objectScale * _roadWidth);
 			
 			destX = destX + (destW * offsetX);
-			destY = destY + (destH * offsetY);
+			destY = (destY + (destH * offsetY)) + (pixelOffsetY * scale * 1000);
 
 			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
 

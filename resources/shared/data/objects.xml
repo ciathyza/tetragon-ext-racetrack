@@ -12,8 +12,8 @@
 		=================================================================================== -->
 		<collections>
 			<collection id="billboards" type="offroad" scale="2.5"/>
-			<collection id="vegetation" type="offroad" scale="2.5"/>
-			<collection id="buildings" type="offroad" scale="1.0"/>
+			<collection id="vegetation" type="offroad" scale="2.5" pixelOffsetY="16"/>
+			<collection id="buildings" type="offroad" scale="1.0" pixelOffsetY="16"/>
 			<collection id="obstacles" type="obstacle" scale="1.0"/>
 			<collection id="checkpoints" type="checkpoint" scale="2.5"/>
 			<collection id="items" type="collectible" scale="1.0"/>
@@ -49,7 +49,7 @@
 			<object id="tree2" imageID="spr_veg_tree_2" collectionID="vegetation" scale="1.0"/>
 			<object id="boathouse" imageID="spr_bldg_boathouse" collectionID="buildings" scale="3.0"/>
 			<object id="column" imageID="spr_bldg_column" collectionID="buildings" scale="3.0"/>
-			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"/>
+			<object id="tower" imageID="spr_bldg_tower" collectionID="buildings" scale="10.0"  pixelOffsetY="30"/>
 			<object id="windmill" imageID="spr_bldg_windmill" collectionID="buildings" scale="5.0"/>
 			<!-- On-road Obstacles. -->
 			<object id="boulderObstacle" imageID="spr_veg_boulder_2" collectionID="obstacles" scale="1.0">

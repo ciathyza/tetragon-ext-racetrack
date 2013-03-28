@@ -43,7 +43,7 @@ package tetragon.data.racetrack.proto
 		public var collectionID:String;
 		
 		public var segment:String;
-		public var offset:Number;
+		public var offsetX:Number;
 		
 		public var start:String;
 		public var end:String;
