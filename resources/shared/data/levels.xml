@@ -23,6 +23,9 @@ Defines the levels for the racetrack engine.
 				<setting name="accelerationDiv"		value=""/>
 				<setting name="offRoadLimitDiv"		value=""/>
 				<setting name="offRoadDeceleration"	value=""/>
+				<setting name="fov"					value=""/>
+				<setting name="cameraAltitude"		value=""/>
+				<setting name="drawDistance"		value=""/>
 			</settings>
 			<!-- ==================================================================================
 			Level Colors

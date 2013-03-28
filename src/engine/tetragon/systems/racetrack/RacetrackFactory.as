@@ -213,6 +213,9 @@ package tetragon.systems.racetrack
 			_rt.rumbleLength = _level.settings[RTSettingsNames.RUMBLE_LENGTH] || _rt.rumbleLength;
 			_rt.centrifugal = _level.settings[RTSettingsNames.CENTRIFUGAL] || _rt.centrifugal;
 			_rt.offRoadDecel = _level.settings[RTSettingsNames.OFFROAD_DECELERATION] || _rt.offRoadDecel;
+			_rt.fov = _level.settings[RTSettingsNames.FOV] || _rt.fov;
+			_rt.cameraAltitude = _level.settings[RTSettingsNames.CAMERA_ALTITUDE] || _rt.cameraAltitude;
+			_rt.drawDistance = _level.settings[RTSettingsNames.DRAW_DISTANCE] || _rt.drawDistance;
 			
 			maxSpeedMult = _level.settings[RTSettingsNames.MAX_SPEED_MULT] || maxSpeedMult;
 			accelerationDiv = _level.settings[RTSettingsNames.ACCELERATION_DIV] || accelerationDiv;
