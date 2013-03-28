@@ -51,7 +51,6 @@ package tetragon.systems.racetrack
 	import com.hexagonstar.types.KeyValuePair;
 	import com.hexagonstar.util.string.stringIsEmptyOrNull;
 
-	import flash.display.BitmapData;
 	import flash.utils.Dictionary;
 	
 	
@@ -281,33 +280,22 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareObjects():void
 		{
+			RTObject.juggler = Main.instance.screenManager.render2D.juggler;
+			var textures:Dictionary = _textureAtlas.getImageMap();
+			var placeholder:Texture2D = Texture2D.fromBitmapData(ResourceIndex.getPlaceholderImage());
+			var texture:Texture2D;
+			
 			/* Create empty collections. */
 			for each (var c:RTObjectCollection in _objectsCatalog.collections)
 			{
 				_rt.addCollection(c);
 			}
 			
-			RTObject.juggler = Main.instance.screenManager.render2D.juggler;
-			var textures:Dictionary = _textureAtlas.getImageMap();
-			
 			/* Create prototype objects. */
 			for each (var obj:RTObject in _objectsCatalog.objects)
 			{
-				if (!stringIsEmptyOrNull(obj.imageID))
-				{
-					var texture:Texture2D = textures[obj.imageID];
-					if (texture)
-					{
-						obj.image = new Image2D(texture);
-						obj.image.blendMode = BlendMode2D.NORMAL;
-						obj.image.smoothing = TextureSmoothing2D.NONE;
-					}
-					else
-					{
-						Log.warn("Texture not found: " + obj.imageID, this);
-					}
-				}
-				else if (obj.sequencesNum > 0)
+				/* Object has animation sequences. */
+				if (obj.sequencesNum > 0)
 				{
 					/* Prepare anim frames for objects that posses a sequence. */
 					for each (var seq:RTObjectImageSequence in obj.sequences)
@@ -316,9 +304,14 @@ package tetragon.systems.racetrack
 						var mcTextures:Vector.<Texture2D> = new Vector.<Texture2D>();
 						for (var i:uint = 0; i < seq.imageIDs.length; i++)
 						{
-							var tex:Texture2D = _textureAtlas.getImage(seq.imageIDs[i]);
-							if (!tex) continue;
-							mcTextures.push(tex);
+							var imageID:String = seq.imageIDs[i];
+							texture = _textureAtlas.getImage(imageID);
+							if (!texture)
+							{
+								Log.warn("Sequence \"" + seq.id + "\" doesn't have image " + imageID, this);
+								texture = placeholder;
+							}
+							mcTextures.push(texture);
 						}
 						if (mcTextures.length > 0)
 						{
@@ -331,13 +324,26 @@ package tetragon.systems.racetrack
 						}
 						else
 						{
-							Log.warn("Sequence textures not found: " + seq.id, this);
+							Log.warn("Sequence \"" + seq.id + "\" has no images.", this);
 						}
 					}
 				}
+				/* Object has a single image ID defined (static image). */
+				else if (!stringIsEmptyOrNull(obj.imageID))
+				{
+					texture = textures[obj.imageID];
+					if (!texture)
+					{
+						Log.warn("Texture not found: " + obj.imageID, this);
+						texture = placeholder;
+					}
+					obj.image = new Image2D(texture);
+					obj.image.blendMode = BlendMode2D.NORMAL;
+					obj.image.smoothing = TextureSmoothing2D.NONE;
+				}
 				else
 				{
-					Log.warn("Object " + obj.id + " has no images!", this);
+					Log.warn("Object " + obj.id + " has no image or animation sequences!", this);
 				}
 				
 				/* Assign default object state. */
@@ -359,6 +365,7 @@ package tetragon.systems.racetrack
 					col.objects.push(obj);
 				}
 				
+				/* Store object in global objects map. */
 				_rt.objects[obj.id] = obj;
 			}
 			
@@ -372,8 +379,7 @@ package tetragon.systems.racetrack
 				if (!playerObj.image)
 				{
 					Log.warn("No player image!", this);
-					var placeholder:BitmapData = ResourceIndex.getPlaceholderImage();
-					playerObj.image = new Image2D(Texture2D.fromBitmapData(placeholder));
+					playerObj.image = new Image2D(placeholder);
 				}
 				
 				/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
@@ -659,7 +665,7 @@ package tetragon.systems.racetrack
 		private function addEntity(segNum:Number, objectID:String, offset:Number, scale:Number = 1.0):void
 		{
 			var obj:RTObject = _rt.getObject(objectID);
-			if (!obj) return;
+			if (!obj || !obj.image) return;
 			if (segNum >= _rt.segments.length || isNaN(segNum)) return;
 			
 			/* Calculate scaling bu taking the object's default scaling, the collection
