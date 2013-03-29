@@ -33,7 +33,6 @@ package view.racing
 	import tetragon.view.render.canvas.GPURenderCanvas;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.View2D;
-	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
 	import tetragon.view.render2d.touch.Touch2D;
 	import tetragon.view.render2d.touch.TouchPhase2D;
@@ -53,19 +52,6 @@ package view.racing
 		private var _rectR:Rect2D;
 		
 		private var _racetrackSystem:RacetrackSystem;
-		
-		
-		// -----------------------------------------------------------------------------------------
-		// Constructor
-		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function RacingView()
-		{
-			super();
-		}
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -96,15 +82,6 @@ package view.racing
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function onAddedToStage(e:Event2D):void
-		{
-			super.onAddedToStage(e);
-		}
-		
 		
 		private function onTouch(e:TouchEvent2D):void
 		{
@@ -146,22 +123,22 @@ package view.racing
 		 */
 		override protected function setup():void
 		{
-			_renderCanvas = new GPURenderCanvas(_frameWidth, _frameHeight);
+			_renderCanvas = new GPURenderCanvas(stageWidth, stageHeight);
 			addChild(_renderCanvas);
 			
-			if (_main.appInfo.buildType == BuildType.IOS
-				|| _main.appInfo.buildType == BuildType.ANDROID)
+			if (main.appInfo.buildType == BuildType.IOS
+				|| main.appInfo.buildType == BuildType.ANDROID)
 			{
 				_rectL = new Rect2D(200, 300, 0xFF00FF);
 				_rectL.name = "left";
 				_rectL.alpha = 0.0;
-				_rectL.y = _frameHeight - _rectL.height;
+				_rectL.y = stageWidth - _rectL.height;
 				_rectL.addEventListener(TouchEvent2D.TOUCH, onTouch);
 				_rectR = new Rect2D(200, 300, 0xFF00FF);
 				_rectR.name = "right";
 				_rectR.alpha = 0.0;
-				_rectR.x = _frameWidth - _rectR.width;
-				_rectR.y = _frameHeight - _rectR.height;
+				_rectR.x = stageWidth - _rectR.width;
+				_rectR.y = stageHeight - _rectR.height;
 				_rectR.addEventListener(TouchEvent2D.TOUCH, onTouch);
 				addChild(_rectL);
 				addChild(_rectR);
