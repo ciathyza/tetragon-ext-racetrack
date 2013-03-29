@@ -363,6 +363,28 @@ package tetragon.systems.racetrack
 						Log.warn("Texture not found: " + obj.imageID, this);
 						texture = placeholder;
 					}
+					
+					// TODO Generate collision data from the texture's polygonal data!
+					//var mask:BitmapData = _textureAtlas.getAlphaMask(obj.imageID);
+					//var pData:Vector.<PointInt> = _textureAtlas.getPolygonalData(obj.imageID);
+					//if (mask && pData)
+					//{
+					//	Debug.trace(obj.id + ": " + pData.length);
+					//	var b:BitmapData = new BitmapData(mask.width, mask.height, true, 0);
+					//	var shape:Shape = new Shape();
+					//	shape.graphics.lineStyle(1, 0xFF0000);
+					//	shape.graphics.beginFill(0xFF00FF, 0.5);
+					//	for (var k:uint = 0; k < pData.length; k++)
+					//	{
+					//		var pt:PointInt = pData[k];
+					//		if (k == 0) shape.graphics.moveTo(pt.x, pt.y);
+					//		else shape.graphics.lineTo(pt.x, pt.y);
+					//	}
+					//	shape.graphics.endFill();
+					//	b.draw(shape);
+					//	texture = Texture2D.fromBitmapData(b);
+					//}
+					
 					obj.image = new Image2D(texture);
 					obj.image.blendMode = BlendMode2D.NORMAL;
 					obj.image.smoothing = TextureSmoothing2D.NONE;
