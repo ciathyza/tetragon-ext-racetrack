@@ -7,7 +7,7 @@ $TexturePacker:SmartUpdate:f13a1fcf63c97b56aa26f5b95c5572b5$
 =====================================================================
 -->
 <data>
-	<textureAtlas id="textures" imageID="texturesImage">
+	<textureAtlas id="textures" imageID="texturesImage" alphaImageID="texturesImageAlpha">
 		<subTexture name="bg_hills" x="0" y="480" width="640" height="240"/>
 		<subTexture name="bg_sky" x="0" y="240" width="640" height="240"/>
 		<subTexture name="bg_trees" x="0" y="0" width="640" height="240"/>

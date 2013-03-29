@@ -220,7 +220,6 @@ package tetragon.file.parsers
 				}
 				
 				checkReferencedID("textureAtlasID", catalog.textureAtlasID);
-				checkReferencedID("alphaImageID", catalog.alphaImageID);
 				
 				index.addDataResource(catalog);
 			}

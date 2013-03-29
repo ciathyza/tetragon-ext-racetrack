@@ -28,7 +28,7 @@
 	======================================================================================= -->
 	<media>
 		<image>
-			<resource id="texturesAlpha" path="images/textures_alpha.png" packageID="resourcePackage"/>
+			<resource id="texturesImageAlpha" path="images/textures_alpha.png" packageID="resourcePackage"/>
 		</image>
 		<image32>
 		</image32>

@@ -6,7 +6,7 @@
 	===========================================================================================
 -->
 <data>
-	<racetrackObjectsCatalog id="racetrackObjects" textureAtlasID="textures" alphaImageID="texturesAlpha">
+	<racetrackObjectsCatalog id="racetrackObjects" textureAtlasID="textures">
 		<!-- ==================================================================================
 		Object Collections
 		=================================================================================== -->
