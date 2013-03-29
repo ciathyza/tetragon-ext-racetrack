@@ -223,6 +223,9 @@ package tetragon.file.parsers
 						++c;
 					}
 					
+					checkReferencedID("objectsCatalogID", level.objectsCatalogID);
+					checkReferencedID("textureAtlasID", level.backgroundTextureAtlasID);
+					
 					/* Store level in catalog. */
 					catalog.levels[level.id] = level;
 				}

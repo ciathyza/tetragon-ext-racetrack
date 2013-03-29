@@ -294,8 +294,6 @@ package view.racing
 		 */
 		override protected function registerResources():void
 		{
-			registerResource("textures");
-			registerResource("racetrackObjects");
 			registerResource("racetrackLevels");
 			registerResource("sounds");
 			registerResource("music");

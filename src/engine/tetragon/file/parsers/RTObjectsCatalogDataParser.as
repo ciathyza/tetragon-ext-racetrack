@@ -77,6 +77,7 @@ package tetragon.file.parsers
 				
 				var catalog:RTObjectsCatalog = new RTObjectsCatalog(id);
 				catalog.textureAtlasID = extractString(xml, "@textureAtlasID");
+				catalog.alphaImageID = extractString(xml, "@alphaImageID");
 				
 				/* Parse the object collections. */
 				catalog.collections = new Dictionary();
@@ -217,6 +218,9 @@ package tetragon.file.parsers
 					}
 					catalog.objects[obj.id] = obj;
 				}
+				
+				checkReferencedID("textureAtlasID", catalog.textureAtlasID);
+				checkReferencedID("alphaImageID", catalog.alphaImageID);
 				
 				index.addDataResource(catalog);
 			}

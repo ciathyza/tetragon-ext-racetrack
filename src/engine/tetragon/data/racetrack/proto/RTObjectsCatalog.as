@@ -54,6 +54,7 @@ package tetragon.data.racetrack.proto
 		public var collections:Dictionary;
 		public var objects:Dictionary;
 		public var textureAtlasID:String;
+		public var alphaImageID:String;
 		
 		
 		//-----------------------------------------------------------------------------------------
