@@ -47,6 +47,7 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTChangeTimeSignal;
 	import tetragon.signals.RTLapSignal;
 	import tetragon.signals.RTPlaySoundSignal;
+	import tetragon.signals.RTProgressSignal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
 	import tetragon.view.render2d.display.Image2D;
@@ -109,7 +110,7 @@ package tetragon.systems.racetrack
 		private var _speed:Number;				// current speed
 		private var _speedPercent:Number;
 		
-		private var _progress:uint;
+		private var _progress:int;
 		private var _currentLap:uint;
 		private var _startTime:uint;
 		private var _currentLapTime:uint;		// current lap time
@@ -164,6 +165,7 @@ package tetragon.systems.racetrack
 		private var _changeBonusSignal:RTChangeBonusSignal;
 		private var _changeTimeSignal:RTChangeTimeSignal;
 		private var _lapSignal:RTLapSignal;
+		private var _progressSignal:RTProgressSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -241,6 +243,8 @@ package tetragon.systems.racetrack
 			_fastestLapTime = 0;
 			
 			_allowControls = true;
+			
+			if (_progressSignal) _progressSignal.dispatch(_progress);
 		}
 		
 		
@@ -338,6 +342,7 @@ package tetragon.systems.racetrack
 			if (_prevSegment != playerSegment)
 			{
 				++_progress;
+				if (_progressSignal) _progressSignal.dispatch(_progress - 1);
 			}
 			
 			_prevPosition = _position;
@@ -735,6 +740,13 @@ package tetragon.systems.racetrack
 		{
 			if (!_lapSignal) _lapSignal = new RTLapSignal();
 			return _lapSignal;
+		}
+		
+		
+		public function get progressSignal():RTProgressSignal
+		{
+			if (!_progressSignal) _progressSignal = new RTProgressSignal();
+			return _progressSignal;
 		}
 		
 		
