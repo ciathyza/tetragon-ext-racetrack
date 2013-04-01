@@ -43,6 +43,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
 	import tetragon.signals.RTChangeBonusSignal;
+	import tetragon.signals.RTChangeHealthSignal;
 	import tetragon.signals.RTChangeScoreSignal;
 	import tetragon.signals.RTChangeTimeSignal;
 	import tetragon.signals.RTLapSignal;
@@ -164,6 +165,7 @@ package tetragon.systems.racetrack
 		private var _changeScoreSignal:RTChangeScoreSignal;
 		private var _changeBonusSignal:RTChangeBonusSignal;
 		private var _changeTimeSignal:RTChangeTimeSignal;
+		private var _changeHealthSignal:RTChangeHealthSignal;
 		private var _lapSignal:RTLapSignal;
 		private var _progressSignal:RTProgressSignal;
 		
@@ -736,6 +738,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get changeHealthSignal():RTChangeHealthSignal
+		{
+			if (!_changeHealthSignal) _changeHealthSignal = new RTChangeHealthSignal();
+			return _changeHealthSignal;
+		}
+		
+		
 		public function get lapSignal():RTLapSignal
 		{
 			if (!_lapSignal) _lapSignal = new RTLapSignal();
@@ -1084,6 +1093,14 @@ package tetragon.systems.racetrack
 				case RTTriggerActions.SUBTRACT_TIME:
 					if (!_changeTimeSignal) return;
 					_changeTimeSignal.dispatch(int(-(trigger.arguments[0])));
+					break;
+				case RTTriggerActions.ADD_HEALTH:
+					if (!_changeHealthSignal) return;
+					_changeHealthSignal.dispatch(int(trigger.arguments[0]));
+					break;
+				case RTTriggerActions.SUBTRACT_HEALTH:
+					if (!_changeHealthSignal) return;
+					_changeHealthSignal.dispatch(int(-(trigger.arguments[0])));
 					break;
 				case RTTriggerActions.CHANGE_OBJECT_STATE:
 					var targetObjectID:String = trigger.arguments[0];
