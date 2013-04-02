@@ -172,6 +172,18 @@ package tetragon.data.racetrack
 		/**
 		 * @inheritDoc
 		 */
+		override public function dispose():void
+		{
+			for each (var obj:RTObject in objects)
+			{
+				obj.dispose();
+			}
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dump():String
 		{
 			var s:String = toString() + "\nObjects:";

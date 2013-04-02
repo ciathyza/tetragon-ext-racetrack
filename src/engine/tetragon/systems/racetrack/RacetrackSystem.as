@@ -535,6 +535,10 @@ package tetragon.systems.racetrack
 		 */
 		public function dispose():void
 		{
+			if (_racetrack) _racetrack.dispose();
+			if (_bgScroller) _bgScroller.dispose();
+			if (_interval) _interval.dispose();
+			if (_renderCanvas) _renderCanvas.clear();
 			Main.instance.classRegistry.unregisterSystem(SYSTEM_ID);
 		}
 		

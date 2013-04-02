@@ -176,6 +176,22 @@ package tetragon.data.racetrack.proto
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void
+		{
+			if (currentSequence && currentSequence.movieClip)
+			{
+				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+			}
+			if (interval)
+			{
+				interval.dispose();
+			}
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
