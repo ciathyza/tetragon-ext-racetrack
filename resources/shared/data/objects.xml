@@ -19,12 +19,15 @@
 			<collection id="items" type="collectible" scale="1.0"/>
 			<collection id="cars" type="opponent" scale="1.25"/>
 			<collection id="traffic" type="traffic" scale="1.25"/>
+			<collection id="markers" type="marker" scale="1.0"/>
 			<collection id="player" type="player" scale="1.0"/>
 		</collections>
 		<!-- ==================================================================================
 		Object Definitions
 		=================================================================================== -->
 		<objects>
+			<object id="startline" imageID="" collectionID="markers" scale="1.0"/>
+			<object id="finishline" imageID="" collectionID="markers" scale="1.0"/>
 			<!-- Offroad Obstacles & Vegetation. -->
 			<object id="billboard1" imageID="spr_billboard_1" collectionID="billboards" scale="1.0"/>
 			<object id="billboard2" imageID="spr_billboard_2" collectionID="billboards" scale="1.0"/>

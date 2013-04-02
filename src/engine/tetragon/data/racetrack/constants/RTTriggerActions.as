@@ -44,6 +44,8 @@ package tetragon.data.racetrack.constants
 		public static const SUBTRACT_HEALTH:String		= "subtractHealth";
 		public static const CHANGE_OBJECT_STATE:String	= "changeObjectState";
 		public static const DISABLE_PLAYER:String		= "disablePlayer";
+		public static const COMPLETE_LEVEL:String		= "completeLevel";
+		public static const STOP_PLAYER:String			= "stopPlayer";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -68,7 +70,9 @@ package tetragon.data.racetrack.constants
 				|| string == ADD_HEALTH
 				|| string == SUBTRACT_HEALTH
 				|| string == CHANGE_OBJECT_STATE
-				|| string == DISABLE_PLAYER;
+				|| string == DISABLE_PLAYER
+				|| string == COMPLETE_LEVEL
+				|| string == STOP_PLAYER;
 		}
 	}
 }

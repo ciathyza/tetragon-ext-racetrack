@@ -74,6 +74,8 @@ Defines the levels for the racetrack engine.
 			Object Entity Distribution
 			=================================================================================== -->
 			<objects>
+				<entity id="startline" segNum="4"/>
+				<entity id="startline" segNum="5"/>
 				<!-- Add row of billboards right after start line. -->
 				<entity id="billboard7" segNum="20" offset="-1"/>
 				<entity id="billboard6" segNum="40" offset="-1"/>
@@ -110,6 +112,7 @@ Defines the levels for the racetrack engine.
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
 				<entities id="" collectionID="" start="" end="" stepSize="" stepInc="" subCount="" segRange="" offsetRange="" offset="" scaleRange="" offsetMode="" preOffset="" postOffset=""/>
+				<entity id="finishline" segNum="end-4"/>
 			</objects>
 			<!-- ==================================================================================
 			Opponent Distribution

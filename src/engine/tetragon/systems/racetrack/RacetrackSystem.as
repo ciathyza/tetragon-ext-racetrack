@@ -42,10 +42,12 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.vo.RTEntity;
 	import tetragon.data.racetrack.vo.RTPoint;
 	import tetragon.data.racetrack.vo.RTSegment;
+	import tetragon.debug.Log;
 	import tetragon.signals.RTChangeBonusSignal;
 	import tetragon.signals.RTChangeHealthSignal;
 	import tetragon.signals.RTChangeScoreSignal;
 	import tetragon.signals.RTChangeTimeSignal;
+	import tetragon.signals.RTCompleteLevelSignal;
 	import tetragon.signals.RTDisablePlayerSignal;
 	import tetragon.signals.RTLapSignal;
 	import tetragon.signals.RTPlaySoundSignal;
@@ -123,7 +125,8 @@ package tetragon.systems.racetrack
 		private var _lastLapTime:uint;			// last lap time
 		private var _fastestLapTime:uint;
 		
-		private var _allowControls:Boolean;
+		private var _enableCollision:Boolean;
+		private var _enableControls:Boolean;
 		private var _isAccelerating:Boolean;
 		private var _isBraking:Boolean;
 		private var _isSteeringLeft:Boolean;
@@ -173,6 +176,7 @@ package tetragon.systems.racetrack
 		private var _changeHealthSignal:RTChangeHealthSignal;
 		private var _disablePlayerSignal:RTDisablePlayerSignal;
 		private var _lapSignal:RTLapSignal;
+		private var _completeLevelSignal:RTCompleteLevelSignal;
 		private var _progressSignal:RTProgressSignal;
 		
 		
@@ -252,7 +256,8 @@ package tetragon.systems.racetrack
 			_lastLapTime = 0;
 			_fastestLapTime = 0;
 			
-			_allowControls = true;
+			_enableControls = true;
+			_enableCollision = true;
 			_suppressDefaultPlayerStates = false;
 			
 			if (_progressSignal) _progressSignal.dispatch(_progress);
@@ -268,12 +273,12 @@ package tetragon.systems.racetrack
 		 * @param completeCallback
 		 */
 		public function setObjectState(objectID:String, stateID:String, duration:Number = 0.0,
-			completeCallback:Function = null):void
+			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
 			var object:RTObject = _racetrack.objects[objectID];
 			if (!object) return;
 			if (object.interval) object.interval.reset();
-			switchObjectState(object, stateID, duration, completeCallback);
+			switchObjectState(object, stateID, duration, completeCallback, callbackDelay);
 		}
 		
 		
@@ -346,10 +351,7 @@ package tetragon.systems.racetrack
 			updateCars(playerSegment, _playerWidth);
 			
 			/* Handle player interaction. */
-			if (_allowControls)
-			{
-				processPlayerControls(playerSegment);
-			}
+			processPlayerControls(playerSegment);
 			
 			/* Check if the segment the player is on has any triggers. */
 			if (playerSegment.triggersNum > 0)
@@ -358,7 +360,7 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Check player collisions with other entities. */
-			if (playerSegment.entitiesNum > 0)
+			if (playerSegment.entitiesNum > 0 && _enableCollision)
 			{
 				processEntityCollisions(playerSegment);
 			}
@@ -527,7 +529,7 @@ package tetragon.systems.racetrack
 		
 		public function jump():void
 		{
-			if (_isJump || _speed == 0) return;
+			if (!_enableControls || _isJump || _speed == 0) return;
 			_playerJumpHeight = -(_speedPercent * 1.8);
 			_isFall = false;
 			_isJump = true;
@@ -739,16 +741,30 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get enableCollision():Boolean
+		{
+			return _enableCollision;
+		}
+		public function set enableCollision(v:Boolean):void
+		{
+			_enableCollision = v;
+		}
+		
+		
 		/**
 		 * Determines whether player control are enabled or not.
 		 */
-		public function get allowControls():Boolean
+		public function get enableControls():Boolean
 		{
-			return _allowControls;
+			return _enableControls;
 		}
-		public function set allowControls(v:Boolean):void
+		public function set enableControls(v:Boolean):void
 		{
-			_allowControls = v;
+			_enableControls = v;
+			if (!_enableControls)
+			{
+				_isAccelerating = _isBraking = _isSteeringLeft = _isSteeringRight = false;
+			}
 		}
 		
 		
@@ -758,6 +774,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isAccelerating(v:Boolean):void
 		{
+			if (!_enableControls) return;
 			_isAccelerating = v;
 		}
 		
@@ -768,6 +785,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isBraking(v:Boolean):void
 		{
+			if (!_enableControls) return;
 			_isBraking = v;
 		}
 		
@@ -778,6 +796,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isSteeringLeft(v:Boolean):void
 		{
+			if (!_enableControls) return;
 			_isSteeringLeft = v;
 		}
 		
@@ -788,6 +807,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isSteeringRight(v:Boolean):void
 		{
+			if (!_enableControls) return;
 			_isSteeringRight = v;
 		}
 		
@@ -838,6 +858,13 @@ package tetragon.systems.racetrack
 		{
 			if (!_lapSignal) _lapSignal = new RTLapSignal();
 			return _lapSignal;
+		}
+		
+		
+		public function get completeLevelSignal():RTCompleteLevelSignal
+		{
+			if (!_completeLevelSignal) _completeLevelSignal = new RTCompleteLevelSignal();
+			return _completeLevelSignal;
 		}
 		
 		
@@ -1205,6 +1232,15 @@ package tetragon.systems.racetrack
 					if (!_disablePlayerSignal) return;
 					_disablePlayerSignal.dispatch(duration);
 					break;
+				case RTTriggerActions.COMPLETE_LEVEL:
+					if (!_completeLevelSignal) return;
+					_completeLevelSignal.dispatch();
+					break;
+				case RTTriggerActions.STOP_PLAYER:
+					_isAccelerating = _isSteeringLeft = _isSteeringRight = false;
+					break;
+				default:
+					Log.warn("Unknown trigger action: " + trigger.action, this);
 			}
 		}
 		
@@ -1224,14 +1260,15 @@ package tetragon.systems.racetrack
 		 *        anim sequence is finished. Is only for called for non-looping sequences!
 		 */
 		private function switchObjectState(object:RTObject, stateID:String, duration:Number,
-			completeCallback:Function = null):void
+			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
 			if (completeCallback != null)
 			{
 				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
 				object.sequenceCompleteSignal.addOnce(function(obj:RTObject):void
 				{
-					completeCallback();
+					if (callbackDelay <= 0.0) completeCallback();
+					else Interval.setInterval(callbackDelay * 1000, completeCallback, 1, true);
 				});
 			}
 			
@@ -1260,12 +1297,12 @@ package tetragon.systems.racetrack
 		 */
 		private function disablePlayer(duration:Number):void
 		{
-			_allowControls = false;
+			_enableControls = false;
 			if (duration > 0.0)
 			{
 				_interval = Interval.setTimeOut(duration * 1000, function():void
 				{
-					_allowControls = true;
+					_enableControls = true;
 				}, true);
 			}
 		}

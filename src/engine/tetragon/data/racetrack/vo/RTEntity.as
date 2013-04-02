@@ -61,8 +61,8 @@ package tetragon.data.racetrack.vo
 		public function RTEntity(obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
 		{
 			object = obj;
-			width = object.image.width;
-			height = object.image.height;
+			width = object.image ? object.image.width : 0;
+			height = object.image ? object.image.height : 0;
 			pixelOffsetY = object.pixelOffsetY;
 			collectionID = object.collectionID;
 			type = object.type;

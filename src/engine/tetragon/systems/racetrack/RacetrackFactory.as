@@ -34,6 +34,7 @@ package tetragon.systems.racetrack
 	import tetragon.data.atlas.Atlas;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTRoadSectionTypes;
 	import tetragon.data.racetrack.constants.RTSettingsNames;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
@@ -391,7 +392,8 @@ package tetragon.systems.racetrack
 				}
 				else
 				{
-					Log.warn("Object " + obj.id + " has no image or animation sequences!", this);
+					// Might be a marker object without image. Don't bother!
+					//Log.warn("Object " + obj.id + " has no image or animation sequences!", this);
 				}
 				
 				/* Assign default object state. */
@@ -479,7 +481,7 @@ package tetragon.systems.racetrack
 						addLowRollingHills(section.length, section.height);
 						break;
 					case RTRoadSectionTypes.S_CURVES:
-						addSCurves();
+						addSCurves(50, 2, 4, section.height);
 						break;
 					case RTRoadSectionTypes.CURVE_L:
 						addCurve(section.length, -section.curve, section.height);
@@ -499,14 +501,14 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Paint Start line. */
-			_rt.segments[findSegment(_playerZ).index + 2].colorSet = _rt.colorSetStart;
-			_rt.segments[findSegment(_playerZ).index + 3].colorSet = _rt.colorSetStart;
+			//_rt.segments[findSegment(_playerZ).index + 2].colorSet = _rt.colorSetStart;
+			//_rt.segments[findSegment(_playerZ).index + 3].colorSet = _rt.colorSetStart;
 			
 			/* Paint Finish line. */
-			for (i = 0 ; i < _rt.rumbleLength; i++)
-			{
-				_rt.segments[_rt.segments.length - 1 - i].colorSet = _rt.colorSetFinish;
-			}
+			//for (i = 0 ; i < _rt.rumbleLength; i++)
+			//{
+			//	_rt.segments[_rt.segments.length - 1 - i].colorSet = _rt.colorSetFinish;
+			//}
 			
 			/* Calculate track length. */
 			_rt.segmentsNum = _rt.segments.length;
@@ -724,7 +726,7 @@ package tetragon.systems.racetrack
 		private function addEntity(segNum:Number, objectID:String, offsetX:Number, scale:Number = 1.0):void
 		{
 			var obj:RTObject = _rt.getObject(objectID);
-			if (!obj || !obj.image) return;
+			if (!obj) return;
 			if (segNum >= _rt.segments.length || isNaN(segNum)) return;
 			
 			/* Calculate scaling bu taking the object's default scaling, the collection
@@ -762,6 +764,19 @@ package tetragon.systems.racetrack
 					{
 						seg.triggers[i] = tmpSegTriggers[i];
 					}
+				}
+			}
+			
+			if (obj.type == RTObjectTypes.MARKER)
+			{
+				var id:String = obj.id.toLowerCase();
+				if (id == "startline")
+				{
+					seg.colorSet = _rt.colorSetStart;
+				}
+				else if (id == "finishline")
+				{
+					seg.colorSet = _rt.colorSetFinish;
 				}
 			}
 			
@@ -839,13 +854,14 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function addSCurves(curveLength:int = 50, curveIn:int = 2, curveOut:int = 4):void
+		private function addSCurves(curveLength:int = 50, curveIn:int = 2, curveOut:int = 4,
+			height:int = 0):void
 		{
-			addRoad(curveLength, curveLength, curveLength, -curveIn);
-			addRoad(curveLength, curveLength, curveLength, curveOut);
-			addRoad(curveLength, curveLength, curveLength, curveIn);
-			addRoad(curveLength, curveLength, curveLength, -curveIn);
-			addRoad(curveLength, curveLength, curveLength, -curveOut);
+			addRoad(curveLength, curveLength, curveLength, -curveIn, height);
+			addRoad(curveLength, curveLength, curveLength, curveOut, height);
+			addRoad(curveLength, curveLength, curveLength, curveIn, height);
+			addRoad(curveLength, curveLength, curveLength, -curveIn, height);
+			addRoad(curveLength, curveLength, curveLength, -curveOut, height);
 		}
 		
 		
