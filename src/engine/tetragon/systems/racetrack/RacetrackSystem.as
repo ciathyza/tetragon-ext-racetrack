@@ -46,6 +46,7 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTChangeHealthSignal;
 	import tetragon.signals.RTChangeScoreSignal;
 	import tetragon.signals.RTChangeTimeSignal;
+	import tetragon.signals.RTDisablePlayerSignal;
 	import tetragon.signals.RTLapSignal;
 	import tetragon.signals.RTPlaySoundSignal;
 	import tetragon.signals.RTProgressSignal;
@@ -166,6 +167,7 @@ package tetragon.systems.racetrack
 		private var _changeBonusSignal:RTChangeBonusSignal;
 		private var _changeTimeSignal:RTChangeTimeSignal;
 		private var _changeHealthSignal:RTChangeHealthSignal;
+		private var _disablePlayerSignal:RTDisablePlayerSignal;
 		private var _lapSignal:RTLapSignal;
 		private var _progressSignal:RTProgressSignal;
 		
@@ -745,6 +747,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get disablePlayerSignal():RTDisablePlayerSignal
+		{
+			if (!_disablePlayerSignal) _disablePlayerSignal = new RTDisablePlayerSignal();
+			return _disablePlayerSignal;
+		}
+		
+		
 		public function get lapSignal():RTLapSignal
 		{
 			if (!_lapSignal) _lapSignal = new RTLapSignal();
@@ -1096,11 +1105,11 @@ package tetragon.systems.racetrack
 					break;
 				case RTTriggerActions.ADD_HEALTH:
 					if (!_changeHealthSignal) return;
-					_changeHealthSignal.dispatch(int(trigger.arguments[0]));
+					_changeHealthSignal.dispatch(Number(trigger.arguments[0]));
 					break;
 				case RTTriggerActions.SUBTRACT_HEALTH:
 					if (!_changeHealthSignal) return;
-					_changeHealthSignal.dispatch(int(-(trigger.arguments[0])));
+					_changeHealthSignal.dispatch(Number(-(trigger.arguments[0])));
 					break;
 				case RTTriggerActions.CHANGE_OBJECT_STATE:
 					var targetObjectID:String = trigger.arguments[0];
@@ -1112,6 +1121,8 @@ package tetragon.systems.racetrack
 				case RTTriggerActions.DISABLE_PLAYER:
 					duration = trigger.arguments[0];
 					disablePlayer(duration);
+					if (!_disablePlayerSignal) return;
+					_disablePlayerSignal.dispatch(duration);
 					break;
 			}
 		}
