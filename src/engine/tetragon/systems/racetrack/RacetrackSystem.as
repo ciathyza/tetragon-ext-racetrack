@@ -249,6 +249,7 @@ package tetragon.systems.racetrack
 			_fastestLapTime = 0;
 			
 			_allowControls = true;
+			_suppressDefaultPlayerStates = false;
 			
 			if (_progressSignal) _progressSignal.dispatch(_progress);
 		}
@@ -1178,11 +1179,6 @@ package tetragon.systems.racetrack
 		private function switchObjectState(object:RTObject, stateID:String, duration:Number,
 			completeCallback:Function = null):void
 		{
-			if (object.isPlayer)
-			{
-				_suppressDefaultPlayerStates = true;
-			}
-			
 			if (completeCallback != null)
 			{
 				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
@@ -1197,6 +1193,7 @@ package tetragon.systems.racetrack
 			{
 				if (duration > 0.0)
 				{
+					if (object.isPlayer) _suppressDefaultPlayerStates = true;
 					if (!object.interval) object.interval = new Interval(0, 0, null, null);
 					else object.interval.reset();
 					object.interval.delay = duration * 1000;
