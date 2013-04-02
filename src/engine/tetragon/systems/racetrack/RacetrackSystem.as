@@ -52,6 +52,8 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTProgressSignal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
+	import tetragon.view.render2d.animation.Transitions2D;
+	import tetragon.view.render2d.animation.Tween2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
@@ -103,6 +105,7 @@ package tetragon.systems.racetrack
 		private var _playerY:int;				// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerZ:Number;			// player relative z distance from camera (computed)
 		
+		private var _playerOffsetX:Number;
 		private var _playerOffsetY:Number;
 		private var _playerJumpHeight:Number;
 		private var _playerWidth:Number;
@@ -230,6 +233,7 @@ package tetragon.systems.racetrack
 		{
 			stop();
 			
+			_playerOffsetX = -0.5;
 			_playerOffsetY = -1.0;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
@@ -270,6 +274,27 @@ package tetragon.systems.racetrack
 			if (!object) return;
 			if (object.interval) object.interval.reset();
 			switchObjectState(object, stateID, duration, completeCallback);
+		}
+		
+		
+		/**
+		 * Tweens the player entity horizontally on the screen. The centered offset is -0.5.
+		 * An offset of -2.0 would place the player outside the screen.
+		 * 
+		 * @param startX
+		 * @param endX
+		 * @param duration
+		 */
+		public function tweenPlayer(startX:Number, endX:Number = -0.5, duration:Number = 1.0):void
+		{
+			_playerOffsetX = startX;
+			var tween:Tween2D = new Tween2D(this, duration, Transitions2D.EASE_IN_OUT);
+			tween.animate("playerOffsetX", endX);
+			RTObject.juggler.add(tween);
+			tween.onComplete = function():void
+			{
+				RTObject.juggler.remove(tween);
+			};
 		}
 		
 		
@@ -486,7 +511,7 @@ package tetragon.systems.racetrack
 						_cameraDepth / _playerZ,
 						_widthHalf,
 						(_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.point1.camera.y, playerSegment.point2.camera.y, playerPercent) * _heightHalf)) + jitter,
-						-0.5,
+						_playerOffsetX,
 						_playerOffsetY,
 						_racetrack.player.pixelOffsetY);
 				}
@@ -676,6 +701,19 @@ package tetragon.systems.racetrack
 			if (v == _fov) return;
 			_fov = v;
 			calculateDerivedParameters();
+		}
+		
+		
+		/**
+		 * X Offset Position of the player entity.
+		 */
+		public function get playerOffsetX():Number
+		{
+			return _playerOffsetX;
+		}
+		public function set playerOffsetX(v:Number):void
+		{
+			_playerOffsetX = v;
 		}
 		
 		
