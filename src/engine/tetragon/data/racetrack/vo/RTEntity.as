@@ -46,8 +46,11 @@ package tetragon.data.racetrack.vo
 		public var height:Number;
 		public var type:String;
 		public var offsetX:Number;
+		public var offsetX2:Number;
+		public var offsetX3:Number;
 		public var pixelOffsetY:int;
 		public var scale:Number;
+		public var isOffroad:Boolean;
 		public var enabled:Boolean;
 		
 		
@@ -65,6 +68,9 @@ package tetragon.data.racetrack.vo
 			type = object.type;
 			this.offsetX = offsetX;
 			this.scale = scale || obj.scale;
+			isOffroad = offsetX < -1 || offsetX > 1;
+			offsetX2 = isOffroad ? (offsetX < 0.0 ? -1.0 : 0.0) : (offsetX - 0.5);
+			offsetX3 = isOffroad ? (offsetX > 0.0 ? 1.0 : -1.0) : (offsetX);
 			enabled = true;
 		}
 	}

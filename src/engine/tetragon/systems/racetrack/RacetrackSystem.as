@@ -498,7 +498,11 @@ package tetragon.systems.racetrack
 						spriteScale = seg.point1.screen.scale;
 						spriteX = seg.point1.screen.x + (spriteScale * entity.offsetX * _roadWidth * _widthHalf);
 						spriteY = seg.point1.screen.y;
-						renderEntity(entity, spriteScale, spriteX, spriteY, (entity.offsetX < 0 ? -1 : 0), -1, entity.pixelOffsetY, seg.clip, seg.haze);
+						//if (entity.type == RTObjectTypes.OBSTACLE) Debug.trace(entity.offsetX);
+						//if (entity.isOffroad) offsetX = (entity.offsetX < 0 ? -1 : 0);
+						//else offsetX = entity.offsetX - 0.5;
+						//offsetX = entity.offsetX;
+						renderEntity(entity, spriteScale, spriteX, spriteY, entity.offsetX2, -1, entity.pixelOffsetY, seg.clip, seg.haze);
 					}
 				}
 				
@@ -1083,7 +1087,8 @@ package tetragon.systems.racetrack
 				if (!e.enabled) continue;
 				var w:Number = e.width * (_objectScale * e.scale);
 				
-				if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * (e.offsetX > 0 ? 1 : -1), w))
+				//if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * (e.offsetX > 0 ? 1 : -1), w))
+				if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * e.offsetX3, w))
 				{
 					/* Check the collided entity's triggers. */
 					if (e.object.triggersNum > 0)
@@ -1344,7 +1349,7 @@ package tetragon.systems.racetrack
 			
 			destX = destX + (destW * offsetX);
 			destY = (destY + (destH * offsetY)) + (pixelOffsetY * scale * 1000);
-
+			
 			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
 
 			if (clipH < int(destH))

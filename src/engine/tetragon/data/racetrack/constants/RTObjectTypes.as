@@ -40,5 +40,6 @@ package tetragon.data.racetrack.constants
 		public static const TRAFFIC:String		= "traffic";
 		public static const PLAYER:String		= "player";
 		public static const CHECKPOINT:String	= "checkpoint";
+		public static const MARKER:String		= "marker";
 	}
 }
