@@ -32,7 +32,9 @@ package tetragon.data.racetrack.proto
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
+	import tetragon.view.render2d.events.Event2D;
 
+	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.time.Interval;
 
 	import flash.utils.Dictionary;
@@ -57,8 +59,8 @@ package tetragon.data.racetrack.proto
 		public var type:String;
 		public var scale:Number;
 		public var pixelOffsetY:Number;
-		public var isPlayer:Boolean;
 		public var interval:Interval;
+		public var isPlayer:Boolean;
 		
 		/**
 		 * Maps object states.
@@ -74,6 +76,7 @@ package tetragon.data.racetrack.proto
 		public var sequences:Dictionary;
 		public var sequencesNum:uint;
 		public var currentSequence:RTObjectImageSequence;
+		public var sequenceCompleteSignal:Signal;
 		
 		/**
 		 * Maps object-specific properties.
@@ -135,6 +138,10 @@ package tetragon.data.racetrack.proto
 			
 			if (currentSequence.movieClip)
 			{
+				if (sequenceCompleteSignal && !currentSequence.movieClip.loop)
+				{
+					currentSequence.movieClip.addEventListener(Event2D.COMPLETE, onSequenceComplete);
+				}
 				juggler.add(currentSequence.movieClip);
 				currentSequence.movieClip.play();
 				image = currentSequence.movieClip;
@@ -146,6 +153,11 @@ package tetragon.data.racetrack.proto
 				return 1;
 			}
 			
+			/* State switching failed! */
+			if (currentSequence.movieClip)
+			{
+				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+			}
 			return 0;
 		}
 		
@@ -161,6 +173,21 @@ package tetragon.data.racetrack.proto
 			if (fps < 1) fps = 1;
 			else if (fps > 60) fps = 60;
 			currentSequence.movieClip.fps = fps;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function onSequenceComplete(e:Event2D):void
+		{
+			var mc:MovieClip2D = e.currentTarget as MovieClip2D;
+			mc.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+			sequenceCompleteSignal.dispatch(this);
 		}
 	}
 }

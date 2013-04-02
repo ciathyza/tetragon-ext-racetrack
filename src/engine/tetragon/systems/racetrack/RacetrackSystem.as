@@ -56,6 +56,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
+	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.time.Interval;
 
 	import flash.utils.Dictionary;
@@ -86,8 +87,8 @@ package tetragon.systems.racetrack
 		//private var _bgScrollPrevY:Number;
 		
 		private var _racetrack:Racetrack;
-		
 		private var _prevSegment:RTSegment;
+		private var _interval:Interval;
 		
 		private var _width:int;
 		private var _height:int;
@@ -218,6 +219,7 @@ package tetragon.systems.racetrack
 		public function stop():void
 		{
 			_started = false;
+			if (_interval) _interval.stop();
 		}
 		
 		
@@ -249,6 +251,24 @@ package tetragon.systems.racetrack
 			_allowControls = true;
 			
 			if (_progressSignal) _progressSignal.dispatch(_progress);
+		}
+		
+		
+		/**
+		 * Switches an object to a specific state.
+		 * 
+		 * @param objectID
+		 * @param stateID
+		 * @param duration
+		 * @param completeCallback
+		 */
+		public function setObjectState(objectID:String, stateID:String, duration:Number = 0.0,
+			completeCallback:Function = null):void
+		{
+			var object:RTObject = _racetrack.objects[objectID];
+			if (!object) return;
+			if (object.interval) object.interval.reset();
+			switchObjectState(object, stateID, duration, completeCallback);
 		}
 		
 		
@@ -669,6 +689,19 @@ package tetragon.systems.racetrack
 		{
 			_renderCanvas = v;
 			_renderCanvas.fillColor = _racetrack.backgroundColor;
+		}
+		
+		
+		/**
+		 * Determines whether player control are enabled or not.
+		 */
+		public function get allowControls():Boolean
+		{
+			return _allowControls;
+		}
+		public function set allowControls(v:Boolean):void
+		{
+			_allowControls = v;
 		}
 		
 		
@@ -1135,14 +1168,28 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 * 
+		 * @param object The object of which to switch a state.
+		 * @param stateID ID of the state.
 		 * @param duration Duration for that the state should be switched to. If 0, the
 		 *        new state will be permanent.
+		 * @param completeCallback Optional callback that is invoked after the state's
+		 *        anim sequence is finished. Is only for called for non-looping sequences!
 		 */
-		private function switchObjectState(object:RTObject, stateID:String, duration:Number):void
+		private function switchObjectState(object:RTObject, stateID:String, duration:Number,
+			completeCallback:Function = null):void
 		{
 			if (object.isPlayer)
 			{
 				_suppressDefaultPlayerStates = true;
+			}
+			
+			if (completeCallback != null)
+			{
+				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
+				object.sequenceCompleteSignal.addOnce(function(obj:RTObject):void
+				{
+					completeCallback();
+				});
 			}
 			
 			var success:int = object.switchToState(stateID);
@@ -1172,7 +1219,7 @@ package tetragon.systems.racetrack
 			_allowControls = false;
 			if (duration > 0.0)
 			{
-				Interval.setTimeOut(duration * 1000, function():void
+				_interval = Interval.setTimeOut(duration * 1000, function():void
 				{
 					_allowControls = true;
 				}, true);
