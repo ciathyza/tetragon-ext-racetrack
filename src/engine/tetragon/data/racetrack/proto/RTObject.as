@@ -184,10 +184,17 @@ package tetragon.data.racetrack.proto
 			if (currentSequence && currentSequence.movieClip)
 			{
 				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+				currentSequence = null;
+			}
+			if (sequenceCompleteSignal)
+			{
+				sequenceCompleteSignal.removeAll();
+				sequenceCompleteSignal = null;
 			}
 			if (interval)
 			{
 				interval.dispose();
+				interval = null;
 			}
 		}
 		
