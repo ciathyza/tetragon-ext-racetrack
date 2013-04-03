@@ -134,6 +134,7 @@ package tetragon.systems.racetrack
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
 		
+		private var _isPlayerDisabled:Boolean;
 		private var _isIdleAfterCollision:Boolean;
 		private var _suppressDefaultPlayerStates:Boolean;
 		
@@ -258,6 +259,7 @@ package tetragon.systems.racetrack
 			
 			_enableControls = true;
 			_enableCollision = true;
+			_isPlayerDisabled = false;
 			_suppressDefaultPlayerStates = false;
 			
 			if (_progressSignal) _progressSignal.dispatch(_progress);
@@ -351,7 +353,10 @@ package tetragon.systems.racetrack
 			updateCars(playerSegment, _playerWidth);
 			
 			/* Handle player interaction. */
-			processPlayerControls(playerSegment);
+			if (!_isPlayerDisabled)
+			{
+				processPlayerControls(playerSegment);
+			}
 			
 			/* Check if the segment the player is on has any triggers. */
 			if (playerSegment.triggersNum > 0)
@@ -529,7 +534,7 @@ package tetragon.systems.racetrack
 		
 		public function jump():void
 		{
-			if (!_enableControls || _isJump || _speed == 0) return;
+			if (!_enableControls || _isPlayerDisabled || _isJump || _speed == 0) return;
 			_playerJumpHeight = -(_speedPercent * 1.8);
 			_isFall = false;
 			_isJump = true;
@@ -618,6 +623,7 @@ package tetragon.systems.racetrack
 		public function set racetrack(v:Racetrack):void
 		{
 			_racetrack = v;
+			if (!_racetrack) return;
 			
 			_drawDistance = _racetrack.drawDistance;
 			_roadWidth = _racetrack.roadWidth;
@@ -1300,12 +1306,12 @@ package tetragon.systems.racetrack
 		 */
 		private function disablePlayer(duration:Number):void
 		{
-			_enableControls = false;
+			_isPlayerDisabled = true;
 			if (duration > 0.0)
 			{
 				_interval = Interval.setTimeOut(duration * 1000, function():void
 				{
-					_enableControls = true;
+					_isPlayerDisabled = false;
 				}, true);
 			}
 		}
