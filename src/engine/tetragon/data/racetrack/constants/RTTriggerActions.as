@@ -46,6 +46,7 @@ package tetragon.data.racetrack.constants
 		public static const DISABLE_PLAYER:String		= "disablePlayer";
 		public static const COMPLETE_LEVEL:String		= "completeLevel";
 		public static const STOP_PLAYER:String			= "stopPlayer";
+		public static const TRACK_CHECKPOINT:String		= "trackCheckpoint";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -72,7 +73,8 @@ package tetragon.data.racetrack.constants
 				|| string == CHANGE_OBJECT_STATE
 				|| string == DISABLE_PLAYER
 				|| string == COMPLETE_LEVEL
-				|| string == STOP_PLAYER;
+				|| string == STOP_PLAYER
+				|| string == TRACK_CHECKPOINT;
 		}
 	}
 }

@@ -1239,6 +1239,9 @@ package tetragon.systems.racetrack
 				case RTTriggerActions.STOP_PLAYER:
 					_isAccelerating = _isSteeringLeft = _isSteeringRight = false;
 					break;
+				case RTTriggerActions.TRACK_CHECKPOINT:
+					// TODO
+					break;
 				default:
 					Log.warn("Unknown trigger action: " + trigger.action, this);
 			}
