@@ -37,6 +37,7 @@ package
 	import tetragon.env.preload.TetragonPreloadDisplay;
 
 	import com.hexagonstar.constants.Alignment;
+	import com.hexagonstar.util.display.StageReference;
 
 	import mx.core.BitmapAsset;
 	import mx.core.ByteArrayAsset;
@@ -91,6 +92,8 @@ package
 		
 		/** @private */
 		private var _preloadDisplay:IPreloadDisplay;
+		/** @private */
+		private var _finished:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -110,6 +113,8 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
+			StageReference.stage = this.stage;
+			
 			/* Fetch Flashvars */
 			Main.params = new Params();
 			Main.params.parse(LoaderInfo(root.loaderInfo).parameters);
@@ -125,12 +130,9 @@ package
 		 */
 		public function finish():void
 		{
-			if (_preloadDisplay is DisplayObject)
-			{
-				removeChild(_preloadDisplay as DisplayObject);
-			}
-			_preloadDisplay.dispose();
-			_preloadDisplay = null;
+			/* In any case make sure that finish is only called once! */
+			if (_finished) return;
+			_finished = true;
 			
 			/* SpriteAsset is always embedded! */
 			var link1:SpriteAsset;
@@ -144,6 +146,20 @@ package
 			var link7:SoundAsset;
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function dispose():void
+		{
+			if (_preloadDisplay is DisplayObject)
+			{
+				removeChild(_preloadDisplay as DisplayObject);
+			}
+			_preloadDisplay.dispose();
+			_preloadDisplay = null;
 		}
 		
 		
