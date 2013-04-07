@@ -55,9 +55,6 @@ package tetragon.data.racetrack.vo
 		public var isColliding:Boolean;
 		public var enabled:Boolean;
 		
-		public var debugX:Number;
-		public var debugW:Number;
-		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor

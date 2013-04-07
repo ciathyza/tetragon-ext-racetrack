@@ -113,6 +113,7 @@ package tetragon.systems.racetrack
 		private var _playerOffsetY:Number;
 		private var _playerJumpHeight:Number;
 		private var _playerWidth:Number;
+		private var _playerFPS:int;
 		
 		private var _startPosition:Number;
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
@@ -138,8 +139,8 @@ package tetragon.systems.racetrack
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
 		
-		private var _isPlayerDisabled:Boolean;
-		private var _isIdleAfterCollision:Boolean;
+		private var _playerEnabled:Boolean;
+		private var _idleAfterCollision:Boolean;
 		private var _suppressDefaultPlayerStates:Boolean;
 		
 		private var _started:Boolean;
@@ -247,6 +248,7 @@ package tetragon.systems.racetrack
 			
 			_playerOffsetX = -0.5;
 			_playerOffsetY = -1.0;
+			_playerFPS = 12;
 			
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
 			_startPosition = 0;
@@ -268,7 +270,7 @@ package tetragon.systems.racetrack
 			
 			_enableControls = true;
 			_enableCollision = true;
-			_isPlayerDisabled = false;
+			_playerEnabled = true;
 			_suppressDefaultPlayerStates = false;
 		}
 		
@@ -360,7 +362,7 @@ package tetragon.systems.racetrack
 			updateCars(playerSegment, _playerWidth);
 			
 			/* Handle player interaction. */
-			if (!_isPlayerDisabled)
+			if (_playerEnabled)
 			{
 				processPlayerControls(playerSegment);
 			}
@@ -541,7 +543,7 @@ package tetragon.systems.racetrack
 		
 		public function jump():void
 		{
-			if (!_enableControls || _isPlayerDisabled || _isJump || _speed == 0) return;
+			if (!_enableControls || !_playerEnabled || _isJump || _speed == 0) return;
 			_playerJumpHeight = -(_speedPercent * 1.8);
 			_isFall = false;
 			_isJump = true;
@@ -790,6 +792,12 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get playerEnabled():Boolean
+		{
+			return _playerEnabled;
+		}
+		
+		
 		public function get isAccelerating():Boolean
 		{
 			return _isAccelerating;
@@ -831,6 +839,21 @@ package tetragon.systems.racetrack
 		{
 			if (!_enableControls) return;
 			_isSteeringRight = v;
+		}
+		
+		
+		public function get playerFPS():int
+		{
+			return _playerFPS;
+		}
+		
+		
+		/**
+		 * Speed of the player.
+		 */
+		public function get playerSpeed():Number
+		{
+			return _speed;
 		}
 		
 		
@@ -1086,7 +1109,7 @@ package tetragon.systems.racetrack
 				/* Update acceleration & decceleration. */
 				if (_isAccelerating)
 				{
-					_isIdleAfterCollision = false;
+					_idleAfterCollision = false;
 					_speed = accel(_speed, _acceleration);
 				}
 				else if (_isBraking)
@@ -1099,7 +1122,7 @@ package tetragon.systems.racetrack
 				}
 			}
 			
-			if (_speed <= 0 || _isIdleAfterCollision)
+			if (_speed <= 0 || _idleAfterCollision)
 			{
 				playerStateID = RTPlayerDefaultStateNames.IDLE;
 			}
@@ -1109,10 +1132,10 @@ package tetragon.systems.racetrack
 				_racetrack.player.object.switchToState(playerStateID);
 				if (_racetrack.playerAnimDynamicFPS)
 				{
-					var fps:int = (_speed * 0.6) / 300;
-					if (fps < 6) fps = 6;
-					else if (fps > 20) fps = 20;
-					_racetrack.player.object.changeAnimFramerate(fps);
+					_playerFPS = (_speed * 0.6) / 300;
+					if (_playerFPS < 6) _playerFPS = 6;
+					else if (_playerFPS > 20) _playerFPS = 20;
+					_racetrack.player.object.changeAnimFramerate(_playerFPS);
 				}
 			}
 		}
@@ -1191,7 +1214,7 @@ package tetragon.systems.racetrack
 							/* Determines how quick player can steer away from obstacle after being stopped. */
 							_speed = _maxSpeed / 5;
 							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
-							_isIdleAfterCollision = true;
+							_idleAfterCollision = true;
 						}
 						break;
 					}
@@ -1338,12 +1361,12 @@ package tetragon.systems.racetrack
 		 */
 		private function disablePlayer(duration:Number):void
 		{
-			_isPlayerDisabled = true;
+			_playerEnabled = false;
 			if (duration > 0.0)
 			{
 				_interval = Interval.setTimeOut(duration * 1000, function():void
 				{
-					_isPlayerDisabled = false;
+					_playerEnabled = true;
 				}, true);
 			}
 		}
