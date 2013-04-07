@@ -58,6 +58,7 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.animation.Transitions2D;
 	import tetragon.view.render2d.animation.Tween2D;
 	import tetragon.view.render2d.display.Image2D;
+	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
@@ -167,6 +168,8 @@ package tetragon.systems.racetrack
 		private var _carsNum:uint;
 		private var _objects:Dictionary	;
 		private var _objectScale:Number;
+		
+		private var _boundingBox:Rect2D;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -531,7 +534,7 @@ package tetragon.systems.racetrack
 						_racetrack.player.pixelOffsetY);
 				}
 			}
-			
+				
 			_renderCanvas.complete();
 		}
 		
@@ -913,6 +916,9 @@ package tetragon.systems.racetrack
 			/* Set defaults. */
 			_bgSpeedMult = 0.001;
 			_playerX = _playerY = _playerZ = 0;
+			
+			_boundingBox = new Rect2D(10, 10, 0xFF00FF);
+			_boundingBox.alpha = 0.4;
 		}
 		
 		
@@ -1138,11 +1144,16 @@ package tetragon.systems.racetrack
 			{
 				var e:RTEntity = segment.entities[i];
 				if (!e.enabled) continue;
-				var w:Number = e.width * (_objectScale * e.scale);
+				
+				/* Collision coords with scaled offset for onroad objects. */
+				var w2:Number = (e.width * 0.5) * (_objectScale * e.scale);
+				var x2:Number = e.offsetX + (w2 * 2.0) * e.offsetX3;
 				
 				//if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * (e.offsetX > 0 ? 1 : -1), w))
-				if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * e.offsetX3, w))
+				if (overlap(_playerX, _playerWidth, x2, w2))
 				{
+					_racetrack.player.isColliding = e.isColliding = true;
+					
 					/* Check the collided entity's triggers. */
 					if (e.object.triggersNum > 0)
 					{
@@ -1423,6 +1434,12 @@ package tetragon.systems.racetrack
 			{
 				_renderCanvas.drawImage(image, destX, destY, destW, destH - clipH,
 					(destW / image.width), _hazeColor, hazeAlpha, _hazeThreshold);
+				
+				if (entity.isColliding)
+				{
+					//_renderCanvas.drawDebugRect(destX, destY, destW, destH - clipH, 0xFF0000);
+					entity.isColliding = false;
+				}
 			}
 		}
 		

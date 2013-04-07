@@ -50,8 +50,13 @@ package tetragon.data.racetrack.vo
 		public var offsetX3:Number;
 		public var pixelOffsetY:int;
 		public var scale:Number;
+		
 		public var isOffroad:Boolean;
+		public var isColliding:Boolean;
 		public var enabled:Boolean;
+		
+		public var debugX:Number;
+		public var debugW:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -66,11 +71,12 @@ package tetragon.data.racetrack.vo
 			pixelOffsetY = object.pixelOffsetY;
 			collectionID = object.collectionID;
 			type = object.type;
-			this.offsetX = offsetX;
 			this.scale = scale || obj.scale;
+			this.offsetX = offsetX;
 			isOffroad = offsetX < -1 || offsetX > 1;
 			offsetX2 = isOffroad ? (offsetX < 0.0 ? -1.0 : 0.0) : (offsetX - 0.5);
-			offsetX3 = isOffroad ? (offsetX > 0.0 ? 1.0 : -1.0) : (offsetX);
+			// TODO Fix collision offset for offroad objects which isn't precise yet!
+			offsetX3 = isOffroad ? (offsetX > 0.0 ? 0.5 : -0.5) : (offsetX);
 			enabled = true;
 		}
 	}
