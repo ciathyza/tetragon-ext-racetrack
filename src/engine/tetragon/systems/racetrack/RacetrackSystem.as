@@ -47,6 +47,7 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTChangeHealthSignal;
 	import tetragon.signals.RTChangeScoreSignal;
 	import tetragon.signals.RTChangeTimeSignal;
+	import tetragon.signals.RTCheckPointSignal;
 	import tetragon.signals.RTCompleteLevelSignal;
 	import tetragon.signals.RTDisablePlayerSignal;
 	import tetragon.signals.RTLapSignal;
@@ -181,6 +182,7 @@ package tetragon.systems.racetrack
 		private var _lapSignal:RTLapSignal;
 		private var _completeLevelSignal:RTCompleteLevelSignal;
 		private var _progressSignal:RTProgressSignal;
+		private var _checkPointSignal:RTCheckPointSignal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -892,6 +894,13 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get checkPointSignal():RTCheckPointSignal
+		{
+			if (!_checkPointSignal) _checkPointSignal = new RTCheckPointSignal();
+			return _checkPointSignal;
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
@@ -1257,7 +1266,8 @@ package tetragon.systems.racetrack
 					_isAccelerating = _isSteeringLeft = _isSteeringRight = false;
 					break;
 				case RTTriggerActions.TRACK_CHECKPOINT:
-					// TODO
+					if (!_checkPointSignal) return;
+					_checkPointSignal.dispatch();
 					break;
 				default:
 					Log.warn("Unknown trigger action: " + trigger.action, this);
