@@ -170,6 +170,31 @@ package tetragon.data.racetrack
 		
 		
 		/**
+		 * @objectIDPrefix
+		 * @return int
+		 */
+		public function getEntityCount(objectIDPrefix:String = ""):int
+		{
+			if (!segments) return 0;
+			var count:int = 0;
+			for (var i:uint = 0; i < segmentsNum; i++)
+			{
+				var seg:RTSegment = segments[i];
+				if (!seg.entities) continue;
+				for (var j:uint = 0; j < seg.entitiesNum; j++)
+				{
+					var entity:RTEntity = seg.entities[j];
+					if (entity.object.id.indexOf(objectIDPrefix) == 0)
+					{
+						++count;
+					}
+				}
+			}
+			return count;
+		}
+		
+		
+		/**
 		 * @inheritDoc
 		 */
 		override public function dispose():void

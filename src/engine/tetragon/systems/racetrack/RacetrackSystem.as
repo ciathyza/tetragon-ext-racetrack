@@ -119,6 +119,8 @@ package tetragon.systems.racetrack
 		private var _speedPercent:Number;
 		
 		private var _progress:int;
+		private var _progressTotal:int;
+		
 		private var _currentLap:uint;
 		private var _startTime:uint;
 		private var _currentLapTime:uint;		// current lap time
@@ -251,6 +253,8 @@ package tetragon.systems.racetrack
 			_bgScrollOffset = 0.0;
 			
 			_progress = 0;
+			_progressTotal = _racetrack ? _racetrack.segmentsNum : 0;
+			
 			_currentLap = 1;
 			_startTime = 0;
 			_currentLapTime = 0;
@@ -261,8 +265,6 @@ package tetragon.systems.racetrack
 			_enableCollision = true;
 			_isPlayerDisabled = false;
 			_suppressDefaultPlayerStates = false;
-			
-			if (_progressSignal) _progressSignal.dispatch(_progress);
 		}
 		
 		
@@ -399,7 +401,7 @@ package tetragon.systems.racetrack
 			if (_prevSegment != playerSegment)
 			{
 				++_progress;
-				if (_progressSignal) _progressSignal.dispatch(_progress - 1);
+				if (_progressSignal) _progressSignal.dispatch(_progress);
 			}
 			
 			_prevPosition = _position;
@@ -565,6 +567,15 @@ package tetragon.systems.racetrack
 		public function get progress():uint
 		{
 			return _progress;
+		}
+		
+		
+		/**
+		 * The total progress number.
+		 */
+		public function get progressTotal():int
+		{
+			return _progressTotal;
 		}
 		
 		
