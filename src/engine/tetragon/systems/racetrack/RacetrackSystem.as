@@ -118,8 +118,9 @@ package tetragon.systems.racetrack
 		private var _startPosition:Number;
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _prevPosition:Number;
-		private var _speed:Number;				// current speed
-		private var _speedPercent:Number;
+		private var _playerSpeed:Number;				// current speed
+		private var _playerSpeedPercent:Number;
+		private var _playerSpeedCollision:Number;
 		
 		private var _progress:int;
 		private var _progressTotal:int;
@@ -254,7 +255,8 @@ package tetragon.systems.racetrack
 			_startPosition = 0;
 			_position = 0;
 			_prevPosition = -1;
-			_speed = 0;
+			_playerSpeed = 0;
+			_playerSpeedCollision = 0;
 			_widthHalf = _width * 0.5;
 			_heightHalf = _height * 0.5;
 			_bgScrollOffset = 0.0;
@@ -355,9 +357,9 @@ package tetragon.systems.racetrack
 			
 			var i:int, playerSegment:RTSegment = findSegment(_position + _playerZ);
 			
-			_speedPercent = _speed / _maxSpeed;
+			_playerSpeedPercent = _playerSpeed / _maxSpeed;
 			_startPosition = _position;
-			_position = increase(_position, _dt * _speed, _trackLength);
+			_position = increase(_position, _dt * _playerSpeed, _trackLength);
 			
 			updateCars(playerSegment, _playerWidth);
 			
@@ -380,21 +382,21 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Slow down if player drives onto off-road area. */
-			if ((_playerX < -1 || _playerX > 1) && _speed > _offRoadLimit)
+			if ((_playerX < -1 || _playerX > 1) && _playerSpeed > _offRoadLimit)
 			{
-				_speed = accel(_speed, _offRoadDecel);
+				_playerSpeed = accel(_playerSpeed, _offRoadDecel);
 			}
 			
 			/* Check player collision with other cars. */
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
 				var car:RTCar = playerSegment.cars[i];
-				if (_speed > car.speed)
+				if (_playerSpeed > car.speed)
 				{
 					var carWidth:Number = car.entity.width * (_objectScale * car.entity.scale);
 					if (overlap(_playerX, _playerWidth, car.offset, carWidth, 0.8))
 					{
-						_speed = car.speed * (car.speed / _speed);
+						_playerSpeed = car.speed * (car.speed / _playerSpeed);
 						_position = increase(car.z, -_playerZ, _trackLength);
 						break;
 					}
@@ -402,7 +404,7 @@ package tetragon.systems.racetrack
 			}
 			
 			_playerX = limit(_playerX, -3, 3);		// Don't ever let it go too far out of bounds
-			_speed = limit(_speed, 0, _maxSpeed);	// or exceed maxSpeed.
+			_playerSpeed = limit(_playerSpeed, 0, _maxSpeed);	// or exceed maxSpeed.
 			
 			/* Increase move counter only if the player is moving. */
 			if (_prevSegment != playerSegment)
@@ -526,7 +528,7 @@ package tetragon.systems.racetrack
 				if (seg == playerSegment)
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
-					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
+					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_playerSpeed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
 					renderEntity(_racetrack.player,
 						_cameraDepth / _playerZ,
 						_widthHalf,
@@ -543,8 +545,8 @@ package tetragon.systems.racetrack
 		
 		public function jump():void
 		{
-			if (!_enableControls || !_playerEnabled || _isJump || _speed == 0) return;
-			_playerJumpHeight = -(_speedPercent * 1.8);
+			if (!_enableControls || !_playerEnabled || _isJump || _playerSpeed == 0) return;
+			_playerJumpHeight = -(_playerSpeedPercent * 1.8);
 			_isFall = false;
 			_isJump = true;
 		}
@@ -853,7 +855,16 @@ package tetragon.systems.racetrack
 		 */
 		public function get playerSpeed():Number
 		{
-			return _speed;
+			return _playerSpeed;
+		}
+		
+		
+		/**
+		 * The speed of the player at the last collision occurence.
+		 */
+		public function get playerSpeedCollision():Number
+		{
+			return _playerSpeedCollision;
 		}
 		
 		
@@ -1012,14 +1023,14 @@ package tetragon.systems.racetrack
 				segment = _segments[(carSegment.index + i) % _segments.length];
 
 				/* Car drive-around player AI */
-				if ((segment === playerSegment) && (car.speed > _speed) && (overlap(_playerX, playerW, car.offset, carW, 1.2)))
+				if ((segment === playerSegment) && (car.speed > _playerSpeed) && (overlap(_playerX, playerW, car.offset, carW, 1.2)))
 				{
 					if (_playerX > 0.5) dir = -1;
 					else if (_playerX < -0.5) dir = 1;
 					else dir = (car.offset > _playerX) ? 1 : -1;
 					// The closer the cars (smaller i) and the greater the speed ratio,
 					// the larger the offset.
-					return dir * 1 / i * (car.speed - _speed) / _maxSpeed;
+					return dir * 1 / i * (car.speed - _playerSpeed) / _maxSpeed;
 				}
 
 				/* Car drive-around other car AI */
@@ -1061,7 +1072,7 @@ package tetragon.systems.racetrack
 				else
 				{
 					playerStateID = RTPlayerDefaultStateNames.JUMP;
-					_playerOffsetY -= (1.1 - _speedPercent) * 0.36;
+					_playerOffsetY -= (1.1 - _playerSpeedPercent) * 0.36;
 				}
 			}
 			else if (_isFall)
@@ -1069,7 +1080,7 @@ package tetragon.systems.racetrack
 				if (_playerOffsetY < -1.0)
 				{
 					playerStateID = RTPlayerDefaultStateNames.FALL;
-					_playerOffsetY += (1.1 - _speedPercent) * 0.36;
+					_playerOffsetY += (1.1 - _playerSpeedPercent) * 0.36;
 				}
 				else
 				{
@@ -1079,7 +1090,7 @@ package tetragon.systems.racetrack
 			}
 			else
 			{
-				var dx:Number = _dt * 2 * _speedPercent;
+				var dx:Number = _dt * 2 * _playerSpeedPercent;
 				var updown:Number = segment.point2.world.y - segment.point1.world.y - 20;
 				
 				/* Update left/right steering. */
@@ -1104,25 +1115,25 @@ package tetragon.systems.racetrack
 						: RTPlayerDefaultStateNames.MOVE_FORWARD;
 				}
 				
-				_playerX = _playerX - (dx * _speedPercent * segment.curve * _centrifugal);
+				_playerX = _playerX - (dx * _playerSpeedPercent * segment.curve * _centrifugal);
 				
 				/* Update acceleration & decceleration. */
 				if (_isAccelerating)
 				{
 					_idleAfterCollision = false;
-					_speed = accel(_speed, _acceleration);
+					_playerSpeed = accel(_playerSpeed, _acceleration);
 				}
 				else if (_isBraking)
 				{
-					_speed = accel(_speed, _braking);
+					_playerSpeed = accel(_playerSpeed, _braking);
 				}
 				else
 				{
-					_speed = accel(_speed, _deceleration);
+					_playerSpeed = accel(_playerSpeed, _deceleration);
 				}
 			}
 			
-			if (_speed <= 0 || _idleAfterCollision)
+			if (_playerSpeed <= 0 || _idleAfterCollision)
 			{
 				playerStateID = RTPlayerDefaultStateNames.IDLE;
 			}
@@ -1132,7 +1143,7 @@ package tetragon.systems.racetrack
 				_racetrack.player.object.switchToState(playerStateID);
 				if (_racetrack.playerAnimDynamicFPS)
 				{
-					_playerFPS = (_speed * 0.6) / 300;
+					_playerFPS = (_playerSpeed * 0.6) / 300;
 					if (_playerFPS < 6) _playerFPS = 6;
 					else if (_playerFPS > 20) _playerFPS = 20;
 					_racetrack.player.object.changeAnimFramerate(_playerFPS);
@@ -1176,6 +1187,7 @@ package tetragon.systems.racetrack
 				if (overlap(_playerX, _playerWidth, x2, w2))
 				{
 					_racetrack.player.isColliding = e.isColliding = true;
+					_playerSpeedCollision = _playerSpeed;
 					
 					/* Check the collided entity's triggers. */
 					if (e.object.triggersNum > 0)
@@ -1194,7 +1206,7 @@ package tetragon.systems.racetrack
 					 * player is actually off-road! */
 					if (e.type == RTObjectTypes.OFFROAD && (_playerX < -1 || _playerX > 1))
 					{
-						_speed = _maxSpeed / 5;
+						_playerSpeed = _maxSpeed / 5;
 						/* Stop in front of sprite (at front of segment). */
 						_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 						break;
@@ -1207,12 +1219,12 @@ package tetragon.systems.racetrack
 						{
 							hardness = e.object.properties[RTObjectPropertyNames.OBSTACLE_HARDNESS];
 						}
-						_speed = _maxSpeed / hardness;
+						_playerSpeed = _maxSpeed / hardness;
 						/* Stop in front of sprite (at front of segment). */
 						if (hardness >= 100)
 						{
 							/* Determines how quick player can steer away from obstacle after being stopped. */
-							_speed = _maxSpeed / 5;
+							_playerSpeed = _maxSpeed / 5;
 							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 							_idleAfterCollision = true;
 						}
