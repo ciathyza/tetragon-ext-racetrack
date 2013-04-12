@@ -1293,6 +1293,11 @@ package tetragon.systems.racetrack
 					break;
 				case RTTriggerActions.CHANGE_OBJECT_STATE:
 					var targetObjectID:String = trigger.arguments[0];
+					if (targetObjectID == "this")
+					{
+						// TODO Add support for entity state changes!
+						return;
+					}
 					var targetObject:RTObject = _racetrack.objects[targetObjectID];
 					var targetStateID:String = trigger.arguments[1];
 					duration = trigger.arguments[2];
