@@ -103,6 +103,11 @@ package tetragon.file.parsers
 					if (isNaN(obj.scale)) obj.scale = 1.0;
 					obj.defaultStateID = extractString(x, "@defaultStateID");
 					
+					var collisionGrace:Number = 1.0 - extractNumber(x, "@collisionGrace", 0.0);
+					if (collisionGrace > 1.0) collisionGrace = 1.0;
+					else if (collisionGrace < 0.0) collisionGrace = 0.0;
+					obj.collisionGrace = collisionGrace;
+					
 					/* Parse special object properties. */
 					subList = x.properties.property;
 					if (subList.length() > 0)

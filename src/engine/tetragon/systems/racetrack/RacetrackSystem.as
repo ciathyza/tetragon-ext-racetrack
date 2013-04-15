@@ -1184,7 +1184,7 @@ package tetragon.systems.racetrack
 				var x2:Number = e.offsetX + (w2 * 2.0) * e.offsetX3;
 				
 				//if (overlap(_playerX, _playerWidth, e.offsetX + (w * 0.5) * (e.offsetX > 0 ? 1 : -1), w))
-				if (overlap(_playerX, _playerWidth, x2, w2))
+				if (overlap(_playerX, _playerWidth, x2, w2, e.object.collisionGrace))
 				{
 					_racetrack.player.isColliding = e.isColliding = true;
 					_playerSpeedCollision = _playerSpeed;
