@@ -93,6 +93,7 @@ package tetragon.data.racetrack
 		
 		public var objects:Dictionary;
 		public var collections:Dictionary;
+		public var entities:Dictionary;
 		
 		public var player:RTEntity;
 		public var playerJitter:Boolean;
@@ -112,6 +113,7 @@ package tetragon.data.racetrack
 			
 			objects = new Dictionary();
 			collections = new Dictionary();
+			entities = new Dictionary();
 		}
 		
 		
@@ -125,6 +127,24 @@ package tetragon.data.racetrack
 		public function getObject(id:String):RTObject
 		{
 			return objects[id];
+		}
+		
+		
+		/**
+		 * 
+		 */
+		public function getEntity(id:String):RTEntity
+		{
+			return entities[id];
+		}
+		
+		
+		/**
+		 * 
+		 */
+		public function mapEntity(entity:RTEntity):void
+		{
+			entities[entity.id] = entity;
 		}
 		
 		

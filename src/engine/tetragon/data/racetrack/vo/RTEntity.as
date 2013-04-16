@@ -40,6 +40,7 @@ package tetragon.data.racetrack.vo
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		public var id:String;
 		public var object:RTObject;
 		public var collectionID:String;
 		public var width:Number;
@@ -60,8 +61,9 @@ package tetragon.data.racetrack.vo
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
-		public function RTEntity(obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
+		public function RTEntity(id:String, obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
 		{
+			this.id = id;
 			object = obj;
 			width = object.image ? object.image.width : 0;
 			height = object.image ? object.image.height : 0;

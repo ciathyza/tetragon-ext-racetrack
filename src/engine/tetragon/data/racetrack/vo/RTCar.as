@@ -28,24 +28,31 @@
  */
 package tetragon.data.racetrack.vo
 {
+	import tetragon.data.racetrack.proto.RTObject;
+	
+	
 	/**
 	 * @author Hexagon
 	 */
-	public class RTCar
+	public class RTCar extends RTEntity
 	{
-		public var entity:RTEntity;
-		public var offset:Number;
-		public var z:Number;
-		public var speed:Number;
-		public var percent:Number;
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var carOffset:Number;
+		public var carZ:Number;
+		public var carSpeed:Number;
+		public var carPercent:Number;
 		
 		
-		public function RTCar(offset:Number, z:Number, entity:RTEntity, speed:Number)
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		public function RTCar(id:String, obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
 		{
-			this.offset = offset;
-			this.z = z;
-			this.entity = entity;
-			this.speed = speed;
+			super(id, obj, offsetX, scale);
 		}
 	}
 }

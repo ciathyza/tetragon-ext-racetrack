@@ -443,8 +443,11 @@ package tetragon.systems.racetrack
 					playerObj.image = new Image2D(placeholder);
 				}
 				
+				/* Create player entity */
+				_rt.player = new RTEntity("player", playerObj);
+				_rt.mapEntity(_rt.player);
+				
 				/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
-				_rt.player = new RTEntity(playerObj);
 				_rt.objectScale = 0.3 * (1 / _rt.player.width);
 			}
 			else
@@ -736,7 +739,7 @@ package tetragon.systems.racetrack
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var e:RTEntity = new RTEntity(obj, offsetX, scl);
+			var e:RTEntity = new RTEntity(createEntityID(), obj, offsetX, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];
@@ -782,6 +785,9 @@ package tetragon.systems.racetrack
 			
 			seg.entities.push(e);
 			++seg.entitiesNum;
+			
+			_rt.mapEntity(e);
+			
 			++_entityCount;
 		}
 		
@@ -822,10 +828,16 @@ package tetragon.systems.racetrack
 		{
 			var object:RTObject = _rt.getObject(objectID);
 			if (!object) return;
-			var car:RTCar = new RTCar(offset, z, new RTEntity(object), speed);
-			var segment:RTSegment = findSegment(car.z);
+			
+			var car:RTCar = new RTCar(createEntityID(), object);
+			car.carOffset = offset;
+			car.carZ = z;
+			car.carSpeed = speed;
+			
+			var segment:RTSegment = findSegment(car.carZ);
 			segment.cars.push(car);
 			_rt.cars.push(car);
+			_rt.mapEntity(car);
 		}
 		
 		
@@ -969,6 +981,15 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Util Functions
 		// -----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function createEntityID():String
+		{
+			return "entity" + _entityCount;
+		}
+		
 		
 		private function findSegment(z:Number):RTSegment
 		{

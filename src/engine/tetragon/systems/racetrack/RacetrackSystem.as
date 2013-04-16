@@ -346,7 +346,6 @@ package tetragon.systems.racetrack
 			}
 		}
 		
-		
 		/**
 		 * Ticks the racetrack system's non-render logic.
 		 */
@@ -391,13 +390,13 @@ package tetragon.systems.racetrack
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
 				var car:RTCar = playerSegment.cars[i];
-				if (_playerSpeed > car.speed)
+				if (_playerSpeed > car.carSpeed)
 				{
-					var carWidth:Number = car.entity.width * (_objectScale * car.entity.scale);
-					if (overlap(_playerX, _playerWidth, car.offset, carWidth, 0.8))
+					var carWidth:Number = car.width * (_objectScale * car.scale);
+					if (overlap(_playerX, _playerWidth, car.carOffset, carWidth, 0.8))
 					{
-						_playerSpeed = car.speed * (car.speed / _playerSpeed);
-						_position = increase(car.z, -_playerZ, _trackLength);
+						_playerSpeed = car.carSpeed * (car.carSpeed / _playerSpeed);
+						_position = increase(car.carZ, -_playerZ, _trackLength);
 						break;
 					}
 				}
@@ -444,7 +443,7 @@ package tetragon.systems.racetrack
 				playerSegment:RTSegment = findSegment(_position + _playerZ),
 				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
 				seg:RTSegment,
-				op:RTCar,
+				car:RTCar,
 				entity:RTEntity,
 				maxY:int = _height,
 				x:Number = 0,
@@ -497,12 +496,11 @@ package tetragon.systems.racetrack
 				/* Render opponent cars. */
 				for (j = 0; j < seg.cars.length; j++)
 				{
-					op = seg.cars[j];
-					entity = op.entity;
-					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, op.percent);
-					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
-					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, op.percent);
-					renderEntity(op.entity, spriteScale, spriteX, spriteY, -0.5, -1, entity.pixelOffsetY, seg.clip, seg.haze);
+					entity = car = seg.cars[j];
+					spriteScale = interpolate(seg.point1.screen.scale, seg.point2.screen.scale, car.carPercent);
+					spriteX = interpolate(seg.point1.screen.x, seg.point2.screen.x, car.carPercent) + (spriteScale * car.carOffset * _roadWidth * _widthHalf);
+					spriteY = interpolate(seg.point1.screen.y, seg.point2.screen.y, car.carPercent);
+					renderEntity(car, spriteScale, spriteX, spriteY, -0.5, -1, entity.pixelOffsetY, seg.clip, seg.haze);
 				}
 				
 				/* Render other objects. */
@@ -982,12 +980,12 @@ package tetragon.systems.racetrack
 			for (i = 0; i < _carsNum; i++)
 			{
 				car = _cars[i];
-				oldSegment = findSegment(car.z);
-				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
-				car.z = increase(car.z, _dt * car.speed, _trackLength);
-				car.percent = percentRemaining(car.z, _segmentLength);
+				oldSegment = findSegment(car.carZ);
+				car.carOffset = car.carOffset + updateCarOffset(car, oldSegment, playerSegment, playerW);
+				car.carZ = increase(car.carZ, _dt * car.carSpeed, _trackLength);
+				car.carPercent = percentRemaining(car.carZ, _segmentLength);
 				// useful for interpolation during rendering phase
-				newSegment = findSegment(car.z);
+				newSegment = findSegment(car.carZ);
 
 				if (oldSegment != newSegment)
 				{
@@ -1012,7 +1010,7 @@ package tetragon.systems.racetrack
 				otherCar:RTCar,
 				otherCarW:Number,
 				lookahead:int = 20,
-				carW:Number = car.entity.width * _objectScale;
+				carW:Number = car.width * _objectScale;
 			
 			/* Optimization: dont bother steering around other cars when 'out of sight'
 			 * of the player. */
@@ -1023,34 +1021,34 @@ package tetragon.systems.racetrack
 				segment = _segments[(carSegment.index + i) % _segments.length];
 
 				/* Car drive-around player AI */
-				if ((segment === playerSegment) && (car.speed > _playerSpeed) && (overlap(_playerX, playerW, car.offset, carW, 1.2)))
+				if ((segment === playerSegment) && (car.carSpeed > _playerSpeed) && (overlap(_playerX, playerW, car.carOffset, carW, 1.2)))
 				{
 					if (_playerX > 0.5) dir = -1;
 					else if (_playerX < -0.5) dir = 1;
-					else dir = (car.offset > _playerX) ? 1 : -1;
+					else dir = (car.carOffset > _playerX) ? 1 : -1;
 					// The closer the cars (smaller i) and the greater the speed ratio,
 					// the larger the offset.
-					return dir * 1 / i * (car.speed - _playerSpeed) / _maxSpeed;
+					return dir * 1 / i * (car.carSpeed - _playerSpeed) / _maxSpeed;
 				}
 
 				/* Car drive-around other car AI */
 				for (j = 0; j < segment.cars.length; j++)
 				{
 					otherCar = segment.cars[j];
-					otherCarW = otherCar.entity.width * _objectScale;
-					if ((car.speed > otherCar.speed) && overlap(car.offset, carW, otherCar.offset, otherCarW, 1.2))
+					otherCarW = otherCar.width * _objectScale;
+					if ((car.carSpeed > otherCar.carSpeed) && overlap(car.carOffset, carW, otherCar.carOffset, otherCarW, 1.2))
 					{
-						if (otherCar.offset > 0.5) dir = -1;
-						else if (otherCar.offset < -0.5) dir = 1;
-						else dir = (car.offset > otherCar.offset) ? 1 : -1;
-						return dir * 1 / i * (car.speed - otherCar.speed) / _maxSpeed;
+						if (otherCar.carOffset > 0.5) dir = -1;
+						else if (otherCar.carOffset < -0.5) dir = 1;
+						else dir = (car.carOffset > otherCar.carOffset) ? 1 : -1;
+						return dir * 1 / i * (car.carSpeed - otherCar.carSpeed) / _maxSpeed;
 					}
 				}
 			}
 
 			// if no cars ahead, but car has somehow ended up off road, then steer back on.
-			if (car.offset < -0.9) return 0.1;
-			else if (car.offset > 0.9) return -0.1;
+			if (car.carOffset < -0.9) return 0.1;
+			else if (car.carOffset > 0.9) return -0.1;
 			else return 0;
 		}
 		
@@ -1250,6 +1248,7 @@ package tetragon.systems.racetrack
 		{
 			var s:String;
 			var duration:Number;
+			var targetStateID:String;
 			
 			switch (trigger.action)
 			{
@@ -1293,15 +1292,19 @@ package tetragon.systems.racetrack
 					break;
 				case RTTriggerActions.CHANGE_OBJECT_STATE:
 					var targetObjectID:String = trigger.arguments[0];
-					if (targetObjectID == "this")
-					{
-						// TODO Add support for entity state changes!
-						return;
-					}
 					var targetObject:RTObject = _racetrack.objects[targetObjectID];
-					var targetStateID:String = trigger.arguments[1];
+					targetStateID = trigger.arguments[1];
 					duration = trigger.arguments[2];
 					switchObjectState(targetObject, targetStateID, duration);
+					break;
+				case RTTriggerActions.CHANGE_ENTITY_STATE:
+					var targetEntityID:String = trigger.arguments[0];
+					var targetEntity:RTEntity;
+					if (targetEntityID == "this") targetEntity = entity;
+					else targetEntity = _racetrack.objects[targetEntityID];
+					targetStateID = trigger.arguments[1];
+					duration = trigger.arguments[2];
+					switchEntityState(targetEntity, targetStateID, duration);
 					break;
 				case RTTriggerActions.DISABLE_PLAYER:
 					duration = trigger.arguments[0];
@@ -1376,6 +1379,14 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
+		private function switchEntityState(entity:RTEntity, stateID:String, duration:Number):void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function disablePlayer(duration:Number):void
 		{
 			_playerEnabled = false;
@@ -1431,7 +1442,7 @@ package tetragon.systems.racetrack
 				lx1:Number = x1 - w1 + lw1,
 				lx2:Number = x2 - w2 + lw2;
 
-				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
+				for (var lane:int = 1; lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
 				{
 					_renderCanvas.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2,
 						lx2 - l2 / 2, y2, colorSet.lane, _hazeColor, hazeAlpha, _hazeThreshold);
