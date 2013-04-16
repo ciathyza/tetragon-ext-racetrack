@@ -74,7 +74,6 @@ package tetragon.systems.racetrack
 		private var _rt:Racetrack;
 		
 		private var _segmentCount:uint;
-		private var _entityCount:uint;
 		private var _carsCount:uint;
 		
 		private var _playerZ:Number;
@@ -180,9 +179,10 @@ package tetragon.systems.racetrack
 		private function initDefaults():void
 		{
 			_segmentCount = 0;
-			_entityCount = 0;
 			_carsCount = 0;
 			
+			_rt.objectCount = 0;
+			_rt.entityCount = 0;
 			_rt.dt = 1 / Main.instance.gameLoop.frameRate;
 			
 			/* Game Settings. */
@@ -427,7 +427,7 @@ package tetragon.systems.racetrack
 				}
 				
 				/* Store object in global objects map. */
-				_rt.objects[obj.id] = obj;
+				_rt.mapObject(obj);
 			}
 			
 			/* Prepare the player sprite. */
@@ -646,7 +646,8 @@ package tetragon.systems.racetrack
 			Log.trace("Created racetrack with ID \"" + _rt.id + "\""
 				+ "\n\ttrackLength: " + _rt.trackLength
 				+ "\n\tsegments: " + _segmentCount + " (empty: " + emptySegs + ")"
-				+ "\n\tentities: " + _entityCount
+				+ "\n\tobjects: " + _rt.objectCount
+				+ "\n\tentities: " + _rt.entityCount
 				+ "\n\tcars: " + _carsCount, this);
 			
 			//Debug.trace(_rt.dump());
@@ -787,8 +788,6 @@ package tetragon.systems.racetrack
 			++seg.entitiesNum;
 			
 			_rt.mapEntity(e);
-			
-			++_entityCount;
 		}
 		
 		
@@ -987,7 +986,7 @@ package tetragon.systems.racetrack
 		 */
 		private function createEntityID():String
 		{
-			return "entity" + _entityCount;
+			return "entity" + _rt.entityCount;
 		}
 		
 		

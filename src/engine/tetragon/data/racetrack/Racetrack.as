@@ -95,6 +95,9 @@ package tetragon.data.racetrack
 		public var collections:Dictionary;
 		public var entities:Dictionary;
 		
+		public var objectCount:uint;
+		public var entityCount:uint;
+		
 		public var player:RTEntity;
 		public var playerJitter:Boolean;
 		public var playerAnimDynamicFPS:Boolean;
@@ -133,6 +136,17 @@ package tetragon.data.racetrack
 		/**
 		 * 
 		 */
+		public function mapObject(object:RTObject):void
+		{
+			var exists:Boolean = objects[object.id] != null;
+			objects[object.id] = object;
+			if (!exists) ++objectCount;
+		}
+		
+		
+		/**
+		 * 
+		 */
 		public function getEntity(id:String):RTEntity
 		{
 			return entities[id];
@@ -144,7 +158,9 @@ package tetragon.data.racetrack
 		 */
 		public function mapEntity(entity:RTEntity):void
 		{
+			var exists:Boolean = entities[entity.id] != null;
 			entities[entity.id] = entity;
+			if (!exists) ++entityCount;
 		}
 		
 		
