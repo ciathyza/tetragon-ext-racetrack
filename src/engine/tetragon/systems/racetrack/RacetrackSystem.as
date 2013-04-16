@@ -1301,7 +1301,7 @@ package tetragon.systems.racetrack
 					var targetEntityID:String = trigger.arguments[0];
 					var targetEntity:RTEntity;
 					if (targetEntityID == "this") targetEntity = entity;
-					else targetEntity = _racetrack.objects[targetEntityID];
+					else targetEntity = _racetrack.entities[targetEntityID];
 					targetStateID = trigger.arguments[1];
 					duration = trigger.arguments[2];
 					switchEntityState(targetEntity, targetStateID, duration);
@@ -1379,7 +1379,8 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function switchEntityState(entity:RTEntity, stateID:String, duration:Number):void
+		private function switchEntityState(entity:RTEntity, stateID:String, duration:Number,
+			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
 		}
 		
