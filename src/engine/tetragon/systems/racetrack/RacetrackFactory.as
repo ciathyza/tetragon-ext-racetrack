@@ -444,7 +444,7 @@ package tetragon.systems.racetrack
 				}
 				
 				/* Create player entity */
-				_rt.player = new RTEntity("player", playerObj);
+				_rt.player = newEntity("player", playerObj);
 				_rt.mapEntity(_rt.player);
 				
 				/* The reference sprite width should be 1/3rd the (half-)roadWidth. */
@@ -740,7 +740,7 @@ package tetragon.systems.racetrack
 			if (col) scl *= col.scale;
 			scl = scale * scl;
 			
-			var e:RTEntity = new RTEntity(createEntityID(), obj, offsetX, scl);
+			var e:RTEntity = newEntity(createEntityID(), obj, offsetX, scl);
 			var seg:RTSegment = _rt.segments[int(segNum)];
 			/* Create entities array on segment only if needed. */
 			if (!seg.entities) seg.entities = new <RTEntity>[];
@@ -828,7 +828,7 @@ package tetragon.systems.racetrack
 			var object:RTObject = _rt.getObject(objectID);
 			if (!object) return;
 			
-			var car:RTCar = new RTCar(createEntityID(), object);
+			var car:RTCar = newCar(createEntityID(), object);
 			car.carOffset = offset;
 			car.carZ = z;
 			car.carSpeed = speed;
@@ -837,6 +837,54 @@ package tetragon.systems.racetrack
 			segment.cars.push(car);
 			_rt.cars.push(car);
 			_rt.mapEntity(car);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function newEntity(id:String, obj:RTObject, offsetX:Number = 0.0,
+			scale:Number = NaN):RTEntity
+		{
+			var e:RTEntity = new RTEntity(id);
+			e.object = obj;
+			e.width = obj.image ? obj.image.width : 0;
+			e.height = obj.image ? obj.image.height : 0;
+			e.pixelOffsetY = obj.pixelOffsetY;
+			e.collectionID = obj.collectionID;
+			e.type = obj.type;
+			e.scale = scale || obj.scale;
+			e.offsetX = offsetX;
+			e.isOffroad = offsetX < -1 || offsetX > 1;
+			e.offsetX2 = e.isOffroad ? (offsetX < 0.0 ? -1.0 : 0.0) : (offsetX - 0.5);
+			// TODO Fix collision offset for offroad objects which isn't precise yet!
+			e.offsetX3 = e.isOffroad ? (offsetX > 0.0 ? 0.5 : -0.5) : (offsetX);
+			e.enabled = true;
+			return e;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function newCar(id:String, obj:RTObject, offsetX:Number = 0.0,
+			scale:Number = NaN):RTCar
+		{
+			var c:RTCar = new RTCar(id);
+			c.object = obj;
+			c.width = obj.image ? obj.image.width : 0;
+			c.height = obj.image ? obj.image.height : 0;
+			c.pixelOffsetY = obj.pixelOffsetY;
+			c.collectionID = obj.collectionID;
+			c.type = obj.type;
+			c.scale = scale || obj.scale;
+			c.offsetX = offsetX;
+			c.isOffroad = offsetX < -1 || offsetX > 1;
+			c.offsetX2 = c.isOffroad ? (offsetX < 0.0 ? -1.0 : 0.0) : (offsetX - 0.5);
+			// TODO Fix collision offset for offroad objects which isn't precise yet!
+			c.offsetX3 = c.isOffroad ? (offsetX > 0.0 ? 0.5 : -0.5) : (offsetX);
+			c.enabled = true;
+			return c;
 		}
 		
 		

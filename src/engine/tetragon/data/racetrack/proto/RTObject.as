@@ -60,7 +60,6 @@ package tetragon.data.racetrack.proto
 		public var type:String;
 		public var scale:Number;
 		public var pixelOffsetY:Number;
-		public var interval:Interval;
 		public var isPlayer:Boolean;
 		
 		/**
@@ -68,16 +67,12 @@ package tetragon.data.racetrack.proto
 		 */
 		public var states:Dictionary;
 		public var statesNum:int;
-		public var currentState:RTObjectState;
-		public var currentStateID:String;
 		
 		/**
 		 * A map of RTObjectImageSequence objects.
 		 */
 		public var sequences:Dictionary;
 		public var sequencesNum:uint;
-		public var currentSequence:RTObjectImageSequence;
-		public var sequenceCompleteSignal:Signal;
 		
 		/**
 		 * Maps object-specific properties.
@@ -90,6 +85,15 @@ package tetragon.data.racetrack.proto
 		 */
 		public var triggers:Vector.<RTTrigger>;
 		public var triggersNum:uint;
+		
+		/**
+		 * Properties used for state changes.
+		 */
+		public var interval:Interval;
+		public var currentState:RTObjectState;
+		public var currentStateID:String;
+		public var currentSequence:RTObjectImageSequence;
+		public var sequenceCompleteSignal:Signal;
 		
 		
 		//-----------------------------------------------------------------------------------------

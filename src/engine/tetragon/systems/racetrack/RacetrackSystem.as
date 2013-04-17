@@ -291,7 +291,7 @@ package tetragon.systems.racetrack
 			var object:RTObject = _racetrack.objects[objectID];
 			if (!object) return;
 			if (object.interval) object.interval.reset();
-			switchObjectState(object, stateID, duration, completeCallback, callbackDelay);
+			changeObjectState(object, stateID, duration, completeCallback, callbackDelay);
 		}
 		
 		
@@ -662,7 +662,7 @@ package tetragon.systems.racetrack
 			
 			_segments = _racetrack.segments;
 			_cars = _racetrack.cars;
-			_carsNum = _cars.length;
+			_carsNum = _cars ? _cars.length : 0;
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
 			_playerWidth = _racetrack.player.width * _objectScale;
@@ -1295,7 +1295,7 @@ package tetragon.systems.racetrack
 					var targetObject:RTObject = _racetrack.objects[targetObjectID];
 					targetStateID = trigger.arguments[1];
 					duration = trigger.arguments[2];
-					switchObjectState(targetObject, targetStateID, duration);
+					changeObjectState(targetObject, targetStateID, duration);
 					break;
 				case RTTriggerActions.CHANGE_ENTITY_STATE:
 					var targetEntityID:String = trigger.arguments[0];
@@ -1304,7 +1304,7 @@ package tetragon.systems.racetrack
 					else targetEntity = _racetrack.entities[targetEntityID];
 					targetStateID = trigger.arguments[1];
 					duration = trigger.arguments[2];
-					switchEntityState(targetEntity, targetStateID, duration);
+					changeEntityState(targetEntity, targetStateID, duration);
 					break;
 				case RTTriggerActions.DISABLE_PLAYER:
 					duration = trigger.arguments[0];
@@ -1343,9 +1343,11 @@ package tetragon.systems.racetrack
 		 * @param completeCallback Optional callback that is invoked after the state's
 		 *        anim sequence is finished. Is only for called for non-looping sequences!
 		 */
-		private function switchObjectState(object:RTObject, stateID:String, duration:Number,
+		private function changeObjectState(object:RTObject, stateID:String, duration:Number,
 			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
+			if (!object) return;
+			
 			if (completeCallback != null)
 			{
 				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
@@ -1379,9 +1381,21 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function switchEntityState(entity:RTEntity, stateID:String, duration:Number,
+		private function changeEntityState(entity:RTEntity, stateID:String, duration:Number,
 			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
+			if (!entity) return;
+			var object:RTObject = entity.object;
+			
+			if (completeCallback != null)
+			{
+				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
+				object.sequenceCompleteSignal.addOnce(function(obj:RTObject):void
+				{
+					if (callbackDelay <= 0.0) completeCallback();
+					else Interval.setInterval(callbackDelay * 1000, completeCallback, 1, true);
+				});
+			}
 		}
 		
 		
@@ -1468,7 +1482,7 @@ package tetragon.systems.racetrack
 			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
 			pixelOffsetY:int = 0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
-			if (!entity.object.image) return;
+			if (!entity.object || !entity.object.image) return;
 			
 			var image:Image2D = entity.object.image;
 			scale *= entity.scale;

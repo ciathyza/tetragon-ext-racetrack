@@ -28,19 +28,24 @@
  */
 package tetragon.data.racetrack.vo
 {
+	import tetragon.data.DataObject;
 	import tetragon.data.racetrack.proto.RTObject;
+	import tetragon.data.racetrack.proto.RTObjectImageSequence;
+	import tetragon.data.racetrack.proto.RTObjectState;
+
+	import com.hexagonstar.signals.Signal;
+	import com.hexagonstar.time.Interval;
 	
 	
 	/**
 	 * @author Hexagon
 	 */
-	public class RTEntity
+	public class RTEntity extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		public var id:String;
 		public var object:RTObject;
 		public var collectionID:String;
 		public var width:Number;
@@ -56,27 +61,23 @@ package tetragon.data.racetrack.vo
 		public var isColliding:Boolean;
 		public var enabled:Boolean;
 		
+		/**
+		 * Properties used for state changes.
+		 */
+		public var interval:Interval;
+		public var currentState:RTObjectState;
+		public var currentStateID:String;
+		public var currentSequence:RTObjectImageSequence;
+		public var sequenceCompleteSignal:Signal;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
-		public function RTEntity(id:String, obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
+		public function RTEntity(id:String)
 		{
-			this.id = id;
-			object = obj;
-			width = object.image ? object.image.width : 0;
-			height = object.image ? object.image.height : 0;
-			pixelOffsetY = object.pixelOffsetY;
-			collectionID = object.collectionID;
-			type = object.type;
-			this.scale = scale || obj.scale;
-			this.offsetX = offsetX;
-			isOffroad = offsetX < -1 || offsetX > 1;
-			offsetX2 = isOffroad ? (offsetX < 0.0 ? -1.0 : 0.0) : (offsetX - 0.5);
-			// TODO Fix collision offset for offroad objects which isn't precise yet!
-			offsetX3 = isOffroad ? (offsetX > 0.0 ? 0.5 : -0.5) : (offsetX);
-			enabled = true;
+			_id = id;
 		}
 	}
 }

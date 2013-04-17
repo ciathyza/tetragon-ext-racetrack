@@ -28,9 +28,6 @@
  */
 package tetragon.data.racetrack.vo
 {
-	import tetragon.data.racetrack.proto.RTObject;
-	
-	
 	/**
 	 * @author Hexagon
 	 */
@@ -50,9 +47,9 @@ package tetragon.data.racetrack.vo
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
-		public function RTCar(id:String, obj:RTObject, offsetX:Number = 0.0, scale:Number = NaN)
+		public function RTCar(id:String)
 		{
-			super(id, obj, offsetX, scale);
+			super(id);
 		}
 	}
 }
