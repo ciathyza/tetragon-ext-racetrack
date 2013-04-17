@@ -91,6 +91,7 @@ package tetragon.systems.racetrack
 		public function RacetrackFactory(levelsCatalogID:String)
 		{
 			super();
+			RacetrackSystem.juggler = Main.instance.screenManager.render2D.juggler;
 			_levelsCatalog = resourceIndex.getResourceContent(levelsCatalogID);
 		}
 		
@@ -286,7 +287,6 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareObjects():void
 		{
-			RTObject.juggler = Main.instance.screenManager.render2D.juggler;
 			var textures:Dictionary = _textureAtlas.getImageMap();
 			var placeholder:Texture2D = Texture2D.fromBitmapData(ResourceIndex.getPlaceholderImage());
 			var texture:Texture2D;
@@ -397,7 +397,7 @@ package tetragon.systems.racetrack
 				}
 				
 				/* Assign default object state. */
-				var success:int = obj.switchToState(obj.defaultStateID);
+				var success:int = RacetrackSystem.switchObjectToState(obj, obj.defaultStateID);
 				if (success == -1)
 				{
 					Log.warn("Could not switch object " + obj.id + " to its default state.", this);

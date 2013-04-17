@@ -36,6 +36,8 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.constants.RTTriggerActions;
 	import tetragon.data.racetrack.constants.RTTriggerTypes;
 	import tetragon.data.racetrack.proto.RTObject;
+	import tetragon.data.racetrack.proto.RTObjectImageSequence;
+	import tetragon.data.racetrack.proto.RTObjectState;
 	import tetragon.data.racetrack.proto.RTTrigger;
 	import tetragon.data.racetrack.vo.RTCar;
 	import tetragon.data.racetrack.vo.RTColorSet;
@@ -55,10 +57,13 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTProgressSignal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.render.canvas.IRenderCanvas;
+	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.animation.Transitions2D;
 	import tetragon.view.render2d.animation.Tween2D;
 	import tetragon.view.render2d.display.Image2D;
+	import tetragon.view.render2d.display.MovieClip2D;
 	import tetragon.view.render2d.display.Rect2D;
+	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 
@@ -84,6 +89,8 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
+		
+		public static var juggler:Juggler2D;
 		
 		private var _renderCanvas:IRenderCanvas;
 		
@@ -308,10 +315,10 @@ package tetragon.systems.racetrack
 			_playerOffsetX = startX;
 			var tween:Tween2D = new Tween2D(this, duration, Transitions2D.EASE_IN_OUT);
 			tween.animate("playerOffsetX", endX);
-			RTObject.juggler.add(tween);
+			juggler.add(tween);
 			tween.onComplete = function():void
 			{
-				RTObject.juggler.remove(tween);
+				juggler.remove(tween);
 			};
 		}
 		
@@ -1138,7 +1145,7 @@ package tetragon.systems.racetrack
 				
 			if (playerStateID && !_suppressDefaultPlayerStates)
 			{
-				_racetrack.player.object.switchToState(playerStateID);
+				switchObjectToState(_racetrack.player.object, playerStateID);
 				if (_racetrack.playerAnimDynamicFPS)
 				{
 					_playerFPS = (_playerSpeed * 0.6) / 300;
@@ -1358,7 +1365,7 @@ package tetragon.systems.racetrack
 				});
 			}
 			
-			var success:int = object.switchToState(stateID);
+			var success:int = switchObjectToState(object, stateID);
 			if (success == 1)
 			{
 				if (duration > 0.0)
@@ -1369,12 +1376,66 @@ package tetragon.systems.racetrack
 					object.interval.delay = duration * 1000;
 					object.interval.callBack = function():void
 					{
-						object.switchToState(object.defaultStateID);
+						switchObjectToState(object, object.defaultStateID);
 						_suppressDefaultPlayerStates = false;
 					};
 					object.interval.start();
 				}
 			}
+		}
+		
+		
+		/**
+		 * Switches the object to the specified state.
+		 * 
+		 * @param stateID
+		 * @return 1, 0, -1, or -2.
+		 */
+		public static function switchObjectToState(object:RTObject, stateID:String):int
+		{
+			if (!object.states || stateID == object.currentStateID || stateID == null || stateID == "") return 0;
+			
+			var state:RTObjectState = object.states[stateID];
+			if (!state) return -1;
+			
+			object.currentStateID = stateID;
+			object.currentState = state;
+			
+			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
+			if (!seq) return -2;
+			
+			/* Disable any currenlty used anim seq. */
+			if (object.image is MovieClip2D)
+			{
+				(object.image as MovieClip2D).stop();
+				juggler.remove(object.image as MovieClip2D);
+			}
+			
+			object.currentSequence = seq;
+			
+			if (object.currentSequence.movieClip)
+			{
+				if (object.sequenceCompleteSignal && !object.currentSequence.movieClip.loop)
+				{
+					object.currentSequence.movieClip.addEventListener(Event2D.COMPLETE, object.onSequenceComplete);
+				}
+				juggler.add(object.currentSequence.movieClip);
+				object.currentSequence.movieClip.play();
+				object.image = object.currentSequence.movieClip;
+				return 1;
+			}
+			else if (object.currentSequence.image)
+			{
+				object.image = object.currentSequence.image;
+				return 1;
+			}
+			
+			/* State switching failed! */
+			if (object.currentSequence.movieClip)
+			{
+				object.currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, object.onSequenceComplete);
+			}
+			return 0;
 		}
 		
 		

@@ -29,7 +29,6 @@
 package tetragon.data.racetrack.proto
 {
 	import tetragon.data.DataObject;
-	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
 	import tetragon.view.render2d.events.Event2D;
@@ -48,8 +47,6 @@ package tetragon.data.racetrack.proto
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
-		
-		public static var juggler:Juggler2D;
 		
 		public var collectionID:String;
 		public var defaultStateID:String;
@@ -114,60 +111,6 @@ package tetragon.data.racetrack.proto
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Switches the object to the specified state.
-		 * 
-		 * @param stateID
-		 * @return 1, 0, -1, or -2.
-		 */
-		public function switchToState(stateID:String):int
-		{
-			if (!states || stateID == currentStateID || stateID == null || stateID == "") return 0;
-			
-			var state:RTObjectState = states[stateID];
-			if (!state) return -1;
-			
-			currentStateID = stateID;
-			currentState = state;
-			
-			var seq:RTObjectImageSequence = sequences[state.sequenceID];
-			if (!seq) return -2;
-			
-			/* Disable any currenlty used anim seq. */
-			if (image is MovieClip2D)
-			{
-				(image as MovieClip2D).stop();
-				juggler.remove(image as MovieClip2D);
-			}
-			
-			currentSequence = seq;
-			
-			if (currentSequence.movieClip)
-			{
-				if (sequenceCompleteSignal && !currentSequence.movieClip.loop)
-				{
-					currentSequence.movieClip.addEventListener(Event2D.COMPLETE, onSequenceComplete);
-				}
-				juggler.add(currentSequence.movieClip);
-				currentSequence.movieClip.play();
-				image = currentSequence.movieClip;
-				return 1;
-			}
-			else if (currentSequence.image)
-			{
-				image = currentSequence.image;
-				return 1;
-			}
-			
-			/* State switching failed! */
-			if (currentSequence.movieClip)
-			{
-				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
-			}
-			return 0;
-		}
-		
-		
-		/**
 		 * Changes the framerate of the currently played anim sequence.
 		 * 
 		 * @param fps
@@ -211,7 +154,7 @@ package tetragon.data.racetrack.proto
 		/**
 		 * @private
 		 */
-		private function onSequenceComplete(e:Event2D):void
+		public function onSequenceComplete(e:Event2D):void
 		{
 			var mc:MovieClip2D = e.currentTarget as MovieClip2D;
 			mc.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
