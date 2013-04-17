@@ -30,6 +30,7 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
+	import tetragon.data.racetrack.constants.RTDefaultEntityIDs;
 	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTPlayerDefaultStateNames;
@@ -285,20 +286,20 @@ package tetragon.systems.racetrack
 		
 		
 		/**
-		 * Switches an object to a specific state.
+		 * Switches an entity to a specific state.
 		 * 
-		 * @param objectID
+		 * @param entityID
 		 * @param stateID
 		 * @param duration
 		 * @param completeCallback
 		 */
-		public function setObjectState(objectID:String, stateID:String, duration:Number = 0.0,
+		public function setEntityState(entityID:String, stateID:String, duration:Number = 0.0,
 			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
-			var object:RTObject = _racetrack.objects[objectID];
-			if (!object) return;
-			if (object.interval) object.interval.reset();
-			changeObjectState(object, stateID, duration, completeCallback, callbackDelay);
+			var entity:RTEntity = _racetrack.entities[entityID];
+			if (!entity) return;
+			if (entity.interval) entity.interval.reset();
+			changeEntityState(entity, stateID, duration, completeCallback, callbackDelay);
 		}
 		
 		
@@ -1145,13 +1146,13 @@ package tetragon.systems.racetrack
 				
 			if (playerStateID && !_suppressDefaultPlayerStates)
 			{
-				switchObjectToState(_racetrack.player.object, playerStateID);
+				switchEntityState(_racetrack.player, playerStateID);
 				if (_racetrack.playerAnimDynamicFPS)
 				{
 					_playerFPS = (_playerSpeed * 0.6) / 300;
 					if (_playerFPS < 6) _playerFPS = 6;
 					else if (_playerFPS > 20) _playerFPS = 20;
-					_racetrack.player.object.changeAnimFramerate(_playerFPS);
+					changeEntityAnimFramerate(_racetrack.player, _playerFPS);
 				}
 			}
 		}
@@ -1297,13 +1298,6 @@ package tetragon.systems.racetrack
 					if (!_changeHealthSignal) return;
 					_changeHealthSignal.dispatch(Number(-(trigger.arguments[0])));
 					break;
-				case RTTriggerActions.CHANGE_OBJECT_STATE:
-					var targetObjectID:String = trigger.arguments[0];
-					var targetObject:RTObject = _racetrack.objects[targetObjectID];
-					targetStateID = trigger.arguments[1];
-					duration = trigger.arguments[2];
-					changeObjectState(targetObject, targetStateID, duration);
-					break;
 				case RTTriggerActions.CHANGE_ENTITY_STATE:
 					var targetEntityID:String = trigger.arguments[0];
 					var targetEntity:RTEntity;
@@ -1341,122 +1335,190 @@ package tetragon.systems.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		/**
-		 * @private
+		 * Changes the state of a specific entity.
 		 * 
-		 * @param object The object of which to switch a state.
+		 * @param entity The entity of which to switch a state.
 		 * @param stateID ID of the state.
 		 * @param duration Duration for that the state should be switched to. If 0, the
 		 *        new state will be permanent.
 		 * @param completeCallback Optional callback that is invoked after the state's
-		 *        anim sequence is finished. Is only for called for non-looping sequences!
+		 *        anim sequence is finished. Is only called for non-looping sequences!
 		 */
-		private function changeObjectState(object:RTObject, stateID:String, duration:Number,
+		private function changeEntityState(entity:RTEntity, stateID:String, duration:Number,
 			completeCallback:Function = null, callbackDelay:Number = 0.0):void
 		{
-			if (!object) return;
+			if (!entity) return;
 			
+			/* Check if a callback shoud be called after completing the state change. */
 			if (completeCallback != null)
 			{
-				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
-				object.sequenceCompleteSignal.addOnce(function(obj:RTObject):void
+				entity.completeCallback = completeCallback;
+				entity.completeCallbackDelay = callbackDelay;
+				if (!entity.sequenceCompleteSignal)
 				{
-					if (callbackDelay <= 0.0) completeCallback();
-					else Interval.setInterval(callbackDelay * 1000, completeCallback, 1, true);
+					entity.sequenceCompleteSignal = new Signal();
+				}
+				entity.sequenceCompleteSignal.addOnce(function(e:RTEntity):void
+				{
+					if (e.completeCallbackDelay <= 0.0)
+					{
+						e.completeCallback();
+					}
+					else
+					{
+						Interval.setInterval(e.completeCallbackDelay * 1000, e.completeCallback,
+							1, true);
+					}
 				});
 			}
 			
-			var success:int = switchObjectToState(object, stateID);
+			var success:int = switchEntityState(entity, stateID);
 			if (success == 1)
 			{
+				/* If duration is 0, the state change is permanent, otherwise change it
+				 * for the specified duration only. */
 				if (duration > 0.0)
 				{
-					if (object.isPlayer) _suppressDefaultPlayerStates = true;
-					if (!object.interval) object.interval = new Interval(0, 0, null, null);
-					else object.interval.reset();
-					object.interval.delay = duration * 1000;
-					object.interval.callBack = function():void
+					if (entity.id == RTDefaultEntityIDs.PLAYER)
 					{
-						switchObjectToState(object, object.defaultStateID);
+						_suppressDefaultPlayerStates = true;
+					}
+					
+					if (!entity.interval)
+					{
+						entity.interval = new Interval(0, 0, null, null);
+					}
+					else
+					{
+						entity.interval.reset();
+					}
+					
+					entity.interval.delay = duration * 1000;
+					entity.interval.callBack = function():void
+					{
+						switchEntityState(entity, entity.object.defaultStateID);
 						_suppressDefaultPlayerStates = false;
 					};
-					object.interval.start();
+					entity.interval.start();
 				}
 			}
 		}
 		
 		
 		/**
-		 * Switches the object to the specified state.
+		 * Switches the entity to the specified state.
 		 * 
 		 * @param stateID
 		 * @return 1, 0, -1, or -2.
 		 */
-		public static function switchObjectToState(object:RTObject, stateID:String):int
+		public static function switchEntityState(entity:RTEntity, stateID:String):int
 		{
-			if (!object.states || stateID == object.currentStateID || stateID == null || stateID == "") return 0;
+			var object:RTObject = entity.object;
+			
+			if (!object.states || stateID == entity.currentStateID || stateID == null
+				|| stateID == "") return 0;
 			
 			var state:RTObjectState = object.states[stateID];
 			if (!state) return -1;
 			
-			object.currentStateID = stateID;
-			object.currentState = state;
+			entity.currentStateID = stateID;
+			entity.currentState = state;
 			
 			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
 			if (!seq) return -2;
 			
 			/* Disable any currenlty used anim seq. */
-			if (object.image is MovieClip2D)
+			if (entity.image is MovieClip2D)
 			{
-				(object.image as MovieClip2D).stop();
-				juggler.remove(object.image as MovieClip2D);
+				(entity.image as MovieClip2D).stop();
+				juggler.remove(entity.image as MovieClip2D);
 			}
 			
-			object.currentSequence = seq;
+			entity.currentSequence = seq;
 			
-			if (object.currentSequence.movieClip)
+			/* Current sequence has an animation. */
+			if (entity.currentSequence.movieClip)
 			{
-				if (object.sequenceCompleteSignal && !object.currentSequence.movieClip.loop)
+				if (entity.sequenceCompleteSignal && !entity.currentSequence.movieClip.loop)
 				{
-					object.currentSequence.movieClip.addEventListener(Event2D.COMPLETE, object.onSequenceComplete);
+					entity.currentSequence.movieClip.addEventListener(Event2D.COMPLETE,
+						entity.onSequenceComplete);
 				}
-				juggler.add(object.currentSequence.movieClip);
-				object.currentSequence.movieClip.play();
-				object.image = object.currentSequence.movieClip;
+				juggler.add(entity.currentSequence.movieClip);
+				entity.currentSequence.movieClip.play();
+				entity.image = entity.currentSequence.movieClip;
 				return 1;
 			}
-			else if (object.currentSequence.image)
+			/* Current sequence has a single image. */
+			else if (entity.currentSequence.image)
 			{
-				object.image = object.currentSequence.image;
+				entity.image = entity.currentSequence.image;
 				return 1;
 			}
 			
 			/* State switching failed! */
-			if (object.currentSequence.movieClip)
+			if (entity.currentSequence.movieClip)
 			{
-				object.currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, object.onSequenceComplete);
+				entity.currentSequence.movieClip.removeEventListener(Event2D.COMPLETE,
+					entity.onSequenceComplete);
 			}
 			return 0;
 		}
 		
 		
 		/**
-		 * @private
+		 * @param stateID
+		 * @return 1, 0, -1, or -2.
 		 */
-		private function changeEntityState(entity:RTEntity, stateID:String, duration:Number,
-			completeCallback:Function = null, callbackDelay:Number = 0.0):void
+		public static function setObjectState(object:RTObject, stateID:String):int
 		{
-			if (!entity) return;
-			var object:RTObject = entity.object;
+			if (!object.states || stateID == null || stateID == "") return 0;
 			
-			if (completeCallback != null)
+			var state:RTObjectState = object.states[stateID];
+			if (!state) return -1;
+			
+			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
+			if (!seq) return -2;
+			
+			/* Disable any currenlty used anim seq. */
+			if (object.image && object.image is MovieClip2D)
 			{
-				if (!object.sequenceCompleteSignal) object.sequenceCompleteSignal = new Signal();
-				object.sequenceCompleteSignal.addOnce(function(obj:RTObject):void
-				{
-					if (callbackDelay <= 0.0) completeCallback();
-					else Interval.setInterval(callbackDelay * 1000, completeCallback, 1, true);
-				});
+				(object.image as MovieClip2D).stop();
+				juggler.remove(object.image as MovieClip2D);
 			}
+			
+			/* Sequence has an animation. */
+			if (seq.movieClip)
+			{
+				juggler.add(seq.movieClip);
+				seq.movieClip.play();
+				object.image = seq.movieClip;
+				return 1;
+			}
+			/* Current sequence has a single image. */
+			else if (seq.image)
+			{
+				object.image = seq.image;
+				return 1;
+			}
+			
+			/* State switching failed! */
+			return 0;
+		}
+		
+		
+		/**
+		 * Changes the framerate of the currently played anim sequence.
+		 * @private
+		 * 
+		 * @param fps
+		 */
+		private function changeEntityAnimFramerate(entity:RTEntity, fps:int):void
+		{
+			if (!entity.currentSequence || !entity.currentSequence.movieClip) return;
+			if (fps < 1) fps = 1;
+			else if (fps > 60) fps = 60;
+			entity.currentSequence.movieClip.fps = fps;
 		}
 		
 		
@@ -1543,9 +1605,9 @@ package tetragon.systems.racetrack
 			destX:Number, destY:Number, offsetX:Number = 0.0, offsetY:Number = 0.0,
 			pixelOffsetY:int = 0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
-			if (!entity.object || !entity.object.image) return;
+			if (!entity.image) return;
 			
-			var image:Image2D = entity.object.image;
+			var image:Image2D = entity.image;
 			scale *= entity.scale;
 			
 			/* Scale for projection AND relative to roadWidth. */

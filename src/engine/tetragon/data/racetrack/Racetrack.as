@@ -186,6 +186,27 @@ package tetragon.data.racetrack
 		
 		
 		/**
+		 * Returns an array of all enmtities that are related to the specified object.
+		 * 
+		 * @param object
+		 * @return Array of RTEntity objects.
+		 */
+		public function getEntitiesOfObject(object:RTObject):Array
+		{
+			var entities:Array = [];
+			for each (var e:RTEntity in entities)
+			{
+				if (e.object == object)
+				{
+					entities.push(e);
+				}
+			}
+			entities.sortOn("id", Array.NUMERIC);
+			return entities;
+		}
+		
+		
+		/**
 		 * Returns an array of all object IDs that are in the object collection with
 		 * the specified ID.
 		 * 
@@ -238,6 +259,10 @@ package tetragon.data.racetrack
 			for each (var obj:RTObject in objects)
 			{
 				obj.dispose();
+			}
+			for each (var e:RTEntity in entities)
+			{
+				e.dispose();
 			}
 		}
 		

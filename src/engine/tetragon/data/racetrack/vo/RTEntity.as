@@ -32,6 +32,9 @@ package tetragon.data.racetrack.vo
 	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTObjectState;
+	import tetragon.view.render2d.display.Image2D;
+	import tetragon.view.render2d.display.MovieClip2D;
+	import tetragon.view.render2d.events.Event2D;
 
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.time.Interval;
@@ -61,7 +64,9 @@ package tetragon.data.racetrack.vo
 		public var isColliding:Boolean;
 		public var enabled:Boolean;
 		
-		/**
+		public var image:Image2D;
+		
+		/*
 		 * Properties used for state changes.
 		 */
 		public var interval:Interval;
@@ -69,6 +74,8 @@ package tetragon.data.racetrack.vo
 		public var currentStateID:String;
 		public var currentSequence:RTObjectImageSequence;
 		public var sequenceCompleteSignal:Signal;
+		public var completeCallback:Function;
+		public var completeCallbackDelay:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -78,6 +85,49 @@ package tetragon.data.racetrack.vo
 		public function RTEntity(id:String)
 		{
 			_id = id;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void
+		{
+			if (currentSequence && currentSequence.movieClip)
+			{
+				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+				currentSequence = null;
+			}
+			if (sequenceCompleteSignal)
+			{
+				sequenceCompleteSignal.removeAll();
+				sequenceCompleteSignal = null;
+			}
+			if (interval)
+			{
+				interval.dispose();
+				interval = null;
+			}
+			completeCallback = null;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		public function onSequenceComplete(e:Event2D):void
+		{
+			var mc:MovieClip2D = e.currentTarget as MovieClip2D;
+			mc.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
+			sequenceCompleteSignal.dispatch(this);
 		}
 	}
 }

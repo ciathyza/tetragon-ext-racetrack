@@ -30,11 +30,6 @@ package tetragon.data.racetrack.proto
 {
 	import tetragon.data.DataObject;
 	import tetragon.view.render2d.display.Image2D;
-	import tetragon.view.render2d.display.MovieClip2D;
-	import tetragon.view.render2d.events.Event2D;
-
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.time.Interval;
 
 	import flash.utils.Dictionary;
 	
@@ -53,11 +48,13 @@ package tetragon.data.racetrack.proto
 		public var defaultFramerate:int;
 		public var collisionGrace:Number;
 		public var imageID:String;
-		public var image:Image2D;
+		
 		public var type:String;
 		public var scale:Number;
 		public var pixelOffsetY:Number;
 		public var isPlayer:Boolean;
+		
+		public var image:Image2D;
 		
 		/**
 		 * Maps object states.
@@ -83,15 +80,6 @@ package tetragon.data.racetrack.proto
 		public var triggers:Vector.<RTTrigger>;
 		public var triggersNum:uint;
 		
-		/**
-		 * Properties used for state changes.
-		 */
-		public var interval:Interval;
-		public var currentState:RTObjectState;
-		public var currentStateID:String;
-		public var currentSequence:RTObjectImageSequence;
-		public var sequenceCompleteSignal:Signal;
-		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -103,62 +91,6 @@ package tetragon.data.racetrack.proto
 		public function RTObject(id:String)
 		{
 			_id = id;
-		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Public Methods
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Changes the framerate of the currently played anim sequence.
-		 * 
-		 * @param fps
-		 */
-		public function changeAnimFramerate(fps:int):void
-		{
-			if (!currentSequence || !currentSequence.movieClip) return;
-			if (fps < 1) fps = 1;
-			else if (fps > 60) fps = 60;
-			currentSequence.movieClip.fps = fps;
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function dispose():void
-		{
-			if (currentSequence && currentSequence.movieClip)
-			{
-				currentSequence.movieClip.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
-				currentSequence = null;
-			}
-			if (sequenceCompleteSignal)
-			{
-				sequenceCompleteSignal.removeAll();
-				sequenceCompleteSignal = null;
-			}
-			if (interval)
-			{
-				interval.dispose();
-				interval = null;
-			}
-		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Callback Handlers
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		public function onSequenceComplete(e:Event2D):void
-		{
-			var mc:MovieClip2D = e.currentTarget as MovieClip2D;
-			mc.removeEventListener(Event2D.COMPLETE, onSequenceComplete);
-			sequenceCompleteSignal.dispatch(this);
 		}
 	}
 }

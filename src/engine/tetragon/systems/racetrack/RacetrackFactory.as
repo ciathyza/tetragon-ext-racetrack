@@ -396,8 +396,8 @@ package tetragon.systems.racetrack
 					//Log.warn("Object " + obj.id + " has no image or animation sequences!", this);
 				}
 				
-				/* Assign default object state. */
-				var success:int = RacetrackSystem.switchObjectToState(obj, obj.defaultStateID);
+				/* Set default object state. */
+				var success:int = RacetrackSystem.setObjectState(obj, obj.defaultStateID);
 				if (success == -1)
 				{
 					Log.warn("Could not switch object " + obj.id + " to its default state.", this);
@@ -848,6 +848,7 @@ package tetragon.systems.racetrack
 		{
 			var e:RTEntity = new RTEntity(id);
 			e.object = obj;
+			e.image = obj.image;
 			e.width = obj.image ? obj.image.width : 0;
 			e.height = obj.image ? obj.image.height : 0;
 			e.pixelOffsetY = obj.pixelOffsetY;
@@ -872,6 +873,7 @@ package tetragon.systems.racetrack
 		{
 			var c:RTCar = new RTCar(id);
 			c.object = obj;
+			c.image = obj.image;
 			c.width = obj.image ? obj.image.width : 0;
 			c.height = obj.image ? obj.image.height : 0;
 			c.pixelOffsetY = obj.pixelOffsetY;
