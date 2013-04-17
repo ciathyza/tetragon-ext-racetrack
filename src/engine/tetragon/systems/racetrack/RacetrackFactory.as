@@ -397,7 +397,7 @@ package tetragon.systems.racetrack
 				}
 				
 				/* Set default object state. */
-				var success:int = RacetrackSystem.setObjectState(obj, obj.defaultStateID);
+				var success:int = RacetrackSystem.switchObjectState(obj, obj.defaultStateID);
 				if (success == -1)
 				{
 					Log.warn("Could not switch object " + obj.id + " to its default state.", this);

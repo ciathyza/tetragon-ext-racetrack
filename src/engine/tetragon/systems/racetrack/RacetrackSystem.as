@@ -559,6 +559,109 @@ package tetragon.systems.racetrack
 		
 		
 		/**
+		 * Switches the entity to the specified state.
+		 * 
+		 * @param stateID
+		 * @return 1, 0, -1, or -2.
+		 */
+		public static function switchEntityState(entity:RTEntity, stateID:String):int
+		{
+			var object:RTObject = entity.object;
+			
+			if (!object.states || stateID == entity.currentStateID || stateID == null
+				|| stateID == "") return 0;
+			
+			var state:RTObjectState = object.states[stateID];
+			if (!state) return -1;
+			
+			entity.currentStateID = stateID;
+			entity.currentState = state;
+			
+			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
+			if (!seq) return -2;
+			
+			/* Disable any currenlty used anim seq. */
+			if (entity.image is MovieClip2D)
+			{
+				(entity.image as MovieClip2D).stop();
+				juggler.remove(entity.image as MovieClip2D);
+			}
+			
+			entity.currentSequence = seq;
+			
+			/* Current sequence has an animation. */
+			if (entity.currentSequence.movieClip)
+			{
+				if (entity.sequenceCompleteSignal && !entity.currentSequence.movieClip.loop)
+				{
+					entity.currentSequence.movieClip.addEventListener(Event2D.COMPLETE,
+						entity.onSequenceComplete);
+				}
+				juggler.add(entity.currentSequence.movieClip);
+				entity.currentSequence.movieClip.play();
+				entity.image = entity.currentSequence.movieClip;
+				return 1;
+			}
+			/* Current sequence has a single image. */
+			else if (entity.currentSequence.image)
+			{
+				entity.image = entity.currentSequence.image;
+				return 1;
+			}
+			
+			/* State switching failed! */
+			if (entity.currentSequence.movieClip)
+			{
+				entity.currentSequence.movieClip.removeEventListener(Event2D.COMPLETE,
+					entity.onSequenceComplete);
+			}
+			
+			return 0;
+		}
+		
+		
+		/**
+		 * @param stateID
+		 * @return 1, 0, -1, or -2.
+		 */
+		public static function switchObjectState(object:RTObject, stateID:String):int
+		{
+			if (!object.states || stateID == null || stateID == "") return 0;
+			
+			var state:RTObjectState = object.states[stateID];
+			if (!state) return -1;
+			
+			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
+			if (!seq) return -2;
+			
+			/* Disable any currenlty used anim seq. */
+			if (object.image && object.image is MovieClip2D)
+			{
+				(object.image as MovieClip2D).stop();
+				juggler.remove(object.image as MovieClip2D);
+			}
+			
+			/* Sequence has an animation. */
+			if (seq.movieClip)
+			{
+				juggler.add(seq.movieClip);
+				seq.movieClip.play();
+				object.image = seq.movieClip;
+				return 1;
+			}
+			/* Current sequence has a single image. */
+			else if (seq.image)
+			{
+				object.image = seq.image;
+				return 1;
+			}
+			
+			/* State switching failed! */
+			return 0;
+		}
+		
+		
+		/**
 		 * @inheritDoc
 		 */
 		public function dispose():void
@@ -1239,7 +1342,7 @@ package tetragon.systems.racetrack
 					else if (e.type == RTObjectTypes.COLLECTIBLE)
 					{
 						/* Remove the entity from the racetrack! */
-						e.enabled = false;
+						disableEntity(e);
 					}
 				}
 			}
@@ -1406,104 +1509,15 @@ package tetragon.systems.racetrack
 		
 		
 		/**
-		 * Switches the entity to the specified state.
-		 * 
-		 * @param stateID
-		 * @return 1, 0, -1, or -2.
+		 * @private
 		 */
-		public static function switchEntityState(entity:RTEntity, stateID:String):int
+		private function disableEntity(entity:RTEntity):void
 		{
-			var object:RTObject = entity.object;
-			
-			if (!object.states || stateID == entity.currentStateID || stateID == null
-				|| stateID == "") return 0;
-			
-			var state:RTObjectState = object.states[stateID];
-			if (!state) return -1;
-			
-			entity.currentStateID = stateID;
-			entity.currentState = state;
-			
-			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
-			if (!seq) return -2;
-			
-			/* Disable any currenlty used anim seq. */
-			if (entity.image is MovieClip2D)
-			{
-				(entity.image as MovieClip2D).stop();
-				juggler.remove(entity.image as MovieClip2D);
-			}
-			
-			entity.currentSequence = seq;
-			
-			/* Current sequence has an animation. */
-			if (entity.currentSequence.movieClip)
-			{
-				if (entity.sequenceCompleteSignal && !entity.currentSequence.movieClip.loop)
-				{
-					entity.currentSequence.movieClip.addEventListener(Event2D.COMPLETE,
-						entity.onSequenceComplete);
-				}
-				juggler.add(entity.currentSequence.movieClip);
-				entity.currentSequence.movieClip.play();
-				entity.image = entity.currentSequence.movieClip;
-				return 1;
-			}
-			/* Current sequence has a single image. */
-			else if (entity.currentSequence.image)
-			{
-				entity.image = entity.currentSequence.image;
-				return 1;
-			}
-			
-			/* State switching failed! */
-			if (entity.currentSequence.movieClip)
-			{
-				entity.currentSequence.movieClip.removeEventListener(Event2D.COMPLETE,
-					entity.onSequenceComplete);
-			}
-			return 0;
-		}
-		
-		
-		/**
-		 * @param stateID
-		 * @return 1, 0, -1, or -2.
-		 */
-		public static function setObjectState(object:RTObject, stateID:String):int
-		{
-			if (!object.states || stateID == null || stateID == "") return 0;
-			
-			var state:RTObjectState = object.states[stateID];
-			if (!state) return -1;
-			
-			var seq:RTObjectImageSequence = object.sequences[state.sequenceID];
-			if (!seq) return -2;
-			
-			/* Disable any currenlty used anim seq. */
-			if (object.image && object.image is MovieClip2D)
-			{
-				(object.image as MovieClip2D).stop();
-				juggler.remove(object.image as MovieClip2D);
-			}
-			
-			/* Sequence has an animation. */
-			if (seq.movieClip)
-			{
-				juggler.add(seq.movieClip);
-				seq.movieClip.play();
-				object.image = seq.movieClip;
-				return 1;
-			}
-			/* Current sequence has a single image. */
-			else if (seq.image)
-			{
-				object.image = seq.image;
-				return 1;
-			}
-			
-			/* State switching failed! */
-			return 0;
+			//if (entity.image is MovieClip2D)
+			//{
+			//	(entity.image as MovieClip2D).stop();
+			//}
+			entity.enabled = false;
 		}
 		
 		
