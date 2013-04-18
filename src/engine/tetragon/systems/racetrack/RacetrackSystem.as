@@ -389,7 +389,8 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Slow down if player drives onto off-road area. */
-			if ((_isOffRoad = _playerX < -1 || _playerX > 1) && _playerSpeed > _offRoadSpeedLimit)
+			_isOffRoad = _playerX < -1 || _playerX > 1;
+			if (_isOffRoad && _playerSpeed > _offRoadSpeedLimit)
 			{
 				_playerSpeed = accel(_playerSpeed, _offRoadSpeedDecel);
 			}
