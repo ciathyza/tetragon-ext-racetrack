@@ -81,6 +81,9 @@ package tetragon.data.racetrack
 		public var centrifugal:Number;		// centrifugal force multiplier when going around curves
 		public var maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
+		public var playerJitter:Number;
+		public var playerJitterOffRoad:Number;
+		
 		public var dt:Number;				// how long is each frame (in seconds)
 		public var fov:int;					// angle (degrees) for field of view (80 - 140)
 		public var cameraAltitude:Number;	// z height of camera (500 - 5000)
@@ -99,7 +102,6 @@ package tetragon.data.racetrack
 		public var entityCount:uint;
 		
 		public var player:RTEntity;
-		public var playerJitter:Boolean;
 		public var playerAnimDynamicFPS:Boolean;
 		
 		

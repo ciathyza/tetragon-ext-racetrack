@@ -22,7 +22,9 @@ Defines the levels for the racetrack engine.
 				<setting name="maxSpeedMult"		value=""/>
 				<setting name="accelerationDiv"		value=""/>
 				<setting name="offRoadLimitDiv"		value=""/>
-				<setting name="offRoadDeceleration"	value=""/>
+				<setting name="offRoadDecelDiv"		value=""/>
+				<setting name="playerJitter"		value="1.2"/>
+				<setting name="playerJitterOffRoad"	value="4.2"/>
 				<setting name="fov"					value=""/>
 				<setting name="cameraAltitude"		value=""/>
 				<setting name="drawDistance"		value=""/>

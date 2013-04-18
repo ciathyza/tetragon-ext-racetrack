@@ -20,10 +20,10 @@
 	<defaultRoadWidth>2000</defaultRoadWidth>
 	<defaultSegmentLength>200</defaultSegmentLength>
 	<defaultRumbleLength>3</defaultRumbleLength>
-	<defaultOffRoadDeceleration>0.99</defaultOffRoadDeceleration>
 	<defaultCentrifugal>0.3</defaultCentrifugal>
 	<defaultMaxSpeedMult>1.0</defaultMaxSpeedMult>
 	<defaultAccelerationDiv>5.0</defaultAccelerationDiv>
+	<defaultOffRoadDecelDiv>2.0</defaultOffRoadDecelDiv>
 	<defaultOffRoadLimitDiv>4.0</defaultOffRoadLimitDiv>
 	<defaultFOV>100</defaultFOV>						<!-- Valid range: 80 - 150 -->
 	<defaultCameraAltitude>1000</defaultCameraAltitude>	<!-- Valid range: 500 - 5000 -->
@@ -34,9 +34,6 @@
 	
 	<!-- Determines the ID of the player's object definition. -->
 	<playerObjectID>player</playerObjectID>
-	
-	<!-- Determines whether the player sprite should shake the faster it moves. -->
-	<playerJitter>true</playerJitter>
 	
 	<!-- Determines whether the player animation framerate should be affected by the
 	player's speed. If set to true the player animation sequences FPS will increase

@@ -43,7 +43,7 @@ package tetragon.data.racetrack.constants
 		public static const MAX_SPEED_MULT:String				= "maxSpeedMult";
 		public static const ACCELERATION_DIV:String				= "accelerationDiv";
 		public static const OFFROAD_LIMIT_DIV:String			= "offRoadLimitDiv";
-		public static const OFFROAD_DECELERATION:String			= "offRoadDeceleration";
+		public static const OFFROAD_DECEL_DIV:String			= "offRoadDecelDiv";
 		
 		public static const DEFAULT_ROAD_WIDTH:String			= "defaultRoadWidth";
 		public static const DEFAULT_SEGMENT_LENGTH:String		= "defaultSegmentLength";
@@ -52,7 +52,7 @@ package tetragon.data.racetrack.constants
 		public static const DEFAULT_MAX_SPEED_MULT:String		= "defaultMaxSpeedMult";
 		public static const DEFAULT_ACCELERATION_DIV:String		= "defaultAccelerationDiv";
 		public static const DEFAULT_OFFROAD_LIMIT_DIV:String	= "defaultOffRoadLimitDiv";
-		public static const DEFAULT_OFFROAD_DECELERATION:String	= "defaultOffRoadDeceleration";
+		public static const DEFAULT_OFFROAD_DECEL_DIV:String	= "defaultOffRoadDecelDiv";
 		public static const DEFAULT_FOV:String					= "defaultFOV";
 		public static const DEFAULT_CAMERA_ALTITUDE:String		= "defaultCameraAltitude";
 		public static const DEFAULT_DRAW_DISTANCE:String		= "defaultDrawDistance";
@@ -66,6 +66,7 @@ package tetragon.data.racetrack.constants
 		
 		public static const PLAYER_OBJECT_ID:String				= "playerObjectID";
 		public static const PLAYER_JITTER:String				= "playerJitter";
+		public static const PLAYER_JITTER_OFFROAD:String		= "playerJitterOffRoad";
 		public static const PLAYER_ANIM_DYNAMIC_FPS:String		= "playerAnimDynamicFPS";
 	}
 }

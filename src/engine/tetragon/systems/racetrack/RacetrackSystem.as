@@ -63,7 +63,6 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.animation.Tween2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
-	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
@@ -109,13 +108,12 @@ package tetragon.systems.racetrack
 		private var _widthHalf:int;
 		private var _heightHalf:int;
 		
-		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
-		private var _drawDistance:int;			// number of segments to draw
+		private var _drawDistance:int;
 		private var _bgSpeedMult:Number;
 		
-		private var _playerX:Number;			// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerY:int;				// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerZ:Number;			// player relative z distance from camera (computed)
+		private var _playerX:Number;
+		private var _playerY:int;
+		private var _playerZ:Number;
 		
 		private var _playerOffsetX:Number;
 		private var _playerOffsetY:Number;
@@ -124,9 +122,10 @@ package tetragon.systems.racetrack
 		private var _playerFPS:int;
 		
 		private var _startPosition:Number;
-		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _position:Number;
 		private var _prevPosition:Number;
-		private var _playerSpeed:Number;				// current speed
+		
+		private var _playerSpeed:Number;
 		private var _playerSpeedPercent:Number;
 		private var _playerSpeedCollision:Number;
 		
@@ -135,24 +134,25 @@ package tetragon.systems.racetrack
 		
 		private var _currentLap:uint;
 		private var _startTime:uint;
-		private var _currentLapTime:uint;		// current lap time
-		private var _lastLapTime:uint;			// last lap time
+		private var _currentLapTime:uint;
+		private var _lastLapTime:uint;
 		private var _fastestLapTime:uint;
 		
-		private var _enableCollision:Boolean;
-		private var _enableControls:Boolean;
+		private var _playerEnabled:Boolean;
+		private var _collisionsEnabled:Boolean;
+		private var _controlsEnabled:Boolean;
+		
 		private var _isAccelerating:Boolean;
 		private var _isBraking:Boolean;
 		private var _isSteeringLeft:Boolean;
 		private var _isSteeringRight:Boolean;
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
-		
-		private var _playerEnabled:Boolean;
-		private var _idleAfterCollision:Boolean;
-		private var _suppressDefaultPlayerStates:Boolean;
+		private var _isOffRoad:Boolean;
 		
 		private var _started:Boolean;
+		private var _idleAfterCollision:Boolean;
+		private var _suppressDefaultPlayerStates:Boolean;
 		
 		/* Racetrack properties */
 		private var _roadWidth:int;
@@ -165,6 +165,8 @@ package tetragon.systems.racetrack
 		private var _acceleration:Number;
 		private var _deceleration:Number;
 		private var _braking:Number;
+		private var _playerJitter:Number;
+		private var _playerJitterOffRoad:Number;
 		private var _offRoadDecel:Number;
 		private var _offRoadLimit:Number;
 		private var _centrifugal:Number;
@@ -178,8 +180,6 @@ package tetragon.systems.racetrack
 		private var _carsNum:uint;
 		private var _objects:Dictionary	;
 		private var _objectScale:Number;
-		
-		private var _boundingBox:Rect2D;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -259,7 +259,6 @@ package tetragon.systems.racetrack
 			_playerOffsetY = -1.0;
 			_playerFPS = 12;
 			
-			_resolution = 1.6; // _bufferHeight / _bufferHeight;
 			_startPosition = 0;
 			_position = 0;
 			_prevPosition = -1;
@@ -278,10 +277,11 @@ package tetragon.systems.racetrack
 			_lastLapTime = 0;
 			_fastestLapTime = 0;
 			
-			_enableControls = true;
-			_enableCollision = true;
+			_controlsEnabled = true;
+			_collisionsEnabled = true;
 			_playerEnabled = true;
 			_suppressDefaultPlayerStates = false;
+			_isOffRoad = false;
 		}
 		
 		
@@ -383,13 +383,14 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Check player collisions with other entities. */
-			if (playerSegment.entitiesNum > 0 && _enableCollision)
+			if (playerSegment.entitiesNum > 0 && _collisionsEnabled)
 			{
 				processEntityCollisions(playerSegment);
 			}
 			
 			/* Slow down if player drives onto off-road area. */
-			if ((_playerX < -1 || _playerX > 1) && _playerSpeed > _offRoadLimit)
+			_isOffRoad = _playerX < -1 || _playerX > 1;
+			if (_isOffRoad && _playerSpeed > _offRoadLimit)
 			{
 				_playerSpeed = accel(_playerSpeed, _offRoadDecel);
 			}
@@ -534,7 +535,12 @@ package tetragon.systems.racetrack
 				if (seg == playerSegment)
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
-					var jitter:Number = _racetrack.playerJitter ? (1.5 * Math.random() * (_playerSpeed / _maxSpeed) * _resolution) * randomChoice([-1, 1]) : 0.0;
+					var jitter:Number = _isOffRoad ? _playerJitterOffRoad : _playerJitter;
+					if (jitter > 0)
+					{
+						jitter = (1.5 * Math.random() * (_playerSpeed / _maxSpeed) * jitter) * randomChoice([-1, 1]);
+					}
+					
 					renderEntity(_racetrack.player,
 						_cameraDepth / _playerZ,
 						_widthHalf,
@@ -544,14 +550,14 @@ package tetragon.systems.racetrack
 						_racetrack.player.pixelOffsetY);
 				}
 			}
-				
+			
 			_renderCanvas.complete();
 		}
 		
 		
 		public function jump():void
 		{
-			if (!_enableControls || !_playerEnabled || _isJump || _playerSpeed == 0) return;
+			if (!_controlsEnabled || !_playerEnabled || _isJump || _playerSpeed == 0) return;
 			_playerJumpHeight = -(_playerSpeedPercent * 1.8);
 			_isFall = false;
 			_isJump = true;
@@ -777,6 +783,8 @@ package tetragon.systems.racetrack
 			_objects = _racetrack.objects;
 			_objectScale = _racetrack.objectScale;
 			_playerWidth = _racetrack.player.width * _objectScale;
+			_playerJitter = _racetrack.playerJitter;
+			_playerJitterOffRoad = _racetrack.playerJitterOffRoad;
 			
 			cameraAltitude = _racetrack.cameraAltitude;
 			fov = _racetrack.fov;
@@ -876,33 +884,38 @@ package tetragon.systems.racetrack
 		}
 		
 		
-		public function get enableCollision():Boolean
+		public function get collisionsEnabled():Boolean
 		{
-			return _enableCollision;
+			return _collisionsEnabled;
 		}
-		public function set enableCollision(v:Boolean):void
+		public function set collisionsEnabled(v:Boolean):void
 		{
-			_enableCollision = v;
+			_collisionsEnabled = v;
 		}
 		
 		
 		/**
 		 * Determines whether player control are enabled or not.
 		 */
-		public function get enableControls():Boolean
+		public function get controlsEnabled():Boolean
 		{
-			return _enableControls;
+			return _controlsEnabled;
 		}
-		public function set enableControls(v:Boolean):void
+		public function set controlsEnabled(v:Boolean):void
 		{
-			_enableControls = v;
-			if (!_enableControls)
+			_controlsEnabled = v;
+			if (!_controlsEnabled)
 			{
 				_isAccelerating = _isBraking = _isSteeringLeft = _isSteeringRight = false;
 			}
 		}
 		
 		
+		/**
+		 * Determines whether the player is currently enabled or not. This property is
+		 * set automatically by action triggers and if false prevents the player from
+		 * controling the player sprite.
+		 */
 		public function get playerEnabled():Boolean
 		{
 			return _playerEnabled;
@@ -915,7 +928,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isAccelerating(v:Boolean):void
 		{
-			if (!_enableControls) return;
+			if (!_controlsEnabled) return;
 			_isAccelerating = v;
 		}
 		
@@ -926,7 +939,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isBraking(v:Boolean):void
 		{
-			if (!_enableControls) return;
+			if (!_controlsEnabled) return;
 			_isBraking = v;
 		}
 		
@@ -937,7 +950,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isSteeringLeft(v:Boolean):void
 		{
-			if (!_enableControls) return;
+			if (!_controlsEnabled) return;
 			_isSteeringLeft = v;
 		}
 		
@@ -948,7 +961,7 @@ package tetragon.systems.racetrack
 		}
 		public function set isSteeringRight(v:Boolean):void
 		{
-			if (!_enableControls) return;
+			if (!_controlsEnabled) return;
 			_isSteeringRight = v;
 		}
 		
@@ -1059,9 +1072,6 @@ package tetragon.systems.racetrack
 			/* Set defaults. */
 			_bgSpeedMult = 0.001;
 			_playerX = _playerY = _playerZ = 0;
-			
-			_boundingBox = new Rect2D(10, 10, 0xFF00FF);
-			_boundingBox.alpha = 0.4;
 		}
 		
 		

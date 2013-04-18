@@ -191,6 +191,7 @@ package tetragon.systems.racetrack
 			var maxSpeedMult:Number = s.getNumber(RTSettingsNames.DEFAULT_MAX_SPEED_MULT) || 1.0;
 			var accelerationDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_ACCELERATION_DIV) || 5.0;
 			var offRoadLimitDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_LIMIT_DIV) || 4.0;
+			var offRoadDecelDiv:Number = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_DECEL_DIV) || 2.0;
 			
 			_rt.drawDistance = s.getNumber(RTSettingsNames.DEFAULT_DRAW_DISTANCE) || 300;			/* 100 - 500 */
 			_rt.fov = s.getNumber(RTSettingsNames.DEFAULT_FOV) || 100;								/* 80 - 140 */
@@ -200,8 +201,6 @@ package tetragon.systems.racetrack
 			_rt.segmentLength = s.getNumber(RTSettingsNames.DEFAULT_SEGMENT_LENGTH) || 200;
 			_rt.rumbleLength = s.getNumber(RTSettingsNames.DEFAULT_RUMBLE_LENGTH) || 3;
 			_rt.centrifugal = s.getNumber(RTSettingsNames.DEFAULT_CENTRIFUGAL) || 0.3;
-			_rt.offRoadDecel = s.getNumber(RTSettingsNames.DEFAULT_OFFROAD_DECELERATION) || 0.99;
-			_rt.playerJitter = s.getBoolean(RTSettingsNames.PLAYER_JITTER);
 			_rt.playerAnimDynamicFPS = s.getBoolean(RTSettingsNames.PLAYER_ANIM_DYNAMIC_FPS);
 			
 			_entityThinningMult = s.getNumber(RTSettingsNames.ENTITY_THINNING_MULT) || 1;
@@ -214,14 +213,17 @@ package tetragon.systems.racetrack
 			_rt.segmentLength = _level.settings[RTSettingsNames.SEGMENT_LENGTH] || _rt.segmentLength;
 			_rt.rumbleLength = _level.settings[RTSettingsNames.RUMBLE_LENGTH] || _rt.rumbleLength;
 			_rt.centrifugal = _level.settings[RTSettingsNames.CENTRIFUGAL] || _rt.centrifugal;
-			_rt.offRoadDecel = _level.settings[RTSettingsNames.OFFROAD_DECELERATION] || _rt.offRoadDecel;
+			_rt.offRoadDecel = _level.settings[RTSettingsNames.OFFROAD_DECEL_DIV] || _rt.offRoadDecel;
 			_rt.fov = _level.settings[RTSettingsNames.FOV] || _rt.fov;
 			_rt.cameraAltitude = _level.settings[RTSettingsNames.CAMERA_ALTITUDE] || _rt.cameraAltitude;
 			_rt.drawDistance = _level.settings[RTSettingsNames.DRAW_DISTANCE] || _rt.drawDistance;
+			_rt.playerJitter = _level.settings[RTSettingsNames.PLAYER_JITTER] || 1.2;
+			_rt.playerJitterOffRoad = _level.settings[RTSettingsNames.PLAYER_JITTER_OFFROAD] || 4.2;
 			
 			maxSpeedMult = _level.settings[RTSettingsNames.MAX_SPEED_MULT] || maxSpeedMult;
 			accelerationDiv = _level.settings[RTSettingsNames.ACCELERATION_DIV] || accelerationDiv;
 			offRoadLimitDiv = _level.settings[RTSettingsNames.OFFROAD_LIMIT_DIV] || offRoadLimitDiv;
+			offRoadDecelDiv = _level.settings[RTSettingsNames.OFFROAD_DECEL_DIV] || offRoadDecelDiv;
 			
 			/* Derived parameters. */
 			var cameraDepth:Number = 1 / Math.tan((_rt.fov / 2) * Math.PI / 180);
@@ -231,6 +233,7 @@ package tetragon.systems.racetrack
 			_rt.acceleration = _rt.maxSpeed / accelerationDiv;
 			_rt.deceleration = -_rt.maxSpeed / accelerationDiv;
 			_rt.braking = -_rt.maxSpeed;
+			_rt.offRoadDecel = -_rt.maxSpeed / offRoadDecelDiv;
 			_rt.offRoadLimit = _rt.maxSpeed / offRoadLimitDiv;
 		}
 		
