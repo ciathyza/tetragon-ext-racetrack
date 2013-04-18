@@ -30,7 +30,6 @@ package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.racetrack.Racetrack;
-	import tetragon.data.racetrack.constants.RTDefaultEntityIDs;
 	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTObjectTypes;
 	import tetragon.data.racetrack.constants.RTPlayerDefaultStateNames;
@@ -1499,7 +1498,7 @@ package tetragon.systems.racetrack
 				 * for the specified duration only. */
 				if (duration > 0.0)
 				{
-					if (entity.id == RTDefaultEntityIDs.PLAYER)
+					if (entity.id == _racetrack.playerObjectID)
 					{
 						_suppressDefaultPlayerStates = true;
 					}

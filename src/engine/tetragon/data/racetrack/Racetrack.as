@@ -102,6 +102,7 @@ package tetragon.data.racetrack
 		public var entityCount:uint;
 		
 		public var player:RTEntity;
+		public var playerObjectID:String;
 		public var playerAnimDynamicFPS:Boolean;
 		
 		

@@ -202,6 +202,7 @@ package tetragon.systems.racetrack
 			_rt.rumbleLength = s.getNumber(RTSettingsNames.DEFAULT_RUMBLE_LENGTH) || 3;
 			_rt.centrifugal = s.getNumber(RTSettingsNames.DEFAULT_CENTRIFUGAL) || 0.3;
 			_rt.playerAnimDynamicFPS = s.getBoolean(RTSettingsNames.PLAYER_ANIM_DYNAMIC_FPS);
+			_rt.playerObjectID = s.getString(RTSettingsNames.PLAYER_OBJECT_ID) || "player";
 			
 			_entityThinningMult = s.getNumber(RTSettingsNames.ENTITY_THINNING_MULT) || 1;
 			
@@ -434,9 +435,7 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Prepare the player sprite. */
-			var playerObjectID:String = registry.settings.getString(RTSettingsNames.PLAYER_OBJECT_ID);
-			var playerObj:RTObject = _rt.getObject(playerObjectID);
-			
+			var playerObj:RTObject = _rt.getObject(_rt.playerObjectID);
 			if (playerObj)
 			{
 				playerObj.isPlayer = true;
