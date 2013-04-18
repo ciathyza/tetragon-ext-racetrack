@@ -167,8 +167,9 @@ package tetragon.systems.racetrack
 		private var _braking:Number;
 		private var _playerJitter:Number;
 		private var _playerJitterOffRoad:Number;
-		private var _offRoadDecel:Number;
-		private var _offRoadLimit:Number;
+		private var _playerXLimit:Number;
+		private var _offRoadSpeedDecel:Number;
+		private var _offRoadSpeedLimit:Number;
 		private var _centrifugal:Number;
 		private var _maxSpeed:Number;
 		private var _dt:Number;
@@ -389,10 +390,9 @@ package tetragon.systems.racetrack
 			}
 			
 			/* Slow down if player drives onto off-road area. */
-			_isOffRoad = _playerX < -1 || _playerX > 1;
-			if (_isOffRoad && _playerSpeed > _offRoadLimit)
+			if ((_isOffRoad = _playerX < -1 || _playerX > 1) && _playerSpeed > _offRoadSpeedLimit)
 			{
-				_playerSpeed = accel(_playerSpeed, _offRoadDecel);
+				_playerSpeed = accel(_playerSpeed, _offRoadSpeedDecel);
 			}
 			
 			/* Check player collision with other cars. */
@@ -411,8 +411,13 @@ package tetragon.systems.racetrack
 				}
 			}
 			
-			_playerX = limit(_playerX, -3, 3);		// Don't ever let it go too far out of bounds
-			_playerSpeed = limit(_playerSpeed, 0, _maxSpeed);	// or exceed maxSpeed.
+			/* Don't ever let it go too far out of bounds. */
+			if (_playerX < -_playerXLimit) _playerX = -_playerXLimit;
+			else if (_playerX > _playerXLimit) _playerX = _playerXLimit;
+			
+			/* Limit maximum speed. */
+			if (_playerSpeed < 0.0) _playerSpeed = 0.0;
+			else if (_playerSpeed > _maxSpeed) _playerSpeed = _maxSpeed;
 			
 			/* Increase move counter only if the player is moving. */
 			if (_prevSegment != playerSegment)
@@ -441,6 +446,7 @@ package tetragon.systems.racetrack
 				//}
 			}
 		}
+		
 		
 		/**
 		 * Renders the racetrack.
@@ -771,8 +777,8 @@ package tetragon.systems.racetrack
 			_acceleration = _racetrack.acceleration;
 			_deceleration = _racetrack.deceleration;
 			_braking = _racetrack.braking;
-			_offRoadDecel = _racetrack.offRoadDecel;
-			_offRoadLimit = _racetrack.offRoadLimit;
+			_offRoadSpeedDecel = _racetrack.offRoadDecel;
+			_offRoadSpeedLimit = _racetrack.offRoadLimit;
 			_centrifugal = _racetrack.centrifugal;
 			_maxSpeed = _racetrack.maxSpeed;
 			_dt = _racetrack.dt;
@@ -785,6 +791,7 @@ package tetragon.systems.racetrack
 			_playerWidth = _racetrack.player.width * _objectScale;
 			_playerJitter = _racetrack.playerJitter;
 			_playerJitterOffRoad = _racetrack.playerJitterOffRoad;
+			_playerXLimit = 4.0;
 			
 			cameraAltitude = _racetrack.cameraAltitude;
 			fov = _racetrack.fov;
@@ -1682,12 +1689,12 @@ package tetragon.systems.racetrack
 		}
 
 
-		private function limit(value:Number, min:Number, max:Number):Number
-		{
-			return mathMax(min, mathMin(value, max));
-		}
-
-
+		//private function limit(value:Number, min:Number, max:Number):Number
+		//{
+		//	return mathMax(min, mathMin(value, max));
+		//}
+		
+		
 		private function project(p:RTPoint, cameraX:Number, cameraY:Number, cameraZ:Number):void
 		{
 			p.camera.x = (p.world.x || 0) - cameraX;
@@ -1750,10 +1757,10 @@ package tetragon.systems.racetrack
 		}
 
 
-		private function mathMin(a:Number, b:Number):Number
-		{
-			return (a < b) ? a : b;
-		}
+		//private function mathMin(a:Number, b:Number):Number
+		//{
+		//	return (a < b) ? a : b;
+		//}
 
 
 		private function mathRound(n:Number):int
