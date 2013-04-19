@@ -97,6 +97,7 @@ package tetragon.file.parsers
 				for each (x in xml.objects.object)
 				{
 					var obj:RTObject = new RTObject(extractString(x, "@id"));
+					obj.textureAtlasID = extractString(x, "@textureAtlasID");
 					obj.collectionID = extractString(x, "@collectionID");
 					obj.scale = extractNumber(x, "@scale");
 					obj.pixelOffsetY = extractNumber(x, "@pixelOffsetY");

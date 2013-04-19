@@ -114,8 +114,7 @@ package tetragon.systems.racetrack
 			_objectsCatalog = resourceIndex.getResourceContent(_level.objectsCatalogID);
 			if (!_objectsCatalog) return error("No objects catalog with ID " + _level.objectsCatalogID + "!");
 			
-			_textureAtlas = resourceManager.process(_objectsCatalog.textureAtlasID);
-			if (!_textureAtlas) return error("No texture atlas with ID " + _objectsCatalog.textureAtlasID + "!");
+			_textureAtlas = getTextureAtlas(_objectsCatalog.textureAtlasID);
 			
 			_rt = new Racetrack(_level.id);
 			
@@ -291,8 +290,9 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareObjects():void
 		{
-			var textures:Dictionary = _textureAtlas.getImageMap();
 			var placeholder:Texture2D = Texture2D.fromBitmapData(ResourceIndex.getPlaceholderImage());
+			var atlas:Atlas;
+			var textures:Dictionary;
 			var texture:Texture2D;
 			var imageID:String;
 			
@@ -305,6 +305,20 @@ package tetragon.systems.racetrack
 			/* Create prototype objects. */
 			for each (var obj:RTObject in _objectsCatalog.objects)
 			{
+				texture = null;
+				
+				/* Object has no specific texture atlas assigned, so use the global one. */
+				if (stringIsEmptyOrNull(obj.textureAtlasID))
+				{
+					atlas = _textureAtlas;
+					textures = atlas.getImageMap();
+				}
+				else
+				{
+					atlas = getTextureAtlas(obj.textureAtlasID);
+					if (atlas) textures = atlas.getImageMap();
+				}
+				
 				/* Object has animation sequences. */
 				if (obj.sequencesNum > 0)
 				{
@@ -318,7 +332,10 @@ package tetragon.systems.racetrack
 						if (framesNum == 1)
 						{
 							imageID = seq.imageIDs[0];
-							texture = _textureAtlas.getImage(imageID);
+							if (atlas)
+							{
+								texture = atlas.getImage(imageID);
+							}
 							if (!texture)
 							{
 								Log.warn("Sequence \"" + seq.id + "\" doesn't have image " + imageID, this);
@@ -335,7 +352,10 @@ package tetragon.systems.racetrack
 							for (var i:uint = 0; i < framesNum; i++)
 							{
 								imageID = seq.imageIDs[i];
-								texture = _textureAtlas.getImage(imageID);
+								if (atlas)
+								{
+									texture = atlas.getImage(imageID);
+								}
 								if (!texture)
 								{
 									Log.warn("Sequence \"" + seq.id + "\" doesn't have image " + imageID, this);
@@ -1039,6 +1059,17 @@ package tetragon.systems.racetrack
 		private function createEntityID():String
 		{
 			return "entity" + _rt.entityCount;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function getTextureAtlas(atlasID:String):Atlas
+		{
+			var atlas:Atlas = resourceManager.process(atlasID);
+			if (atlas) return atlas;
+			return error("No texture atlas found with ID " + atlasID + "!");
 		}
 		
 		

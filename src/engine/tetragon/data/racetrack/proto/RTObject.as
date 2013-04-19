@@ -44,6 +44,7 @@ package tetragon.data.racetrack.proto
 		//-----------------------------------------------------------------------------------------
 		
 		public var collectionID:String;
+		public var textureAtlasID:String;
 		public var defaultStateID:String;
 		public var defaultFramerate:int;
 		public var collisionGrace:Number;
