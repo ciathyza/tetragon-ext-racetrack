@@ -857,7 +857,6 @@
 				<arg line="-strict=true"/>
 				<arg line="-compress=@{compress}"/>
 				<arg line="-warn-no-constructor=false"/>
-				<arg line="-load-config=${FLEX_HOME}/frameworks/@{config}"/>
 				<arg line="-keep-as3-metadata=TypeHint"/>
 				<arg line="-keep-as3-metadata=Resource"/>
 				<arg line="-keep-as3-metadata=ResourceIndex"/>
@@ -872,12 +871,9 @@
 				<arg line="-source-path=${path.libs.source}"/>
 				<arg line="-source-path+=${path.src.engine}"/>
 				<arg line="-source-path+=${path.src.project}"/>
-				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/air/aircore.swc"/>
-				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airframework.swc"/>
-				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airglobal.swc"/>
-				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
-				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air/servicemonitor.swc"/>
-				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/textLayout.swc"/>
+				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/air/airglobal.swc"/>
+				<arg line="-library-path=${FLEX_HOME}/frameworks/libs"/>
+				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air"/>
 				<arg line="-library-path+=${path.swc.tetragon}"/>
 				<arg line="-library-path+=${path.libs.swc}"/>
 			</exec>

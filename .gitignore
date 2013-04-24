@@ -15,4 +15,5 @@ Thumbs.db
 *.tmp
 RECOVER_*.fla
 linked_hexagonlib
+linked_hexagonui
 linked_tetragon

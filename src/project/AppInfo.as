@@ -46,9 +46,9 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "1231";}
+		public function get build():String {return "1310";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "18-April-2013 21:52";}
+		public function get buildDate():String {return "25-April-2013 00:59";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
@@ -89,19 +89,19 @@ package
 		public function get extraFolder():String {return "extra";}
 		
 		/** @inheritDoc */
-		public function get defaultWidth():int {return 1136;}
+		public function get defaultWidth():int {return 1024;}
 		/** @inheritDoc */
-		public function get defaultHeight():int {return 640;}
+		public function get defaultHeight():int {return 768;}
 		/** @inheritDoc */
-		public function get referenceWidth():int {return 1136;}
+		public function get referenceWidth():int {return 1024;}
 		/** @inheritDoc */
-		public function get referenceHeight():int {return 640;}
+		public function get referenceHeight():int {return 768;}
 		
 		/** @inheritDoc */
 		public function get swfVersion():int {return 19;}
 		
 		/** @inheritDoc */
-		public function get isDebug():Boolean {return true;}
+		public function get isDebug():Boolean {return false;}
 		
 		/** @inheritDoc */
 		public function get usePackedResources():Boolean {return false;}

@@ -129,16 +129,17 @@ package view.racing
 			if (main.appInfo.buildType == BuildType.IOS
 				|| main.appInfo.buildType == BuildType.ANDROID)
 			{
-				_rectL = new Rect2D(200, 300, 0xFF00FF);
+				_rectL = new Rect2D(300, refHeight, 0xFF00FF);
 				_rectL.name = "left";
 				_rectL.alpha = 0.0;
-				_rectL.y = stageWidth - _rectL.height;
+				_rectL.x = 0;
+				_rectL.y = 0;
 				_rectL.addEventListener(TouchEvent2D.TOUCH, onTouch);
-				_rectR = new Rect2D(200, 300, 0xFF00FF);
+				_rectR = new Rect2D(300, refHeight, 0xFF00FF);
 				_rectR.name = "right";
 				_rectR.alpha = 0.0;
-				_rectR.x = stageWidth - _rectR.width;
-				_rectR.y = stageHeight - _rectR.height;
+				_rectR.x = refWidth - _rectR.width;
+				_rectR.y = 0;
 				_rectR.addEventListener(TouchEvent2D.TOUCH, onTouch);
 				addChild(_rectL);
 				addChild(_rectR);
