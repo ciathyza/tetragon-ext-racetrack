@@ -72,8 +72,6 @@ package setup
 			/* In web builds, check if the app is allowed to run on the current domain. */
 			if (main.appInfo.buildType == BuildType.WEB && !checkAllowedDomains()) return;
 			
-			main.console.toggle();
-			
 			complete(POST_CONFIG);
 		}
 		

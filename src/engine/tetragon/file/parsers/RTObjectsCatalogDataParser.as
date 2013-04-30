@@ -86,8 +86,9 @@ package tetragon.file.parsers
 					var col:RTObjectCollection = new RTObjectCollection(extractString(x, "@id"));
 					col.type = extractString(x, "@type");
 					col.scale = extractNumber(x, "@scale");
-					col.pixelOffsetY = extractNumber(x, "@pixelOffsetY");
 					if (isNaN(col.scale)) col.scale = 1.0;
+					col.pixelOffsetY = extractNumber(x, "@pixelOffsetY");
+					col.essential = extractBoolean(x, "@essential");
 					col.objects = new <RTObject>[];
 					catalog.collections[col.id] = col;
 				}
@@ -100,8 +101,9 @@ package tetragon.file.parsers
 					obj.textureAtlasID = extractString(x, "@textureAtlasID");
 					obj.collectionID = extractString(x, "@collectionID");
 					obj.scale = extractNumber(x, "@scale");
-					obj.pixelOffsetY = extractNumber(x, "@pixelOffsetY");
 					if (isNaN(obj.scale)) obj.scale = 1.0;
+					obj.pixelOffsetY = extractNumber(x, "@pixelOffsetY");
+					obj.essential = extractBoolean(x, "@essential");
 					obj.defaultStateID = extractString(x, "@defaultStateID");
 					
 					var collisionGrace:Number = 1.0 - extractNumber(x, "@collisionGrace", 0.0);

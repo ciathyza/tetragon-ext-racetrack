@@ -130,7 +130,6 @@ package view.racing
 		override public function stop():void
 		{
 			super.stop();
-			main.gameLoop.stop();
 		}
 		
 		
@@ -375,7 +374,6 @@ package view.racing
 			main.statsMonitor.toggle();
 			reset();
 			_render2D.start();
-			main.gameLoop.start();
 		}
 
 

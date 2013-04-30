@@ -11,12 +11,12 @@
 		Object Collections
 		=================================================================================== -->
 		<collections>
-			<collection id="billboards" type="offroad" scale="2.5"/>
+			<collection id="billboards" type="offroad" scale="2.5" essential="true"/>
 			<collection id="vegetation" type="offroad" scale="2.5" pixelOffsetY="16"/>
 			<collection id="buildings" type="offroad" scale="1.0" pixelOffsetY="16"/>
 			<collection id="obstacles" type="obstacle" scale="1.0"/>
-			<collection id="checkpoints" type="checkpoint" scale="2.5"/>
-			<collection id="items" type="collectible" scale="1.0"/>
+			<collection id="checkpoints" type="checkpoint" scale="2.5" essential="true"/>
+			<collection id="items" type="collectible" scale="1.0" essential="true"/>
 			<collection id="cars" type="opponent" scale="1.25"/>
 			<collection id="traffic" type="traffic" scale="1.25"/>
 			<collection id="markers" type="marker" scale="1.0"/>

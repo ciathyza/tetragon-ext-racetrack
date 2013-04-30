@@ -206,7 +206,7 @@ package tetragon.systems.racetrack
 			_entityThinningMult = s.getNumber(RTSettingsNames.ENTITY_THINNING_MULT) || 1;
 			
 			/* Level-based parameters. */
-			_rt.hazeDensity = _level.settings[RTSettingsNames.HAZE_DENSITY] || 10;
+			_rt.hazeDensity = _level.settings[RTSettingsNames.HAZE_DENSITY] || 0;
 			_rt.hazeThreshold = _level.settings[RTSettingsNames.HAZE_THRESHOLD] || 0.99;
 			_rt.lanes = _level.settings[RTSettingsNames.LANES] || 2;
 			_rt.roadWidth = _level.settings[RTSettingsNames.ROAD_WIDTH] || _rt.roadWidth;
@@ -436,6 +436,7 @@ package tetragon.systems.racetrack
 				if (col)
 				{
 					obj.type = col.type;
+					obj.essential = col.essential;
 					col.objects.push(obj);
 					/* Try to take Y offset from collection if the object has none. */
 					if (isNaN(obj.pixelOffsetY))
@@ -701,15 +702,32 @@ package tetragon.systems.racetrack
 			postOffset:Number = 0.0):void
 		{
 			var collection:RTObjectCollection = collectionID ? _rt.getCollection(collectionID) : null;
+			var essential:Boolean = false;
 			var id:String = objectID;
 			var segAdd:int = 0;
 			var count:uint = 0;
 			var scale:Number = 1.0;
 			
+			/* Take essential flag first from collection, if available ... */
+			if (collection)
+			{
+				essential = collection.essential;
+			}
+			/* ... then override with the object-based flag. */
+			if (!stringIsEmptyOrNull(id))
+			{
+				var obj:RTObject = _rt.getObject(id);
+				if (obj) essential = obj.essential;
+			}
+			
 			if (stepSize < 1) stepSize = 1;
 			if (subCount < 1) subCount = 1;
 			
-			stepSize *= _entityThinningMult;
+			/* Entity thinning multiplier should only affect non-essential objects! */
+			if (!essential)
+			{
+				stepSize *= _entityThinningMult;
+			}
 			
 			for (var i:int = start; i < end; i += stepSize + int(i / stepInc))
 			{
