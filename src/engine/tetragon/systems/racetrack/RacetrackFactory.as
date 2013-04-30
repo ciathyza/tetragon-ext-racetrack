@@ -278,7 +278,7 @@ package tetragon.systems.racetrack
 					Log.warn("No texture with ID " + pair.key, this);
 					continue;
 				}
-				var layer:ScrollTile2D = new ScrollTile2D(texture);
+				var layer:ScrollTile2D = new ScrollTile2D(texture, true);
 				layer.parallax = pair.value;
 				_rt.backgroundLayers[i] = layer;
 			}
