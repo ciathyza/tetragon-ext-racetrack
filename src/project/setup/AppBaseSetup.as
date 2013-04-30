@@ -39,7 +39,6 @@ package setup
 	import tetragon.setup.Setup;
 
 	import view.racing.RacingScreen;
-	import view.racing.SWRacingScreen;
 
 	import com.hexagonstar.util.env.isDomainPermitted;
 	
@@ -257,7 +256,6 @@ package setup
 		override protected function registerScreens():void
 		{
 			registrar.registerScreen(RacingScreen.ID, RacingScreen);
-			registrar.registerScreen(SWRacingScreen.ID, SWRacingScreen);
 		}
 	}
 }
