@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===================================================================================================
+RACETRACK LEVELS CATALOG FILE
+Defines the levels for the racetrack engine.
+===================================================================================================
+-->
+<data>
+	<racetrackLevelsCatalog id="racetrackLevels">
+		<level id="demoLevel" objectsCatalogID="racetrackObjects" nameID="demoLevelName">
+			<!-- ==================================================================================
+			Level-based Settings
+			=================================================================================== -->
+			<settings>
+				<setting name="lanes"				value="3"/>
+				<setting name="hazeDensity"			value="6"/>
+				<setting name="hazeThreshold"		value="0.99"/>
+				<setting name="roadWidth"			value=""/>
+				<setting name="segmentLength"		value=""/>
+				<setting name="rumbleLength"		value=""/>
+				<setting name="centrifugal"			value=""/>
+				<setting name="maxSpeedMult"		value=""/>
+				<setting name="accelerationDiv"		value=""/>
+				<setting name="offRoadLimitDiv"		value=""/>
+				<setting name="offRoadDecelDiv"		value=""/>
+				<setting name="playerJitter"		value="1.2"/>
+				<setting name="playerJitterOffRoad"	value="4.2"/>
+				<setting name="fov"					value=""/>
+				<setting name="cameraAltitude"		value=""/>
+				<setting name="drawDistance"		value=""/>
+			</settings>
+			<!-- ==================================================================================
+			Level Colors
+			=================================================================================== -->
+			<colors>
+				<background	value="#000000"/>
+				<haze		value="#163D1A"/>
+				<light		offroad="#10AA10" road="#6B6B6B" rumble="#555555" lane=""/>
+				<dark		offroad="#009A00" road="#696969" rumble="#BBBBBB" lane="#CCCCCC"/>
+				<start		offroad="#10AA10" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
+				<finish		offroad="#009A00" road="#CCCCCC" rumble="#CCCCCC" lane=""/>
+			</colors>
+			<!-- ==================================================================================
+			Level Background Layers
+			=================================================================================== -->
+			<background textureAtlasID="textures" scale="2.0">
+				<layer imageID="bg_sky" parallax="1"/>
+				<layer imageID="bg_hills" parallax="2"/>
+				<layer imageID="bg_trees" parallax="4"/>
+			</background>
+			<!-- ==================================================================================
+			Road Construction
+			Types:		straight, hill, valley, lowRollingHills, scurves, curve, bumps, downhillToEnd
+			Lengths:	none (0), short (25), medium (50), long (100), any number
+			Heights:	none (0), low (20), medium (40), high (60), extreme (100), any number
+			Curves:		none (0), easy (2), medium (4), hard (6), any number
+			=================================================================================== -->
+			<road>
+				<section type="straight"	length="12"		height=""			curve=""/>
+				<section type="hill"		length="short"	height="low"		curve=""/>
+				<section type="lrh"			length="short"	height="low"		curve=""/>
+				<section type="sCurves"		length=""		height=""			curve=""/>
+				<section type="curveR"		length="medium"	height="high"		curve="medium"/>
+				<section type="bumps"		length=""		height=""			curve=""/>
+				<section type="lrh"			length="short"	height="low"		curve=""/>
+				<section type="curveR"		length="long"	height="medium"		curve="medium"/>
+				<section type="valley"		length="medium"	height="extreme"	curve=""/>
+				<section type="curveL"		length="long"	height="medium"		curve="medium"/>
+				<section type="hill"		length="medium"	height="extreme"	curve=""/>
+				<section type="curveR"		length="long"	height="-low"		curve="medium"/>
+				<section type="hill"		length="long"	height="-medium"	curve=""/>
+				<section type="hill"		length="medium"	height="extreme"	curve="easy"/>
+				<section type="dhte"		length="200"	height=""			curve=""/>
+			</road>
+			<!-- ==================================================================================
+			Object Entity Distribution
+			=================================================================================== -->
+			<objects>
+				<entity id="startline" segNum="4"/>
+				<entity id="startline" segNum="5"/>
+				<!-- Add row of billboards right after start line. -->
+				<entity id="billboard7" segNum="20" offset="-1"/>
+				<entity id="billboard6" segNum="40" offset="-1"/>
+				<entity id="billboard8" segNum="60" offset="-1"/>
+				<entity id="billboard9" segNum="80" offset="-1"/>
+				<entity id="billboard1" segNum="100" offset="-1"/>
+				<entity id="billboard2" segNum="120" offset="-1"/>
+				<entity id="billboard3" segNum="140" offset="-1"/>
+				<entity id="billboard4" segNum="160" offset="-1"/>
+				<entity id="billboard5" segNum="180" offset="-1"/>
+				<entity id="billboard7" segNum="240" offset="-1.2"/>
+				<entity id="billboard6" segNum="240" offset="1.2"/>
+				<!-- Add some billboards at end of track. -->
+				<entity id="billboard7" segNum="end-25" offset="-1.2"/>
+				<entity id="billboard6" segNum="end-25" offset="1.2"/>
+				<!-- Add palm trees at start of track. -->
+				<entities id="palmtree" collectionID="" start="10" end="200" stepSize="4" stepInc="100" subCount="" segRange="" scaleRange="" offsetRange="" offset="0.5" offsetMode="" preOffset="" postOffset="0.5"/>
+				<entities id="palmtree" collectionID="" start="10" end="200" stepSize="4" stepInc="100" subCount="" segRange="" scaleRange="" offsetRange="" offset="1.0" offsetMode="" preOffset="" postOffset="2.0"/>
+				<!-- Add a long row of columns on right side and trees on left side. -->
+				<entities id="column" collectionID="" start="250" end="1000" stepSize="5" stepInc="" subCount="" segRange="" scaleRange="1.0, 1.5" offsetRange="" offset="1.1" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="tree1" collectionID="" start="250" end="1000" stepSize="8" stepInc="" subCount="" segRange="0, 5" scaleRange="1.0, 3.0" offsetRange="" offset="-1.0" offsetMode="sub" preOffset="" postOffset="2.0"/>
+				<entities id="tree2" collectionID="" start="250" end="1000" stepSize="8" stepInc="" subCount="" segRange="0, 5" scaleRange="1.0, 3.0" offsetRange="" offset="-1.0" offsetMode="sub" preOffset="" postOffset="2.0"/>
+				<!-- Fill rest of track offroad areas with vegetation, buildings and billboards. -->
+				<entities id="" collectionID="vegetation" start="200" end="end" stepSize="3" stepInc="" subCount="" segRange="" scaleRange="1.0, 3.0" offsetRange="1, -1" offset="" offsetMode="mult" preOffset="2.0" postOffset="5.0"/>
+				<entities id="" collectionID="buildings" start="1600" end="end" stepSize="20" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="1, -1" offset="" offsetMode="mult" preOffset="2.0" postOffset="5.0"/>
+				<entities id="" collectionID="billboards" start="1000" end="end-50" stepSize="100" stepInc="" subCount="" segRange="0, 50" scaleRange="" offsetRange="-1, 1" offset="" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="" collectionID="vegetation" start="1000" end="end-50" stepSize="100" stepInc="" subCount="20" segRange="0, 50" scaleRange="1.0, 3.0" offsetRange="-1, 1" offset="" offsetMode="mult" preOffset="1.5" postOffset=""/>
+				<!-- Add random on-road obstacles. -->
+				<entities id="" collectionID="obstacles" start="80" end="end-20" stepSize="97" stepInc="" subCount="" segRange="" scaleRange="0.5, 0.8" offsetRange="-1.0, 1.0" offset="" offsetMode="rand" preOffset="" postOffset=""/>
+				<!-- Add random collectible items on road. -->
+				<entities id="" collectionID="items" start="50" end="end-500" stepSize="30" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="-0.6, 0.0, 0.6" offset="" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="" collectionID="items" start="end-500" end="end-100" stepSize="3" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="" offsetMode="" preOffset="" postOffset=""/>
+				<!-- Distribute regular checkpoints. -->
+				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="-1" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="checkpoint" collectionID="" start="200" end="end-400" stepSize="400" stepInc="" subCount="" segRange="" scaleRange="" offsetRange="" offset="1" offsetMode="" preOffset="" postOffset=""/>
+				<entities id="" collectionID="" start="" end="" stepSize="" stepInc="" subCount="" segRange="" offsetRange="" offset="" scaleRange="" offsetMode="" preOffset="" postOffset=""/>
+				<entity id="finishline" segNum="end-4"/>
+			</objects>
+			<!-- ==================================================================================
+			Opponent Distribution
+			=================================================================================== -->
+			<opponents>
+				<entities collectionID="cars" count="200" offsetRange="-0.8, 0.8" speedFactor="4"/>
+			</opponents>
+		</level>
+	</racetrackLevelsCatalog>
+</data>

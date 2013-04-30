@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	
+	<!-- ================================================================================
+	BASE SETTINGS
+	================================================================================= -->
+	<!-- The frame rate at which the engine's game loop runs. -->
+	<frameRate>60</frameRate>
+	<!-- The factor that screens are globally scaled with. -->
+	<screenScale>1.0</screenScale>
+	<!-- The ID of the first-opening screen. If the splash screen is defined and
+	enabled, it will open before the initial screen opens. -->
+	<initialScreenID>racingScreen</initialScreenID>
+	<!-- The ID of the used UI theme. -->
+	<themeID>default</themeID>
+	
+	<!-- ================================================================================
+	RACETRACK GAME SETTINGS
+	================================================================================= -->
+	<defaultRoadWidth>2000</defaultRoadWidth>
+	<defaultSegmentLength>200</defaultSegmentLength>
+	<defaultRumbleLength>3</defaultRumbleLength>
+	<defaultCentrifugal>0.3</defaultCentrifugal>
+	<defaultMaxSpeedMult>1.0</defaultMaxSpeedMult>
+	<defaultAccelerationDiv>5.0</defaultAccelerationDiv>
+	<defaultOffRoadDecelDiv>2.0</defaultOffRoadDecelDiv>
+	<defaultOffRoadLimitDiv>4.0</defaultOffRoadLimitDiv>
+	<defaultFOV>120</defaultFOV>						<!-- Valid range: 80 - 150 -->
+	<defaultCameraAltitude>1000</defaultCameraAltitude>	<!-- Valid range: 500 - 5000 -->
+	<defaultDrawDistance>100</defaultDrawDistance>		<!-- Valid range: 100 - 500 -->
+	
+	<entityThinningMult>4</entityThinningMult>
+	<maxCars>1000</maxCars>
+	
+	<!-- Determines the ID of the player's object definition. -->
+	<playerObjectID>player</playerObjectID>
+	
+	<!-- Determines whether the player animation framerate should be affected by the
+	player's speed. If set to true the player animation sequences FPS will increase
+	or decrease depending on the player's current speed. This can for example be used for
+	player sprites that use a running animation. -->
+	<playerAnimDynamicFPS>false</playerAnimDynamicFPS>
+	
+</settings>
