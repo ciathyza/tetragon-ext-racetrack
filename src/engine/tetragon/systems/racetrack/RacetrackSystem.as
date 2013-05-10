@@ -975,6 +975,9 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		/**
+		 * Determines whether the player is currently being stopped by a collidible object.
+		 */
 		public function get isStoppedByCollision():Boolean
 		{
 			return _isStoppedByCollision;
