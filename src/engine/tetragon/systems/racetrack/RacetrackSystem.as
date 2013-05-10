@@ -68,7 +68,6 @@ package tetragon.systems.racetrack
 
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.time.Interval;
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -549,7 +548,6 @@ package tetragon.systems.racetrack
 					{
 						jitter = (1.5 * Math.random() * (_playerSpeed / _maxSpeed) * jitter) * randomChoice([-1, 1]);
 					}
-					Debug.trace(_playerSpeed);
 					
 					renderEntity(_racetrack.player,
 						_cameraDepth / _playerZ,
@@ -1355,7 +1353,6 @@ package tetragon.systems.racetrack
 						if (hardness >= 100)
 						{
 							_isStoppedAfterCollision = true;
-							_isAccelerating = _isBraking = false;
 							/* Determines how quick player can steer away from obstacle after being stopped. */
 							if (_playerEnabled) _playerSpeed = _maxSpeed / 5;
 							else _playerSpeed = 0;

@@ -217,7 +217,7 @@ package tetragon.systems.racetrack
 			_rt.fov = _level.settings[RTSettingsNames.FOV] || _rt.fov;
 			_rt.cameraAltitude = _level.settings[RTSettingsNames.CAMERA_ALTITUDE] || _rt.cameraAltitude;
 			_rt.drawDistance = _level.settings[RTSettingsNames.DRAW_DISTANCE] || _rt.drawDistance;
-			_rt.playerJitter = _level.settings[RTSettingsNames.PLAYER_JITTER] || 1.2;
+			_rt.playerJitter = _level.settings[RTSettingsNames.PLAYER_JITTER] || 0.0;
 			_rt.playerJitterOffRoad = _level.settings[RTSettingsNames.PLAYER_JITTER_OFFROAD] || 4.2;
 			
 			maxSpeedMult = _level.settings[RTSettingsNames.MAX_SPEED_MULT] || maxSpeedMult;

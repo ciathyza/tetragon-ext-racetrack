@@ -35,6 +35,8 @@
 	<!-- Determines the ID of the player's object definition. -->
 	<playerObjectID>player</playerObjectID>
 	
+	<playerJitter>1.2</playerJitter>
+	
 	<!-- Determines whether the player animation framerate should be affected by the
 	player's speed. If set to true the player animation sequences FPS will increase
 	or decrease depending on the player's current speed. This can for example be used for
