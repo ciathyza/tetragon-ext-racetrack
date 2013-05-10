@@ -68,6 +68,7 @@ package tetragon.systems.racetrack
 
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.time.Interval;
+	import com.hexagonstar.util.debug.Debug;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -148,6 +149,7 @@ package tetragon.systems.racetrack
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
 		private var _isOffRoad:Boolean;
+		private var _isStoppedAfterCollision:Boolean;
 		
 		private var _started:Boolean;
 		private var _idleAfterCollision:Boolean;
@@ -282,6 +284,7 @@ package tetragon.systems.racetrack
 			_playerEnabled = true;
 			_suppressDefaultPlayerStates = false;
 			_isOffRoad = false;
+			_isStoppedAfterCollision = false;
 		}
 		
 		
@@ -541,11 +544,12 @@ package tetragon.systems.racetrack
 				if (seg == playerSegment)
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
-					var jitter:Number = _isOffRoad ? _playerJitterOffRoad : _playerJitter;
+					var jitter:Number = !_playerEnabled ? 0 : _isOffRoad ? _playerJitterOffRoad : _playerJitter;
 					if (jitter > 0)
 					{
 						jitter = (1.5 * Math.random() * (_playerSpeed / _maxSpeed) * jitter) * randomChoice([-1, 1]);
 					}
+					Debug.trace(_playerSpeed);
 					
 					renderEntity(_racetrack.player,
 						_cameraDepth / _playerZ,
@@ -1247,6 +1251,7 @@ package tetragon.systems.racetrack
 				if (_isAccelerating)
 				{
 					_idleAfterCollision = false;
+					_isStoppedAfterCollision = false;
 					_playerSpeed = accel(_playerSpeed, _acceleration);
 				}
 				else if (_isBraking)
@@ -1349,8 +1354,11 @@ package tetragon.systems.racetrack
 						/* Stop in front of sprite (at front of segment). */
 						if (hardness >= 100)
 						{
+							_isStoppedAfterCollision = true;
+							_isAccelerating = _isBraking = false;
 							/* Determines how quick player can steer away from obstacle after being stopped. */
-							_playerSpeed = _maxSpeed / 5;
+							if (_playerEnabled) _playerSpeed = _maxSpeed / 5;
+							else _playerSpeed = 0;
 							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 							_idleAfterCollision = true;
 						}
@@ -1559,6 +1567,10 @@ package tetragon.systems.racetrack
 		private function disablePlayer(duration:Number):void
 		{
 			_playerEnabled = false;
+			if (_isStoppedAfterCollision)
+			{
+				_playerSpeed = 0;
+			}
 			if (duration > 0.0)
 			{
 				_interval = Interval.setTimeOut(duration * 1000, function():void
