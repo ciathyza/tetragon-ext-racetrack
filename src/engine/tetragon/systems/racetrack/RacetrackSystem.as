@@ -148,7 +148,7 @@ package tetragon.systems.racetrack
 		private var _isJump:Boolean;
 		private var _isFall:Boolean;
 		private var _isOffRoad:Boolean;
-		private var _isStoppedAfterCollision:Boolean;
+		private var _isStoppedByCollision:Boolean;
 		
 		private var _started:Boolean;
 		private var _idleAfterCollision:Boolean;
@@ -283,7 +283,7 @@ package tetragon.systems.racetrack
 			_playerEnabled = true;
 			_suppressDefaultPlayerStates = false;
 			_isOffRoad = false;
-			_isStoppedAfterCollision = false;
+			_isStoppedByCollision = false;
 		}
 		
 		
@@ -975,6 +975,12 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get isStoppedByCollision():Boolean
+		{
+			return _isStoppedByCollision;
+		}
+		
+		
 		public function get playerFPS():int
 		{
 			return _playerFPS;
@@ -1249,7 +1255,6 @@ package tetragon.systems.racetrack
 				if (_isAccelerating)
 				{
 					_idleAfterCollision = false;
-					_isStoppedAfterCollision = false;
 					_playerSpeed = accel(_playerSpeed, _acceleration);
 				}
 				else if (_isBraking)
@@ -1335,6 +1340,7 @@ package tetragon.systems.racetrack
 					 * player is actually off-road! */
 					if (e.type == RTObjectTypes.OFFROAD && (_playerX < -1 || _playerX > 1))
 					{
+						_isStoppedByCollision = true;
 						_playerSpeed = _maxSpeed / 5;
 						/* Stop in front of sprite (at front of segment). */
 						_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
@@ -1352,20 +1358,29 @@ package tetragon.systems.racetrack
 						/* Stop in front of sprite (at front of segment). */
 						if (hardness >= 100)
 						{
-							_isStoppedAfterCollision = true;
+							_isStoppedByCollision = true;
 							/* Determines how quick player can steer away from obstacle after being stopped. */
 							if (_playerEnabled) _playerSpeed = _maxSpeed / 5;
 							else _playerSpeed = 0;
 							_position = increase(segment.point1.world.z, -_playerZ, _trackLength);
 							_idleAfterCollision = true;
 						}
+						else
+						{
+							_isStoppedByCollision = false;
+						}
 						break;
 					}
 					else if (e.type == RTObjectTypes.COLLECTIBLE)
 					{
+						_isStoppedByCollision = false;
 						/* Remove the entity from the racetrack! */
 						disableEntity(e);
 					}
+				}
+				else
+				{
+					_isStoppedByCollision = false;
 				}
 			}
 		}
@@ -1564,7 +1579,7 @@ package tetragon.systems.racetrack
 		private function disablePlayer(duration:Number):void
 		{
 			_playerEnabled = false;
-			if (_isStoppedAfterCollision)
+			if (_isStoppedByCollision)
 			{
 				_playerSpeed = 0;
 			}
