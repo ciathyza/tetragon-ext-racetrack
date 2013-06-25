@@ -28,10 +28,9 @@
  */
 package tetragon.data.racetrack.proto
 {
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.data.DataObject;
 	import tetragon.data.racetrack.vo.RTColorSet;
-
-	import com.hexagonstar.types.KeyValuePair;
 
 	import flash.utils.Dictionary;
 	

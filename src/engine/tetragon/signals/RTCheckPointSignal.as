@@ -28,7 +28,7 @@
  */
 package tetragon.signals
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 	
 	
 	public class RTCheckPointSignal extends Signal

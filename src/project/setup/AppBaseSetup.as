@@ -37,10 +37,9 @@ package setup
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.setup.Setup;
+	import tetragon.util.env.isDomainPermitted;
 
 	import view.racing.RacingScreen;
-
-	import com.hexagonstar.util.env.isDomainPermitted;
 	
 	
 	public class AppBaseSetup extends Setup

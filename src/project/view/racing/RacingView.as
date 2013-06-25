@@ -30,7 +30,7 @@ package view.racing
 {
 	import tetragon.BuildType;
 	import tetragon.systems.racetrack.RacetrackSystem;
-	import tetragon.view.render.canvas.GPURenderCanvas;
+	import tetragon.view.display.rendercanvas.GPURenderCanvas;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.TouchEvent2D;

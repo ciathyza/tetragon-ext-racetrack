@@ -29,6 +29,7 @@
 package tetragon.systems.racetrack
 {
 	import tetragon.Main;
+	import tetragon.core.signals.Signal;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.data.racetrack.constants.RTObjectPropertyNames;
 	import tetragon.data.racetrack.constants.RTObjectTypes;
@@ -56,7 +57,8 @@ package tetragon.systems.racetrack
 	import tetragon.signals.RTPlaySoundSignal;
 	import tetragon.signals.RTProgressSignal;
 	import tetragon.systems.ISystem;
-	import tetragon.view.render.canvas.IRenderCanvas;
+	import tetragon.util.time.Interval;
+	import tetragon.view.display.rendercanvas.IRenderCanvas;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.animation.Transitions2D;
 	import tetragon.view.render2d.animation.Tween2D;
@@ -65,9 +67,6 @@ package tetragon.systems.racetrack
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
-
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.time.Interval;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
@@ -685,6 +684,17 @@ package tetragon.systems.racetrack
 			if (_interval) _interval.dispose();
 			if (_renderCanvas) _renderCanvas.clear();
 			Main.instance.classRegistry.unregisterSystem(SYSTEM_ID);
+		}
+		
+		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return "RacetrackSystem";
 		}
 		
 		

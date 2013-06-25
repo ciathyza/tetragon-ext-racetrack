@@ -30,6 +30,7 @@ package tetragon.systems.racetrack
 {
 	import tetragon.BaseClass;
 	import tetragon.Main;
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.data.Settings;
 	import tetragon.data.atlas.Atlas;
 	import tetragon.data.atlas.TextureAtlas;
@@ -42,15 +43,13 @@ package tetragon.systems.racetrack
 	import tetragon.data.racetrack.vo.*;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceIndex;
+	import tetragon.util.string.stringIsEmptyOrNull;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
-
-	import com.hexagonstar.types.KeyValuePair;
-	import com.hexagonstar.util.string.stringIsEmptyOrNull;
 
 	import flash.utils.Dictionary;
 	

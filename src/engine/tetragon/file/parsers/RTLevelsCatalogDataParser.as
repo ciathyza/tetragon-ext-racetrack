@@ -28,6 +28,7 @@
  */
 package tetragon.file.parsers
 {
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.data.racetrack.proto.RTEntityDistributionDef;
 	import tetragon.data.racetrack.proto.RTLevel;
 	import tetragon.data.racetrack.proto.RTLevelsCatalog;
@@ -36,8 +37,6 @@ package tetragon.file.parsers
 	import tetragon.data.racetrack.vo.RTColorSet;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.types.KeyValuePair;
 
 	import flash.utils.Dictionary;
 	

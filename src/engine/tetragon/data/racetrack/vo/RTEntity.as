@@ -28,16 +28,15 @@
  */
 package tetragon.data.racetrack.vo
 {
+	import tetragon.core.signals.Signal;
 	import tetragon.data.DataObject;
 	import tetragon.data.racetrack.proto.RTObject;
 	import tetragon.data.racetrack.proto.RTObjectImageSequence;
 	import tetragon.data.racetrack.proto.RTObjectState;
+	import tetragon.util.time.Interval;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.MovieClip2D;
 	import tetragon.view.render2d.events.Event2D;
-
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.time.Interval;
 	
 	
 	/**

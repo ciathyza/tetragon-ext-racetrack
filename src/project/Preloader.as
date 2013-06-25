@@ -29,15 +29,15 @@
 package 
 {
 	import tetragon.Main;
+	import tetragon.core.constants.Alignment;
 	import tetragon.data.Params;
 	import tetragon.env.preload.BasicPreloadDisplay;
 	import tetragon.env.preload.IPreloadDisplay;
 	import tetragon.env.preload.IPreloadable;
 	import tetragon.env.preload.IPreloader;
 	import tetragon.env.preload.TetragonPreloadDisplay;
-
-	import com.hexagonstar.constants.Alignment;
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
+	import tetragon.util.time.CallLater;
 
 	import mx.core.BitmapAsset;
 	import mx.core.ByteArrayAsset;
@@ -119,8 +119,14 @@ package
 			Main.params = new Params();
 			Main.params.parse(LoaderInfo(root.loaderInfo).parameters);
 			
-			configure();
-			start();
+			/* Configure and start the preloader after one frame has passed to prevent
+			 * a Flash-related bug with Internet Explorer where the stage dimensions
+			 * are not instantly available! */
+			CallLater.add(function():void
+			{
+				configure();
+				start();
+			});
 		}
 		
 		
