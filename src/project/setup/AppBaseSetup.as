@@ -31,7 +31,6 @@ package setup
 	import data.GameModel;
 
 	import modules.app.AppModule;
-	import modules.audio.AudioManager;
 
 	import tetragon.BuildType;
 	import tetragon.data.Config;
@@ -171,7 +170,6 @@ package setup
 		override protected function registerModules():void
 		{
 			registrar.registerModule(AppModule.defaultID, AppModule);
-			registrar.registerModule(AudioManager.defaultID, AudioManager);
 		}
 		
 		

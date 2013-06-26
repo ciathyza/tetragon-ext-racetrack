@@ -28,8 +28,7 @@
  */
 package view.racing
 {
-	import modules.audio.AudioManager;
-
+	import tetragon.audio.AudioManager;
 	import tetragon.data.racetrack.Racetrack;
 	import tetragon.debug.Log;
 	import tetragon.input.KeyMode;
@@ -98,8 +97,7 @@ package view.racing
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
 			
-			var music:Sound = getResource("music");
-			_audioManager.playSound(music, AudioManager.MAX_LOOPS, 0.7);
+			_audioManager.startMusic("music");
 			
 			_racetrackSystem.start();
 		}
@@ -279,8 +277,7 @@ package view.racing
 		{
 			super.setup();
 			
-			_audioManager = main.moduleManager.getModule(AudioManager.defaultID);
-			
+			_audioManager = main.audioManager;
 			_width = main.stage.stageWidth;
 			_height = main.stage.stageHeight;
 			_render2D = screenManager.render2D;
@@ -304,6 +301,9 @@ package view.racing
 		 */
 		override protected function createChildren():void
 		{
+			/* Prepare music. */
+			_audioManager.createMusic("music", ["music"]);
+			
 			/* Prepare sounds. */
 			_sounds = new Dictionary();
 			_sounds["checkpointSound"] = getResource("soundCheckpoint");
