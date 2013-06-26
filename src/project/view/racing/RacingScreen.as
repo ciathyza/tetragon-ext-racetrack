@@ -37,7 +37,6 @@ package view.racing
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
 
-	import flash.media.Sound;
 	import flash.utils.Dictionary;
 	
 	
@@ -68,7 +67,7 @@ package view.racing
 		private var _height:int;
 		
 		private var _audioManager:AudioManager;
-		private var _sounds:Dictionary;
+		private var _soundIDs:Dictionary;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -249,8 +248,8 @@ package view.racing
 		
 		private function onRTPlaySound(soundID:String):void
 		{
-			var sound:Sound = _sounds[soundID];
-			if (sound) _audioManager.playSound(sound);
+			var sid:String = _soundIDs[soundID];
+			if (sid) _audioManager.playSound(sid);
 		}
 		
 		
@@ -304,10 +303,10 @@ package view.racing
 			/* Prepare music. */
 			_audioManager.createMusic("music", ["music"]);
 			
-			/* Prepare sounds. */
-			_sounds = new Dictionary();
-			_sounds["checkpointSound"] = getResource("soundCheckpoint");
-			_sounds["ringCollectSound"] = getResource("soundRing");
+			/* Prepare sounds ID conversions. */
+			_soundIDs = new Dictionary();
+			_soundIDs["checkpointSound"] = "soundCheckpoint";
+			_soundIDs["ringCollectSound"] = "soundRing";
 			
 			_rootView = new RacingView();
 			_render2D.rootView = _rootView;
