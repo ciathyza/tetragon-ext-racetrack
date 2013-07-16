@@ -127,8 +127,8 @@ package tetragon.systems.racetrack
 		private var _playerSpeedPercent:Number;
 		private var _playerSpeedCollision:Number;
 		
-		private var _progress:int;
-		private var _progressTotal:int;
+		private var _progress:uint;
+		private var _progressTotal:uint;
 		
 		private var _currentLap:uint;
 		private var _startTime:uint;
@@ -710,12 +710,16 @@ package tetragon.systems.racetrack
 		{
 			return _progress;
 		}
+		public function set progress(v:uint):void
+		{
+			_progress = v;
+		}
 		
 		
 		/**
 		 * The total progress number.
 		 */
-		public function get progressTotal():int
+		public function get progressTotal():uint
 		{
 			return _progressTotal;
 		}

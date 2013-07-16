@@ -32,7 +32,7 @@ package view.racing
 	import tetragon.systems.racetrack.RacetrackSystem;
 	import tetragon.view.display.rendercanvas.GPURenderCanvas;
 	import tetragon.view.render2d.display.Rect2D;
-	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.display.RootView2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
 	import tetragon.view.render2d.touch.Touch2D;
 	import tetragon.view.render2d.touch.TouchPhase2D;
@@ -41,7 +41,7 @@ package view.racing
 	/**
 	 * @author hexagon
 	 */
-	public class RacingView extends View2D
+	public class RacingView extends RootView2D
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
