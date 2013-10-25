@@ -314,7 +314,7 @@ package view.racing
 			_racetrackFactory = new RacetrackFactory("racetrackLevels");
 			_racetrack = _racetrackFactory.createRacetrack("demoLevel");
 			
-			_racetrackSystem = new RacetrackSystem(main.appInfo.referenceWidth, main.appInfo.referenceHeight, _racetrack);
+			_racetrackSystem = new RacetrackSystem(stageWidth, stageHeight, _racetrack);
 			_racetrackSystem.renderCanvas = _rootView.renderCanvas;
 			
 			_rootView.racetrackSystem = _racetrackSystem;

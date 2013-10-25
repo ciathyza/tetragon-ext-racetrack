@@ -29,14 +29,15 @@
 package
 {
 	import tetragon.Main;
-	
+	import tetragon.file.AIRFileAPIProxy;
+
 	import flash.display.NativeWindow;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	
 	
-	[SWF(width="1024", height="768", backgroundColor="#000000", frameRate="60")]
+	[SWF(width="1024", height="460", backgroundColor="#000000", frameRate="60")]
 	
 	/**
 	 * Entry acts as the entry point and base display object container (or: context view) for
@@ -74,7 +75,7 @@ package
 			if (appInfo.isDebug && NativeWindow.isSupported) stage.nativeWindow.visible = true;
 			
 			_main = Main.instance;
-			_main.init(this, appInfo, new Setups().list, AppResourceBundle);
+			_main.init(this, appInfo, new Setups().list, AppResourceBundle, new AIRFileAPIProxy());
 		}
 	}
 }

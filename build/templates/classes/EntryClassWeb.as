@@ -31,7 +31,8 @@ package
 	import tetragon.Main;
 	import tetragon.env.preload.IPreloadable;
 	import tetragon.env.preload.IPreloader;
-	
+	import tetragon.file.FileAPIProxy;
+
 	import flash.display.DisplayObjectContainer;
 	
 	
@@ -55,18 +56,6 @@ package
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Constructor
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function Entry()
-		{
-		}
-		
-		
-		//-----------------------------------------------------------------------------------------
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
@@ -79,7 +68,7 @@ package
 		{
 			_main = Main.instance;
 			_main.init(preloader as DisplayObjectContainer, new AppInfo(), new Setups().list,
-				AppResourceBundle);
+				AppResourceBundle, new FileAPIProxy());
 		}
 	}
 }
